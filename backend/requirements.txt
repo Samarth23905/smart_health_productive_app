@@ -8,3 +8,9 @@ werkzeug
 pandas
 numpy
 matplotlib
+Pillow
+gunicorn
+python-dateutil
+requests
+email-validator
+cryptography
