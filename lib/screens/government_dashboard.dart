@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/api_services.dart';
+import '../constants/app_colors.dart';
 import 'login.dart';
 import 'citizen_profile_edit.dart';
 
@@ -48,10 +49,15 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Government Health Analytics Dashboard'),
+        title: const Text(
+          'Health Analytics Dashboard',
+          style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+        ),
+        backgroundColor: AppColors.primary,
+        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_outlined),
             tooltip: "Refresh Data",
             onPressed: () {
               setState(() {
@@ -60,7 +66,7 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.person_outline),
             tooltip: "Edit Profile",
             onPressed: () {
               Navigator.push(
@@ -70,12 +76,10 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout_outlined),
             onPressed: () => logout(context),
           ),
         ],
-        elevation: 0,
-        backgroundColor: Colors.blue[700],
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _analyticsFuture,
@@ -89,13 +93,27 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error_outline, size: 60, color: Colors.red[300]),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.emergency.withOpacity(0.1),
+                    ),
+                    child: Icon(
+                      Icons.error_outline,
+                      size: 60,
+                      color: AppColors.emergency,
+                    ),
+                  ),
                   const SizedBox(height: 16),
-                  const Text('Failed to load analytics'),
+                  const Text(
+                    'Failed to load analytics',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     snapshot.error.toString(),
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF999999)),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),

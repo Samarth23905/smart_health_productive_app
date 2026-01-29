@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
+import '../constants/app_colors.dart';
 import 'ambulance_tracking.dart';
 import 'login.dart';
 
@@ -47,78 +48,208 @@ class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Ambulance Dashboard"),
+        title: const Text(
+          "Active Alerts",
+          style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+        ),
+        backgroundColor: AppColors.primary,
+        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout_outlined),
             onPressed: () => logout(context),
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: _casesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.primary.withOpacity(0.05),
+              AppColors.background,
+            ],
+          ),
+        ),
+        child: FutureBuilder(
+          future: _casesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-          if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
-            return const Center(
-              child: Text("No active ambulance alerts"),
-            );
-          }
-
-          final cases = snapshot.data as List;
-
-          return ListView.builder(
-            itemCount: cases.length,
-            itemBuilder: (context, index) {
-              final alert = cases[index];
-              final alertId = alert["alert_id"] ?? 0;
-              final citizenId = alert["citizen_id"];
-              final eta = alert["eta"] ?? 0;
-              final status = alert["status"] ?? "pending";
-
-              return Card(
-                margin: const EdgeInsets.all(8),
-                child: ListTile(
-                  leading: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _getStatusColor(status),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "${eta}m",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+            if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primary.withOpacity(0.1),
+                      ),
+                      child: Icon(
+                        Icons.local_taxi_outlined,
+                        size: 56,
+                        color: AppColors.primary,
                       ),
                     ),
-                  ),
-                  title: Text("Alert #$alertId"),
-                  subtitle: Text("Status: ${status.replaceAll('_', ' ').toUpperCase()}"),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => AmbulanceTracking(
-                            alertId: alertId,
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text("Navigate"),
-                  ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "No Active Alerts",
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Waiting for emergency dispatch",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
                 ),
               );
-            },
-          );
-        },
+            }
+
+            final cases = snapshot.data as List;
+
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              itemCount: cases.length,
+              itemBuilder: (context, index) {
+                final alert = cases[index];
+                final alertId = alert["alert_id"] ?? 0;
+                final citizenId = alert["citizen_id"];
+                final eta = alert["eta"] ?? 0;
+                final status = alert["status"] ?? "pending";
+                final statusColor = _getStatusColor(status);
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border(
+                      left: BorderSide(
+                        color: statusColor,
+                        width: 4,
+                      ),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 56,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                statusColor,
+                                statusColor.withOpacity(0.7),
+                              ],
+                            ),
+                          ),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "$eta",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const Text(
+                                  "min",
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Alert #$alertId",
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: statusColor.withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  status.replaceAll('_', ' ').toUpperCase(),
+                                  style: TextStyle(
+                                    color: statusColor,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => AmbulanceTracking(
+                                  alertId: alertId,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.navigation_outlined, size: 16),
+                          label: const Text("Navigate"),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

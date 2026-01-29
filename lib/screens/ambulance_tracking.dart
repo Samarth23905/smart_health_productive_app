@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/api_services.dart';
+import '../constants/app_colors.dart';
 
 class AmbulanceTracking extends StatefulWidget {
   final int alertId;
@@ -341,9 +342,16 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Ambulance Tracking'),
-          backgroundColor: Colors.blue[900],
-          centerTitle: true,
+          title: const Text(
+            'Ambulance Tracking',
+            style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+          ),
+          backgroundColor: AppColors.primary,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_outlined),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
         body: const Center(
           child: CircularProgressIndicator(),
@@ -353,9 +361,16 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ambulance Tracking'),
-        backgroundColor: Colors.blue[900],
-        centerTitle: true,
+        title: const Text(
+          'Ambulance Tracking',
+          style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+        ),
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_outlined),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

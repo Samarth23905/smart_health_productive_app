@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import '../services/api_services.dart';
 import '../services/image_picker_service.dart';
+import '../constants/app_colors.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
