@@ -17,7 +17,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Uint8List? imageBytes;
   String? profilePicBase64;
   bool isLoading = false;
-  bool oxygenAvailable = false;  // For hospitals
+  bool oxygenAvailable = false; 
 
   final nameCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
@@ -136,32 +136,42 @@ class _RegistrationPageState extends State<RegistrationPage> {
     setState(() => isLoading = true);
 
     try {
-      // Parse latitude and longitude as doubles
-      final lat = double.tryParse(latCtrl.text);
-      final lng = double.tryParse(lngCtrl.text);
-
-      if (lat == null || lng == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter valid latitude and longitude')),
-        );
-        setState(() => isLoading = false);
-        return;
-      }
-
-      final ok = await ApiService.register({
+      // Build payload depending on role. Government does not need lat/lng.
+      final Map<String, dynamic> payload = {
         "role": role,
         "name": nameCtrl.text,
-        "email": role == "citizen" ? emailCtrl.text : null,
-        "phone": phoneCtrl.text,
-        "sex": role == "citizen" ? sex : null,
-        "latitude": lat,
-        "longitude": lng,
-        "profile_pic": profilePicBase64,
         "password": passCtrl.text,
-        "total_beds": role == "hospital" ? int.tryParse(totalBedsCtrl.text) ?? 0 : null,
-        "icu_beds": role == "hospital" ? int.tryParse(icuBedsCtrl.text) ?? 0 : null,
-        "oxygen_available": role == "hospital" ? oxygenAvailable : null,
-      });
+        "profile_pic": profilePicBase64,
+        "phone": role == "government" ? null : phoneCtrl.text,
+      };
+
+      if (role == "citizen" || role == "hospital") {
+        // Parse latitude and longitude as doubles for citizen/hospital
+        final lat = double.tryParse(latCtrl.text);
+        final lng = double.tryParse(lngCtrl.text);
+
+        if (lat == null || lng == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please enter valid latitude and longitude')),
+          );
+          setState(() => isLoading = false);
+          return;
+        }
+
+        payload["latitude"] = lat;
+        payload["longitude"] = lng;
+
+        if (role == "citizen") {
+          payload["email"] = emailCtrl.text.isEmpty ? null : emailCtrl.text;
+          payload["sex"] = sex;
+        } else if (role == "hospital") {
+          payload["total_beds"] = int.tryParse(totalBedsCtrl.text) ?? 0;
+          payload["icu_beds"] = int.tryParse(icuBedsCtrl.text) ?? 0;
+          payload["oxygen_available"] = oxygenAvailable;
+        }
+      }
+
+      final ok = await ApiService.register(payload);
 
       if (ok) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -472,4 +482,3 @@ class _RegistrationPageState extends State<RegistrationPage> {
     super.dispose();
   }
 }
-

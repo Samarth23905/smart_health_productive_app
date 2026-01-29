@@ -43,8 +43,14 @@ class ApiService {
 
       if (res.statusCode == 200) {
         final responseData = jsonDecode(res.body);
-        token = responseData["access_token"];
-        print("[Login] Success - Token: $token");
+          token = responseData["access_token"];
+          // persist token so other calls (and app restarts) can access it
+          try {
+            await SecureStorage.saveToken(token!);
+          } catch (e) {
+            print('[Login] Warning: failed to save token: $e');
+          }
+          print("[Login] Success - Token: $token");
         return true;
       } else {
         print("[Login] Failed - Status: ${res.statusCode}, Body: ${res.body}");
@@ -250,12 +256,12 @@ class ApiService {
 
   static Future<Map<String, dynamic>> getGovernmentAnalytics() async {
     try {
-      String? token = await SecureStorage.getToken();
-      if (token == null) return {};
+      final authToken = await _getToken();
+      if (authToken == null) return {};
 
       final response = await http.get(
         Uri.parse("$baseUrl/government/analytics"),
-        headers: {"Authorization": "Bearer $token"},
+        headers: {"Authorization": "Bearer $authToken"},
       );
 
       if (response.statusCode == 200) {

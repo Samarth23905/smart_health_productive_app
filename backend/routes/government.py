@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, User, Citizen, Hospital, Severity, AmbulanceAlert
 from datetime import datetime, timedelta
-from sqlalchemy import func
+from sqlalchemy import func, or_
 import statistics
 
 government_bp = Blueprint("government", __name__)
@@ -49,8 +49,9 @@ def get_analytics():
         # ============================================
         # SECTION 3: ALERT COMPLETION METRICS
         # ============================================
+        # Count alerts that are completed or delivered (some parts of the app use 'delivered')
         completed_alerts = db.session.query(func.count(AmbulanceAlert.id)).filter(
-            AmbulanceAlert.status == "completed"
+            AmbulanceAlert.status.in_(["completed", "delivered"])
         ).scalar() or 0
         
         # ============================================
@@ -82,6 +83,23 @@ def get_analytics():
         oxygen_hospitals = db.session.query(func.count(Hospital.id)).filter(
             Hospital.oxygen_available == True
         ).scalar() or 0
+
+        # ============================================
+        # SECTION 6b: DIGITAL ADOPTION / REGISTERED CITIZENS
+        # ============================================
+        # registered_citizens: citizens whose linked User has phone or email
+        registered_citizens = db.session.query(func.count(Citizen.id)).join(
+            User, User.id == Citizen.user_id
+        ).filter(
+            or_(User.phone.isnot(None), User.email.isnot(None))
+        ).scalar() or 0
+
+        digital_adoption = 0
+        try:
+            if total_citizens and total_citizens > 0:
+                digital_adoption = round((registered_citizens / total_citizens) * 100, 1)
+        except Exception:
+            digital_adoption = 0
         
         # ============================================
         # SECTION 6: ENGAGEMENT METRICS
@@ -120,6 +138,9 @@ def get_analytics():
             "total_beds": total_beds,
             "icu_beds": icu_beds,
             "oxygen_hospitals": oxygen_hospitals,
+            # Section 6b: Adoption
+            "registered_citizens": registered_citizens,
+            "digital_adoption": digital_adoption,
             
             # Section 6: Engagement
             "avg_eta": avg_eta,

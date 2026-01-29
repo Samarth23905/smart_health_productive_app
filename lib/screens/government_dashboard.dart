@@ -66,16 +66,6 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.person_outline),
-            tooltip: "Edit Profile",
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => CitizenProfileEditScreen()),
-              );
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.logout_outlined),
             onPressed: () => logout(context),
           ),
@@ -135,137 +125,65 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
           }
 
           final data = snapshot.data!;
+
+          Widget buildRow(String label, String value) {
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              child: ListTile(
+                title: Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+                trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            );
+          }
+
+          Widget buildNested(String label, Map m) {
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    ...m.keys.map((k) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(k),
+                              Text('${m[k]}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        )),
+                  ],
+                ),
+              ),
+            );
+          }
+
           return SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSection(
-                    title: '1️⃣ System-Wide Data Aggregation',
-                    subtitle: 'Unified Health Surveillance Platform',
-                    children: [
-                      _buildMetricGrid([
-                        _MetricTile(
-                          label: 'Total Health Alerts',
-                          value: '${data['total_alerts'] ?? 0}',
-                          icon: Icons.emergency,
-                          color: Colors.red,
-                          desc: 'SOS & Severity checks aggregated',
-                        ),
-                        _MetricTile(
-                          label: 'Active Hospitals',
-                          value: '${data['active_hospitals'] ?? 0}',
-                          icon: Icons.local_hospital,
-                          color: Colors.blue,
-                          desc: 'Real-time infrastructure status',
-                        ),
-                        _MetricTile(
-                          label: 'Registered Citizens',
-                          value: '${data['total_citizens'] ?? 0}',
-                          icon: Icons.people,
-                          color: Colors.green,
-                          desc: 'Digital health adoption',
-                        ),
-                        _MetricTile(
-                          label: 'Ambulances Deployed',
-                          value: '${data['ambulance_count'] ?? 0}',
-                          icon: Icons.local_shipping,
-                          color: Colors.orange,
-                          desc: 'Emergency response capacity',
-                        ),
-                      ]),
-                      const SizedBox(height: 16),
-                      _buildInfoCard(
-                        title: '✅ Problem 1: Data Silos SOLVED',
-                        points: [
-                          'Unified data aggregation from all hospitals',
-                          'Real-time visibility across all citizens',
-                          'Centralized alert tracking system',
-                          'Single pane of glass for health infrastructure',
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    title: '2️⃣ Early Detection & Response Monitoring',
-                    subtitle: 'Surveillance & Trend Analysis',
-                    children: [
-                      _buildSeverityDistribution(data),
-                      const SizedBox(height: 16),
-                      _buildTrendCard(data),
-                      const SizedBox(height: 16),
-                      _buildInfoCard(
-                        title: '✅ Problem 2: Delayed Detection SOLVED',
-                        points: [
-                          'Real-time severity tracking (Low/Medium/High)',
-                          'Automatic stress zone identification',
-                          'Daily/Weekly/Monthly trend surveillance',
-                          'Early warning system via severity distribution',
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    title: '3️⃣ Digital Health Adoption & Engagement',
-                    subtitle: 'Citizen-Centric Service Utilization',
-                    children: [
-                      _buildEngagementMetrics(data),
-                      const SizedBox(height: 16),
-                      _buildInfoCard(
-                        title: '✅ Problem 3: Low Digital Services SOLVED',
-                        points: [
-                          'SOS usage metrics tracking',
-                          'Severity check adoption rates',
-                          'Emergency vs Non-emergency ratio analysis',
-                          'Citizen engagement scores',
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    title: '4️⃣ Public Health Infrastructure Monitoring',
-                    subtitle: 'Real-Time Capacity & Resource Tracking',
-                    children: [
-                      _buildInfrastructureStatus(data),
-                      const SizedBox(height: 16),
-                      _buildResourceAllocation(data),
-                      const SizedBox(height: 16),
-                      _buildInfoCard(
-                        title: '✅ Problem 4: Infrastructure Inefficiency SOLVED',
-                        points: [
-                          'Real-time bed availability tracking',
-                          'Oxygen availability per hospital',
-                          'ICU capacity monitoring',
-                          'City-wide resource load balancing',
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    title: '📊 Emergency Response Analytics',
-                    subtitle: 'Ambulance Performance & ETA Tracking',
-                    children: [
-                      _buildEtaAnalytics(data),
-                      const SizedBox(height: 16),
-                      _buildResponseStatus(data),
-                    ],
-                  ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.download),
-                      label: const Text('📥 Download Full Report (Excel)'),
-                      onPressed: () async {
-                        _downloadReport(data);
-                      },
-                    ),
-                  ),
+                  const Text('Government Analytics', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  buildRow('Active Hospitals', '${data['active_hospitals'] ?? 0}'),
+                  buildRow('Ambulance Count', '${data['ambulance_count'] ?? 0}'),
+                  buildRow('Average ETA (min)', '${data['avg_eta'] ?? 0}'),
+                  buildRow('Completed Alerts', '${data['completed_alerts'] ?? 0}'),
+                  buildRow('Digital Adoption (%)', '${data['digital_adoption'] ?? 0}'),
+                  buildRow('ICU Beds', '${data['icu_beds'] ?? 0}'),
+                  buildRow('Oxygen-ready Hospitals', '${data['oxygen_hospitals'] ?? 0}'),
+                  buildRow('Registered Citizens', '${data['registered_citizens'] ?? 0}'),
+                  buildNested('ETA Statistics', Map<String, dynamic>.from(data['eta_statistics'] ?? {})),
+                  buildNested('Severity Distribution', Map<String, dynamic>.from(data['severity_distribution'] ?? {})),
+                  buildNested('Status Distribution', Map<String, dynamic>.from(data['status_distribution'] ?? {})),
+                  buildRow('Total Alerts', '${data['total_alerts'] ?? 0}'),
+                  buildRow('Total Beds', '${data['total_beds'] ?? 0}'),
+                  buildRow('Total Citizens', '${data['total_citizens'] ?? 0}'),
                 ],
               ),
             ),
@@ -421,6 +339,24 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
 
   Widget _buildEngagementMetrics(Map<String, dynamic> data) {
     final avgEta = data['avg_eta'] ?? 0;
+    // Build dynamic values from API data; avoid hard-coded placeholders
+    final totalAlerts = (data['total_alerts'] ?? 0).toString();
+    final totalCitizens = (data['total_citizens'] ?? 0).toString();
+    final avgEtaStr = (avgEta ?? 0).toString();
+
+    String digitalAdoptionStr = 'N/A';
+    if (data.containsKey('digital_adoption') && data['digital_adoption'] != null) {
+      digitalAdoptionStr = '${data['digital_adoption']}%';
+    } else if (data.containsKey('registered_citizens') && data['registered_citizens'] != null && (data['total_citizens'] ?? 0) is num && (data['total_citizens'] as num) > 0) {
+      try {
+        final reg = (data['registered_citizens'] as num).toDouble();
+        final total = (data['total_citizens'] as num).toDouble();
+        digitalAdoptionStr = '${((reg / total) * 100).toStringAsFixed(1)}%';
+      } catch (_) {
+        digitalAdoptionStr = 'N/A';
+      }
+    }
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -430,10 +366,10 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _MetricRow('Total SOS Calls', '${data['total_alerts'] ?? 0}', '📞'),
-          _MetricRow('Active Citizens', '${data['total_citizens'] ?? 0}', '🏥'),
-          _MetricRow('Avg Response Time', '$avgEta min', '⏱️'),
-          _MetricRow('Digital Adoption', '${((data['total_citizens'] ?? 0) > 0 ? '100' : '0')}%', '📱'),
+          _MetricRow('Total SOS Calls', totalAlerts, '📞'),
+          _MetricRow('Active Citizens', totalCitizens, '🏥'),
+          _MetricRow('Avg Response Time', '$avgEtaStr min', '⏱️'),
+          _MetricRow('Digital Adoption', digitalAdoptionStr, '📱'),
         ],
       ),
     );
