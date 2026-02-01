@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 import 'login.dart';
 import 'citizen_profile_edit.dart';
 
@@ -47,10 +48,11 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Health Analytics Dashboard',
+        title: Text(
+          loc.health_analytics,
           style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
         ),
         backgroundColor: AppColors.primary,
@@ -58,7 +60,7 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_outlined),
-            tooltip: "Refresh Data",
+            tooltip: loc.refresh_data,
             onPressed: () {
               setState(() {
                 _analyticsFuture = ApiService.getGovernmentAnalytics();
@@ -97,7 +99,7 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Failed to load analytics',
+                    '',
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
@@ -113,7 +115,7 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
                         _analyticsFuture = ApiService.getGovernmentAnalytics();
                       });
                     },
-                    child: const Text('Retry'),
+                    child: Text(loc.retry),
                   ),
                 ],
               ),
@@ -121,7 +123,7 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
           }
 
           if (!snapshot.hasData) {
-            return const Center(child: Text('No data available'));
+            return Center(child: Text(loc.no_data));
           }
 
           final data = snapshot.data!;
@@ -168,22 +170,22 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Government Analytics', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text('', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
-                  buildRow('Active Hospitals', '${data['active_hospitals'] ?? 0}'),
-                  buildRow('Ambulance Count', '${data['ambulance_count'] ?? 0}'),
-                  buildRow('Average ETA (min)', '${data['avg_eta'] ?? 0}'),
-                  buildRow('Completed Alerts', '${data['completed_alerts'] ?? 0}'),
-                  buildRow('Digital Adoption (%)', '${data['digital_adoption'] ?? 0}'),
-                  buildRow('ICU Beds', '${data['icu_beds'] ?? 0}'),
-                  buildRow('Oxygen-ready Hospitals', '${data['oxygen_hospitals'] ?? 0}'),
-                  buildRow('Registered Citizens', '${data['registered_citizens'] ?? 0}'),
+                  buildRow(loc.active_hospitals, '${data['active_hospitals'] ?? 0}'),
+                  buildRow(loc.ambulance_count, '${data['ambulance_count'] ?? 0}'),
+                  buildRow(loc.avg_eta, '${data['avg_eta'] ?? 0}'),
+                  buildRow(loc.completed_alerts, '${data['completed_alerts'] ?? 0}'),
+                  buildRow(loc.digital_adoption, '${data['digital_adoption'] ?? 0}'),
+                  buildRow(loc.icu_beds, '${data['icu_beds'] ?? 0}'),
+                  buildRow(loc.oxygen_hospitals, '${data['oxygen_hospitals'] ?? 0}'),
+                  buildRow(loc.registered_citizens, '${data['registered_citizens'] ?? 0}'),
                   buildNested('ETA Statistics', Map<String, dynamic>.from(data['eta_statistics'] ?? {})),
                   buildNested('Severity Distribution', Map<String, dynamic>.from(data['severity_distribution'] ?? {})),
                   buildNested('Status Distribution', Map<String, dynamic>.from(data['status_distribution'] ?? {})),
-                  buildRow('Total Alerts', '${data['total_alerts'] ?? 0}'),
-                  buildRow('Total Beds', '${data['total_beds'] ?? 0}'),
-                  buildRow('Total Citizens', '${data['total_citizens'] ?? 0}'),
+                  buildRow(loc.total_alerts, '${data['total_alerts'] ?? 0}'),
+                  buildRow(loc.total_beds, '${data['total_beds'] ?? 0}'),
+                  buildRow(loc.total_citizens, '${data['total_citizens'] ?? 0}'),
                 ],
               ),
             ),

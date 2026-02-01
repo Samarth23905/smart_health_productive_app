@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
+import '../gen/l10n/app_localizations.dart';
 import 'login.dart';
 import 'citizen_profile_edit.dart';
 import 'symptoms_form.dart';
@@ -15,11 +16,12 @@ class CitizenDashboard extends StatefulWidget {
 class _CitizenDashboardState extends State<CitizenDashboard> {
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Smart Health",
-          style: TextStyle(
+        title: Text(
+          loc.smart_health,
+          style: const TextStyle(
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
           ),
@@ -30,7 +32,7 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
         actions: [
           IconButton(
             icon: const Icon(Icons.person_outline, color: Colors.white),
-            tooltip: "Edit Profile",
+            tooltip: loc.edit_profile,
             onPressed: () {
               Navigator.push(
                 context,
@@ -40,11 +42,11 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
           ),
           IconButton(
             icon: const Icon(Icons.logout_outlined, color: Colors.white),
-            tooltip: "Logout",
+            tooltip: loc.logout,
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (_) => LoginPage()),
+                MaterialPageRoute(builder: (_) => const LoginPage()),
                 (route) => false,
               );
             },
@@ -74,7 +76,7 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Welcome Back",
+                      loc.welcome_back,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: const Color(0xFF0D47A1),
@@ -83,7 +85,7 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Your health is our priority. Quick access to healthcare services.",
+                      loc.health_priority,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[700],
                         height: 1.5,
@@ -94,12 +96,12 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
               ),
 
               // ========== DIRECT SOS - EMERGENCY ==========
-              _buildEmergencyCard(context),
+              _buildEmergencyCard(context, loc),
               const SizedBox(height: 32),
 
               // QUICK ACTIONS HEADER
               Text(
-                "Healthcare Services",
+                loc.healthcare_services,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: const Color(0xFF1A237E),
@@ -111,8 +113,8 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
               _buildDashboardCard(
                 context,
                 icon: Icons.medical_services_outlined,
-                title: "Symptom Checker",
-                description: "Get instant health assessment",
+                title: loc.symptom_checker,
+                description: loc.instant_assessment,
                 color: const Color(0xFF1976D2),
                 onTap: () => _checkSymptoms(context),
               ),
@@ -122,10 +124,10 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
               _buildDashboardCard(
                 context,
                 icon: Icons.local_hospital_outlined,
-                title: "Find Hospital",
-                description: "Locate nearest medical facility",
+                title: loc.find_hospital,
+                description: loc.locate_facility,
                 color: const Color(0xFF00897B),
-                onTap: () => _showAboutApp(context),
+                onTap: () => _showAboutApp(context, loc),
               ),
               const SizedBox(height: 14),
 
@@ -133,10 +135,10 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
               _buildDashboardCard(
                 context,
                 icon: Icons.favorite_outline,
-                title: "Health Records",
-                description: "View your medical history",
+                title: loc.health_records,
+                description: loc.medical_history,
                 color: const Color(0xFFD32F2F),
-                onTap: () => _showAboutApp(context),
+                onTap: () => _showAboutApp(context, loc),
               ),
               const SizedBox(height: 14),
 
@@ -144,10 +146,10 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
               _buildDashboardCard(
                 context,
                 icon: Icons.info_outline,
-                title: "About Smart Health",
-                description: "Learn more about our platform",
+                title: loc.about_app,
+                description: loc.learn_more,
                 color: const Color(0xFF5E35B1),
-                onTap: () => _showAboutApp(context),
+                onTap: () => _showAboutApp(context, loc),
               ),
               const SizedBox(height: 40),
             ],
@@ -157,16 +159,16 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
     );
   }
 
-  Widget _buildEmergencyCard(BuildContext context) {
+  Widget _buildEmergencyCard(BuildContext context, AppLocalizations loc) {
     return GestureDetector(
-      onTap: () => _directSOS(context),
+      onTap: () => _directSOS(context, loc),
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [
-              const Color(0xFFD32F2F),
-              const Color(0xFFB71C1C),
+              Color(0xFFD32F2F),
+              Color(0xFFB71C1C),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -200,7 +202,7 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Emergency SOS",
+                    loc.emergency_sos,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -208,9 +210,9 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    "Tap to dispatch ambulance immediately",
-                    style: TextStyle(
+                  Text(
+                    loc.dispatch_ambulance,
+                    style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -305,22 +307,22 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
     );
   }
 
-  void _directSOS(BuildContext context) async {
+  void _directSOS(BuildContext context, AppLocalizations loc) async {
     try {
       showDialog(
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text(
-            "🚨 Emergency SOS",
-            style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFFD32F2F)),
+          title: Text(
+            "🚨 ${loc.emergency_sos}",
+            style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFFD32F2F)),
           ),
-          content: const Text("Dispatching ambulance to your location..."),
+          content: Text("${loc.loading} ${loc.dispatch_ambulance}..."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
+              child: Text(loc.cancel),
             ),
           ],
         ),
@@ -332,7 +334,7 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
       if (alertId != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text("✓ Emergency alert sent! Ambulance en route."),
+            content: Text("✓ ${loc.ambulance_dispatch}"),
             backgroundColor: const Color(0xFF00897B),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -350,7 +352,7 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text("✗ Failed to send emergency alert"),
+            content: Text("✗ ${loc.dispatch_failed}"),
             backgroundColor: const Color(0xFFD32F2F),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -361,7 +363,7 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Error: $e"),
+          content: Text("${loc.error}: $e"),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
@@ -376,51 +378,54 @@ class _CitizenDashboardState extends State<CitizenDashboard> {
     );
   }
 
-  void _showAboutApp(BuildContext context) {
+  void _showAboutApp(BuildContext context, AppLocalizations loc) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text(
-          "About Smart Health",
-          style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF0D47A1)),
+        title: Text(
+          loc.about_app,
+          style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF0D47A1)),
         ),
-        content: const SingleChildScrollView(
+        content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 "Digital Health Surveillance Platform",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: Color(0xFF1A237E)),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1A237E),
+                ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
-                "Services:",
-                style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF0D47A1)),
+                "${loc.healthcare_services}:",
+                style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF0D47A1)),
               ),
-              SizedBox(height: 10),
-              Text("🚨 Emergency SOS - Immediate ambulance dispatch"),
-              Text("🩺 Symptom Checker - AI-powered health assessment"),
-              Text("🏥 Hospital Locator - Find nearby facilities"),
-              Text("📋 Health Records - Complete medical history"),
-              SizedBox(height: 16),
+              const SizedBox(height: 10),
+              Text("🚨 ${loc.emergency_sos} - ${loc.dispatch_ambulance}"),
+              Text("🩺 ${loc.symptom_checker} - AI-powered health assessment"),
+              Text("🏥 ${loc.find_hospital} - ${loc.locate_facility}"),
+              Text("📋 ${loc.health_records} - ${loc.medical_history}"),
+              const SizedBox(height: 16),
               Text(
-                "Getting Started:",
-                style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF0D47A1)),
+                "${loc.learn_more}:",
+                style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF0D47A1)),
               ),
-              SizedBox(height: 10),
-              Text("1. Tap Emergency SOS during medical emergencies"),
-              Text("2. Use Symptom Checker for health insights"),
-              Text("3. Locate hospitals and book appointments"),
-              Text("4. Keep your health records updated"),
+              const SizedBox(height: 10),
+              Text("1. ${loc.dispatch_ambulance} ${loc.emergency_sos}"),
+              Text("2. ${loc.symptom_checker} ${loc.instant_assessment}"),
+              Text("3. ${loc.find_hospital} and book appointments"),
+              Text("4. ${loc.health_records} ${loc.medical_history}"),
             ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Close"),
+            child: Text(loc.cancel),
           ),
         ],
       ),

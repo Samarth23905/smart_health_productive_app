@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 import 'hospitals_list.dart';
 
 class SymptomsFormPage extends StatefulWidget {
@@ -11,100 +12,102 @@ class SymptomsFormPage extends StatefulWidget {
 }
 
 class _SymptomsFormPageState extends State<SymptomsFormPage> {
-  final Map<String, List<String>> symptomsBySystem = {
-    "❤️ Heart (Cardiovascular System)": [
-      "Chest pain or pressure",
-      "Feeling your heart beating fast or irregularly",
-      "Getting breathless easily",
-      "Trouble breathing when lying flat",
-      "Waking up at night feeling breathless",
-      "Fainting or feeling like you may faint",
-      "Swelling of feet or ankles",
-      "Bluish lips or fingers",
-      "Feeling very tired",
-      "Leg pain while walking",
-    ],
-    "🧠 Brain & Nerves (Nervous System)": [
-      "Headache",
-      "Feeling dizzy or spinning",
-      "Blacking out",
-      "Fits / seizures",
-      "Weakness in arms or legs",
-      "Numbness or 'pins and needles' feeling",
-      "Trouble speaking",
-      "Blurred or double vision",
-      "Memory problems or confusion",
-      "Shaking of hands",
-      "Difficulty walking or keeping balance",
-    ],
-    "🫁 Lungs (Respiratory System)": [
-      "Cough",
-      "Mucus/phlegm while coughing",
-      "Blood in cough",
-      "Breathlessness",
-      "Whistling sound while breathing",
-      "Chest pain while breathing deeply",
-      "Noisy breathing",
-      "Fever with cough",
-      "Night sweating",
-      "Weight loss",
-    ],
-    "🍽️ Stomach & Digestion (Digestive System)": [
-      "Poor appetite",
-      "Feeling like vomiting",
-      "Vomiting",
-      "Burning in chest or throat (acidity)",
-      "Stomach pain",
-      "Bloated stomach",
-      "Difficulty swallowing food",
-      "Loose motions",
-      "Constipation",
-      "Blood in stools or black stools",
-      "Yellowing of eyes/skin (jaundice)",
-      "Weight loss",
-    ],
-    "🚽 Urine & Private Parts (Urinary System)": [
-      "Burning while passing urine",
-      "Going to the toilet very often",
-      "Sudden urge to pass urine",
-      "Waking up at night to pass urine",
-      "Blood in urine",
-      "Passing very little urine",
-      "Pain in lower back or sides",
-      "Leakage of urine",
-      "Sexual problems",
-    ],
-    "🦴 Bones & Muscles": [
-      "Joint pain",
-      "Swelling of joints",
-      "Stiffness in the morning",
-      "Muscle pain",
-      "Weak muscles",
-      "Difficulty moving joints",
-      "Bent or changed shape of bones",
-      "Back pain",
-    ],
-    "🩸 Blood-Related Problems": [
-      "Feeling weak or tired",
-      "Pale skin",
-      "Getting bruises easily",
-      "Bleeding from gums",
-      "Getting infections often",
-      "Swollen glands in neck/armpit/groin",
-      "Weight loss",
-    ],
-    "🌡️ General & Hormone-Related": [
-      "Fever",
-      "Sudden weight gain or loss",
-      "Feeling too hot or too cold",
-      "Feeling very thirsty",
-      "Passing urine very often",
-      "Feeling very hungry",
-      "Excess sweating",
-      "Hair fall",
-      "Irregular periods",
-    ],
-  };
+  Map<String, List<String>> _getLocalizedSymptoms(AppLocalizations loc) {
+    return {
+      loc.cardiovascular_system: [
+        loc.chest_pain,
+        loc.heart_beating_fast,
+        loc.breathlessness,
+        loc.trouble_breathing_lying,
+        loc.waking_breathless,
+        loc.fainting,
+        loc.swelling_extremities,
+        loc.bluish_lips,
+        loc.very_tired,
+        loc.leg_pain_walking,
+      ],
+      loc.nervous_system: [
+        loc.headache,
+        loc.dizziness,
+        loc.blacking_out,
+        loc.seizures,
+        loc.weakness_limbs,
+        loc.numbness,
+        loc.trouble_speaking,
+        loc.blurred_vision,
+        loc.memory_problems,
+        loc.shaking_hands,
+        loc.difficulty_walking,
+      ],
+      loc.respiratory_system: [
+        loc.cough,
+        loc.mucus_cough,
+        loc.blood_cough,
+        loc.breathlessness,
+        loc.whistling_breathing,
+        loc.chest_pain_breathing,
+        loc.noisy_breathing,
+        loc.fever_cough,
+        loc.night_sweating,
+        loc.weight_loss,
+      ],
+      loc.digestive_system: [
+        loc.poor_appetite,
+        loc.feeling_nausea,
+        loc.vomiting,
+        loc.burning_chest,
+        loc.stomach_pain,
+        loc.bloated_stomach,
+        loc.difficulty_swallowing,
+        loc.loose_motions,
+        loc.constipation,
+        loc.blood_stools,
+        loc.jaundice,
+        loc.weight_loss,
+      ],
+      loc.urinary_system: [
+        loc.burning_urination,
+        loc.frequent_urination,
+        loc.sudden_urge,
+        loc.nocturia,
+        loc.blood_urine,
+        loc.low_urine,
+        loc.lower_back_pain,
+        loc.urine_leakage,
+        loc.sexual_problems,
+      ],
+      loc.musculoskeletal_system: [
+        loc.joint_pain,
+        loc.joint_swelling,
+        loc.morning_stiffness,
+        loc.muscle_pain,
+        loc.weak_muscles,
+        loc.difficulty_joint_movement,
+        loc.bent_bones,
+        loc.back_pain,
+      ],
+      loc.blood_system: [
+        loc.feeling_weak_tired,
+        loc.pale_skin,
+        loc.easy_bruising,
+        loc.gum_bleeding,
+        loc.frequent_infections,
+        loc.swollen_glands,
+        loc.weight_loss,
+      ],
+      loc.general_hormone_system: [
+        loc.fever,
+        loc.sudden_weight_change,
+        loc.temperature_sensitivity,
+        loc.excessive_thirst,
+        loc.excessive_urination,
+        loc.excessive_hunger,
+        loc.excess_sweating,
+        loc.hair_fall,
+        loc.irregular_periods,
+      ],
+    };
+  }
 
   // Track selected symptoms with their details
   Map<String, SymptomDetail> selectedSymptomsWithDetails = {};
@@ -114,17 +117,22 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
   @override
   void initState() {
     super.initState();
-    // Initialize all categories as collapsed
-    for (var category in symptomsBySystem.keys) {
-      expandedCategories[category] = false;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final symptomsBySystem = _getLocalizedSymptoms(loc);
+    
+    // Initialize categories as collapsed on first build
+    if (expandedCategories.isEmpty) {
+      for (var category in symptomsBySystem.keys) {
+        expandedCategories[category] = false;
+      }
+    }
     return Scaffold(
       appBar: AppBar(
-        title: const Text("🩺 Symptom Check"),
+        title: Text(loc.symptom_check),
         backgroundColor: Colors.orange[700],
         centerTitle: true,
         elevation: 0,
@@ -141,9 +149,9 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.orange[300]!),
               ),
-              child: const Text(
-                "Expand categories and select symptoms with details:",
-                style: TextStyle(
+              child: Text(
+                loc.select_symptoms_with_details,
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.orange,
@@ -174,9 +182,9 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "✅ Selected Symptoms:",
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context)!.selected_symptoms,
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                             color: Colors.green,
@@ -189,7 +197,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            "${selectedSymptomsWithDetails.length} selected",
+                            "${selectedSymptomsWithDetails.length} ${AppLocalizations.of(context)!.selected}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -241,11 +249,11 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                "Duration: ${detail.days} days",
+                                "${AppLocalizations.of(context)!.duration}: ${detail.days} ${AppLocalizations.of(context)!.days}",
                                 style: const TextStyle(fontSize: 11, color: Colors.grey),
                               ),
                               Text(
-                                "Severity: ${detail.severity}",
+                                "${AppLocalizations.of(context)!.severity}: ${detail.severity}",
                                 style: const TextStyle(fontSize: 11, color: Colors.grey),
                               ),
                             ],
@@ -275,7 +283,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                       )
                     : const Icon(Icons.check),
                 label: Text(
-                  _isLoading ? "Submitting..." : "Submit Symptoms",
+                  _isLoading ? AppLocalizations.of(context)!.submitting : AppLocalizations.of(context)!.submit_symptoms,
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -444,9 +452,9 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Days Input
-                const Text(
-                  "How many days?",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                Text(
+                  AppLocalizations.of(context)!.how_many_days,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -456,13 +464,13 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                   ),
                   child: TextField(
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      hintText: "Enter number of days",
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.enter_number_of_days,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       suffix: Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: Text("days"),
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Text(AppLocalizations.of(context)!.days),
                       ),
                     ),
                     onChanged: (value) {
@@ -475,15 +483,15 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                 const SizedBox(height: 20),
 
                 // Severity Radio Buttons
-                const Text(
-                  "Severity Level:",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                Text(
+                  AppLocalizations.of(context)!.severity_level,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                 ),
                 const SizedBox(height: 12),
                 Column(
                   children: [
                     _buildRadioOption(
-                      label: "🟢 Mild",
+                      label: "🟢 ${AppLocalizations.of(context)!.mild}",
                       value: "mild",
                       groupValue: severity,
                       onChanged: (value) {
@@ -494,7 +502,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                     ),
                     const SizedBox(height: 8),
                     _buildRadioOption(
-                      label: "🟡 Moderate",
+                      label: "🟡 ${AppLocalizations.of(context)!.moderate}",
                       value: "moderate",
                       groupValue: severity,
                       onChanged: (value) {
@@ -505,7 +513,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                     ),
                     const SizedBox(height: 8),
                     _buildRadioOption(
-                      label: "🔴 Severe",
+                      label: "🔴 ${AppLocalizations.of(context)!.severe}",
                       value: "severe",
                       groupValue: severity,
                       onChanged: (value) {
@@ -522,7 +530,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -537,7 +545,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
               ),
-              child: const Text("Add Symptom"),
+              child: Text(AppLocalizations.of(context)!.add_symptom),
             ),
           ],
         ),
@@ -608,10 +616,10 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
 
       if (result) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("✅ Symptoms submitted successfully!"),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.symptoms_submitted_successfully),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
 
@@ -630,7 +638,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("❌ Error: $e"),
+          content: Text("${AppLocalizations.of(context)!.error_message}$e"),
           backgroundColor: Colors.red,
         ),
       );

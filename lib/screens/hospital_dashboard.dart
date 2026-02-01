@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 import 'login.dart';
 import 'hospital_profile_edit.dart';
 
@@ -21,7 +22,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
     super.initState();
     _casesFuture = ApiService.getHospitalCases();
     // Auto-refresh every 5 seconds
-    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       if (mounted) {
         setState(() {
           _casesFuture = ApiService.getHospitalCases();
@@ -65,10 +66,11 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Hospital Operations",
+        title: Text(
+          loc.hospital_operations,
           style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
         ),
         backgroundColor: AppColors.primary,
@@ -76,7 +78,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
-            tooltip: "Edit Hospital Profile",
+            tooltip: loc.edit_hospital_profile,
             onPressed: () {
               Navigator.push(
                 context,
@@ -118,7 +120,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                     Icon(Icons.error_outline, size: 48, color: Theme.of(context).colorScheme.error),
                     const SizedBox(height: 16),
                     Text(
-                      "Error loading cases",
+                      loc.error,
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 8),
@@ -149,14 +151,14 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "No Patients Yet",
+                      loc.no_patients,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Awaiting incoming ambulance alerts",
+                      loc.awaiting_ambulance,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),

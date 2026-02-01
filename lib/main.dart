@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'gen/l10n/app_localizations.dart';
+import 'providers/language_provider.dart';
 import 'screens/login.dart';
 
-void main() {
-  runApp(const SmartHealthApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final langProvider = LanguageProvider();
+  await langProvider.init();
+  runApp(
+    ChangeNotifierProvider<LanguageProvider>.value(
+      value: langProvider,
+      child: const SmartHealthApp(),
+    ),
+  );
 }
 
 class SmartHealthApp extends StatelessWidget {
@@ -10,9 +22,18 @@ class SmartHealthApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Smart Health',
+      locale: languageProvider.locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(

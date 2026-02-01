@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 import 'ambulance_tracking.dart';
 import 'login.dart';
 
@@ -21,7 +22,7 @@ class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
     super.initState();
     _casesFuture = ApiService.getAmbulanceCases();
     // Auto-refresh every 5 seconds
-    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       if (mounted) {
         setState(() {
           _casesFuture = ApiService.getAmbulanceCases();
@@ -46,10 +47,11 @@ class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Active Alerts",
+        title: Text(
+          loc.active_alerts,
           style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
         ),
         backgroundColor: AppColors.primary,
@@ -100,14 +102,14 @@ class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "No Active Alerts",
+                      loc.no_active_alerts,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Waiting for emergency dispatch",
+                      loc.waiting_dispatch,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -234,7 +236,7 @@ class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
                             );
                           },
                           icon: const Icon(Icons.navigation_outlined, size: 16),
-                          label: const Text("Navigate"),
+                          label: Text(loc.navigate),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,

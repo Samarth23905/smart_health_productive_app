@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
+import '../gen/l10n/app_localizations.dart';
 import 'citizen_profile_edit.dart';
 
 class CitizenProfileScreen extends StatefulWidget {
@@ -83,16 +84,17 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('My Profile')),
+        appBar: AppBar(title: Text(loc.my_profile)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile'),
+        title: Text(loc.my_profile),
         actions: [
           IconButton(icon: const Icon(Icons.edit), onPressed: _openEdit),
         ],
@@ -147,12 +149,12 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    _infoRow('Full name', name),
-                    _infoRow('Email', email),
-                    _infoRow('Phone', phone),
-                    _infoRow('Gender', sex),
-                    _infoRow('Latitude', latitude?.toStringAsFixed(6) ?? 'Not set'),
-                    _infoRow('Longitude', longitude?.toStringAsFixed(6) ?? 'Not set'),
+                    _infoRow(loc.full_name, name),
+                    _infoRow(loc.email, email),
+                    _infoRow(loc.phone_number, phone),
+                    _infoRow(loc.gender, sex),
+                    _infoRow(loc.latitude, latitude?.toStringAsFixed(6) ?? loc.not_set),
+                    _infoRow(loc.longitude, longitude?.toStringAsFixed(6) ?? loc.not_set),
                   ],
                 ),
               ),
@@ -160,14 +162,14 @@ class _CitizenProfileScreenState extends State<CitizenProfileScreen> {
             const SizedBox(height: 24),
             ElevatedButton.icon(
               icon: const Icon(Icons.edit_location),
-              label: const Text('Edit Profile'),
+              label: Text(loc.edit_profile),
               onPressed: _openEdit,
               style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(48)),
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(
               icon: const Icon(Icons.refresh),
-              label: const Text('Refresh'),
+              label: Text(loc.refresh),
               onPressed: _loadProfile,
               style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[200], foregroundColor: Colors.black),
             ),

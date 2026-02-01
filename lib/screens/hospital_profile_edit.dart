@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 
 class HospitalProfileEditScreen extends StatefulWidget {
   @override
@@ -79,15 +80,16 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text("Edit Hospital Profile")),
+        appBar: AppBar(title: Text(loc.edit_hospital_profile)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Edit Hospital Profile")),
+      appBar: AppBar(title: Text(loc.edit_hospital_profile)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -114,9 +116,9 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    '🏥 Hospital Resources',
-                    style: TextStyle(
+                  Text(
+                    loc.hospital_resources,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.blue,
@@ -126,7 +128,7 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                   TextField(
                     controller: nameCtrl,
                     decoration: InputDecoration(
-                      labelText: "Hospital Name",
+                      labelText: loc.hospital_name,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -137,7 +139,7 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                   TextField(
                     controller: phoneCtrl,
                     decoration: InputDecoration(
-                      labelText: "Phone Number",
+                      labelText: loc.phone_number,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -148,7 +150,7 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                   TextField(
                     controller: emailCtrl,
                     decoration: InputDecoration(
-                      labelText: "Email",
+                      labelText: loc.email,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -158,15 +160,15 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 15),
-                  const Text(
-                    'Bed Capacity',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    loc.bed_capacity,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: bedsCtrl,
                     decoration: InputDecoration(
-                      labelText: "Total Beds",
+                      labelText: loc.total_beds,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -178,7 +180,7 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                   TextField(
                     controller: icuBedsCtrl,
                     decoration: InputDecoration(
-                      labelText: "ICU Beds",
+                      labelText: loc.icu_beds,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -189,9 +191,9 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 15),
-                  const Text(
-                    'Medical Supplies',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    loc.medical_supplies,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 15),
                   Container(
@@ -210,16 +212,16 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "🫁 Oxygen Available",
-                              style: TextStyle(
+                            Text(
+                              loc.oxygen_available,
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              oxygenAvailable ? "✓ Available" : "✗ Not available",
+                              oxygenAvailable ? loc.available : loc.not_available,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: oxygenAvailable ? Colors.green : Colors.red,
@@ -245,13 +247,13 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
-                      children: const [
-                        Icon(Icons.info, color: Colors.orange),
-                        SizedBox(width: 10),
+                      children: [
+                        const Icon(Icons.info, color: Colors.orange),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            "Enable oxygen if available for emergency SOS dispatch",
-                            style: TextStyle(fontSize: 13, color: Colors.orange),
+                            loc.oxygen_info_message,
+                            style: const TextStyle(fontSize: 13, color: Colors.orange),
                           ),
                         ),
                       ],
@@ -273,9 +275,9 @@ class _HospitalProfileEditScreenState extends State<HospitalProfileEditScreen> {
                       width: 20,
                       child: CircularProgressIndicator(color: Colors.white),
                     )
-                  : const Text(
-                      "💾 Save Changes",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                  : Text(
+                      loc.save_changes,
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
             ),
           ],

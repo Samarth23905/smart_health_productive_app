@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:math';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 
 class HospitalsList extends StatefulWidget {
   const HospitalsList({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class _HospitalsListState extends State<HospitalsList> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Location error: $e")),
+          SnackBar(content: Text("${AppLocalizations.of(context)!.location_error}$e")),
         );
       }
     }
@@ -98,9 +99,10 @@ class _HospitalsListState extends State<HospitalsList> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("🏥 Nearby Hospitals"),
+        title: Text(loc.nearby_hospitals),
         backgroundColor: Colors.green[700],
         centerTitle: true,
       ),
@@ -118,7 +120,7 @@ class _HospitalsListState extends State<HospitalsList> {
                 children: [
                   const Icon(Icons.error_outline, size: 60, color: Colors.red),
                   const SizedBox(height: 16),
-                  Text("Error: ${snapshot.error}"),
+                  Text("${loc.error_loading}${snapshot.error}"),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
@@ -126,7 +128,7 @@ class _HospitalsListState extends State<HospitalsList> {
                         _hospitalsFuture = _loadUserLocationAndFetchHospitals();
                       });
                     },
-                    child: const Text("Retry"),
+                    child: Text(loc.retry),
                   ),
                 ],
               ),
@@ -134,7 +136,7 @@ class _HospitalsListState extends State<HospitalsList> {
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No hospitals found"));
+            return Center(child: Text(loc.no_hospitals_found_message));
           }
 
           final hospitals = snapshot.data!;
@@ -153,6 +155,7 @@ class _HospitalsListState extends State<HospitalsList> {
   }
 
   Widget _buildHospitalCard(Map<String, dynamic> hospital) {
+    final loc = AppLocalizations.of(context)!;
     final distance = hospital['distance'] as double;
     final distanceText = "${distance.toStringAsFixed(1)} km";
 
@@ -210,14 +213,14 @@ class _HospitalsListState extends State<HospitalsList> {
                 Icon(Icons.bed, size: 16, color: Colors.grey[600]),
                 const SizedBox(width: 8),
                 Text(
-                  "Beds: ${hospital['beds_available'] ?? 0}",
+                  "${loc.beds_label}${hospital['beds_available'] ?? 0}",
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
                 const SizedBox(width: 16),
                 Icon(Icons.opacity, size: 16, color: Colors.grey[600]),
                 const SizedBox(width: 8),
                 Text(
-                  "Oxygen: ${hospital['oxygen_available'] == true ? 'Yes' : 'No'}",
+                  "${loc.oxygen_label}${hospital['oxygen_available'] == true ? loc.oxygen_yes : loc.oxygen_no}",
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
               ],
@@ -231,7 +234,7 @@ class _HospitalsListState extends State<HospitalsList> {
                   hospital['longitude'] as double,
                 ),
                 icon: const Icon(Icons.navigation),
-                label: const Text("📍 Navigate"),
+                label: Text(loc.navigate_button),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,

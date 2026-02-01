@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 
 class AmbulanceTracking extends StatefulWidget {
   final int alertId;
@@ -26,7 +27,7 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
     super.initState();
     _fetchInitialStatus();
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
+    _timer = Timer.periodic(const Duration(milliseconds: 100), (_) async {
       await _fetchStatus();
     });
   }
@@ -51,7 +52,7 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Error: Unable to fetch ambulance status")),
+            SnackBar(content: Text(AppLocalizations.of(context)!.error_unable_fetch_ambulance)),
           );
           setState(() => _isLoading = false);
         }
@@ -60,7 +61,7 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
       print("Error fetching initial status: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e")),
+          SnackBar(content: Text("${AppLocalizations.of(context)!.error}: $e")),
         );
         setState(() => _isLoading = false);
       }
@@ -101,15 +102,16 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
   }
 
   String getStatusLabel() {
+    final loc = AppLocalizations.of(context)!;
     switch (status) {
       case "dispatched":
-        return "Ambulance Dispatched";
+        return loc.ambulance_dispatched;
       case "on_the_way":
-        return "On the Way";
+        return loc.on_the_way;
       case "arrived":
-        return "Arrived at Location";
+        return loc.arrived_at_location;
       case "delivered":
-        return "Delivered";
+        return loc.delivered;
       default:
         return status;
     }
@@ -129,20 +131,21 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
   }
 
   Future<void> _markAsArrived() async {
+    final loc = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('Confirm Arrival'),
-        content: const Text('Mark ambulance as arrived at hospital?'),
+        title: Text(loc.confirm_arrival),
+        content: Text(loc.mark_ambulance_as_arrived),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, false),
-            child: const Text('Cancel'),
+            child: Text(loc.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('Confirm'),
+            child: Text(loc.confirm),
           ),
         ],
       ),
@@ -182,10 +185,10 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
         // Show success message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Patient delivered successfully!'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.patient_delivered_successfully),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           );
         }
@@ -199,8 +202,8 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to complete delivery'),
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.failed_complete_delivery),
               backgroundColor: Colors.red,
             ),
           );
@@ -240,11 +243,12 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
   }
 
   Widget _buildTrackingTimeline() {
+    final loc = AppLocalizations.of(context)!;
     final steps = [
-      'Dispatched',
-      'On the Way',
-      'Arrived',
-      'Delivered'
+      loc.dispatched,
+      loc.on_the_way,
+      loc.arrived,
+      loc.delivered
     ];
     
     final currentStep = _getStepIndex();
@@ -307,9 +311,9 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
                           ),
                         ),
                         if (isCurrent)
-                          const Text(
-                            'In progress',
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)!.in_progress,
+                            style: const TextStyle(
                               fontSize: 12,
                               color: Colors.blue,
                               fontStyle: FontStyle.italic,
@@ -339,12 +343,13 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Ambulance Tracking',
-            style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+          title: Text(
+            loc.ambulance_tracking,
+            style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
           ),
           backgroundColor: AppColors.primary,
           elevation: 0,
@@ -361,9 +366,9 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Ambulance Tracking',
-          style: TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+        title: Text(
+          loc.ambulance_tracking,
+          style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 0.5),
         ),
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -388,16 +393,16 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Hospital Delivery',
-                      style: TextStyle(
+                    Text(
+                      loc.hospital_delivery,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Patient delivery in progress',
+                      loc.patient_delivery_in_progress,
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                   ],
@@ -417,7 +422,7 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Tracking Timeline',
                       style: TextStyle(
                         fontSize: 16,

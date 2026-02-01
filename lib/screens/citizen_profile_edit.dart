@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
+import '../gen/l10n/app_localizations.dart';
 
 class CitizenProfileEditScreen extends StatefulWidget {
   @override
@@ -46,8 +47,9 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
 
   void saveProfile() async {
     if (nameCtrl.text.isEmpty || emailCtrl.text.isEmpty) {
+      final loc = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields')),
+        SnackBar(content: Text(loc.fill_required_fields)),
       );
       return;
     }
@@ -80,15 +82,16 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(title: const Text("Edit Profile")),
+        appBar: AppBar(title: Text(loc.edit_profile)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Edit Profile")),
+      appBar: AppBar(title: Text(loc.edit_profile)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -115,9 +118,9 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    '👤 Personal Information',
-                    style: TextStyle(
+                  Text(
+                    loc.personal_information,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.blue,
@@ -127,7 +130,7 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
                   TextField(
                     controller: nameCtrl,
                     decoration: InputDecoration(
-                      labelText: "Full Name",
+                      labelText: loc.full_name,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -138,7 +141,7 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
                   TextField(
                     controller: emailCtrl,
                     decoration: InputDecoration(
-                      labelText: "Email",
+                      labelText: loc.email,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -150,7 +153,7 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
                   TextField(
                     controller: phoneCtrl,
                     decoration: InputDecoration(
-                      labelText: "Phone Number",
+                      labelText: loc.phone_number,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -161,9 +164,9 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 15),
-                  const Text(
-                    'Gender',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    loc.gender,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -176,10 +179,10 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
                       value: sex,
                       isExpanded: true,
                       underline: Container(),
-                      items: const [
-                        DropdownMenuItem(value: "Male", child: Text("Male")),
-                        DropdownMenuItem(value: "Female", child: Text("Female")),
-                        DropdownMenuItem(value: "Other", child: Text("Other")),
+                      items: [
+                        DropdownMenuItem(value: "Male", child: Text(loc.male)),
+                        DropdownMenuItem(value: "Female", child: Text(loc.female)),
+                        DropdownMenuItem(value: "Other", child: Text(loc.other)),
                       ],
                       onChanged: (v) => setState(() => sex = v!),
                     ),
@@ -200,9 +203,9 @@ class _CitizenProfileEditScreenState extends State<CitizenProfileEditScreen> {
                       width: 20,
                       child: CircularProgressIndicator(color: Colors.white),
                     )
-                  : const Text(
-                      "💾 Save Changes",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                  : Text(
+                      loc.save_changes,
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
             ),
           ],
