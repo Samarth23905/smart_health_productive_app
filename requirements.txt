@@ -1,3 +1,0 @@
-setuptools>=65.0.0
-wheel
--r backend/requirements.txt
