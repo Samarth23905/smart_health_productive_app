@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: smart_health_api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerfile:
+      buildArgs: []
+    buildCommand: []
+    startCommand: []
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
