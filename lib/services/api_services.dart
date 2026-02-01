@@ -6,8 +6,7 @@ import 'package:open_file/open_file.dart';
 import 'secure_storage.dart';
 
 class ApiService {
-  // Use 10.0.2.2 for Android emulator (host machine), 127.0.0.1 for iOS simulator
-  static const baseUrl = "http://127.0.0.1:5000";
+  static const baseUrl = "https://smart-health-productive-app.onrender.com";
   static String? token;
 
   // Get token from secure storage or static variable
