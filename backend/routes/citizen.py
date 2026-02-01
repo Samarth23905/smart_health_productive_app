@@ -148,13 +148,31 @@ def ambulance_status(alert_id):
         citizen_lat = citizen.latitude if citizen else 0.0
         citizen_lon = citizen.longitude if citizen else 0.0
 
+        # Get ambulance location (ambulance's current position)
+        ambulance_lat = alert.ambulance_latitude if alert.ambulance_latitude is not None else None
+        ambulance_lon = alert.ambulance_longitude if alert.ambulance_longitude is not None else None
+
+        # If ambulance location and citizen location are available, check proximity
+        try:
+            if ambulance_lat is not None and ambulance_lon is not None and citizen and citizen.latitude and citizen.longitude:
+                dist_km = haversine(float(ambulance_lat), float(ambulance_lon), float(citizen_lat), float(citizen_lon))
+                print(f"[ProximityCheck] Alert {alert.id}: distance_km={dist_km}")
+                # If within 0.05 km (~50 meters), mark as arrived
+                if dist_km <= 0.05 and alert.status not in ("arrived", "delivered"):
+                    alert.status = "arrived"
+                    db.session.commit()
+        except Exception as e:
+            print(f"[ProximityCheck Error] {e}")
+
         return jsonify({
             "alert_id": alert.id,
             "eta_minutes": remaining_eta,
             "status": alert.status,
             "created_at": alert.created_at.isoformat(),
             "citizen_latitude": citizen_lat,
-            "citizen_longitude": citizen_lon
+            "citizen_longitude": citizen_lon,
+            "ambulance_latitude": ambulance_lat if ambulance_lat is not None else 0.0,
+            "ambulance_longitude": ambulance_lon if ambulance_lon is not None else 0.0
         }), 200
     except Exception as e:
         return jsonify(error=str(e)), 500

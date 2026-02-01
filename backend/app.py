@@ -28,7 +28,8 @@ if db_uri:
 else:
     logger.error("❌ DATABASE_URL not configured! Check environment variables.")
 
-CORS(app)
+# Enable CORS for all routes and allow credentials (so browser preflight requests succeed)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 db.init_app(app)
 JWTManager(app)
 

@@ -48,6 +48,8 @@ class AmbulanceAlert(db.Model):
     hospital_id = db.Column(db.Integer, db.ForeignKey('hospitals.id'), nullable=False)
     status = db.Column(db.String(30), default='dispatched', nullable=False)  # dispatched, on_the_way, arrived, picked_up, en_route_to_hospital, delivered
     eta_minutes = db.Column(db.Integer)
+    ambulance_latitude = db.Column(db.Float, nullable=True)  # Ambulance's current location
+    ambulance_longitude = db.Column(db.Float, nullable=True)  # Ambulance's current location
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     delivered_at = db.Column(db.DateTime, nullable=True)

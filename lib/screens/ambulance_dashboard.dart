@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
-import 'ambulance_tracking.dart';
+import 'citizen_tracking.dart';
 import 'login.dart';
 
 class AmbulanceDashboard extends StatefulWidget {
@@ -15,14 +16,20 @@ class AmbulanceDashboard extends StatefulWidget {
 
 class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
   Timer? _refreshTimer;
+  Timer? _locationTimer;
   late Future<List> _casesFuture;
+  double _currentLat = 0.0;
+  double _currentLng = 0.0;
+  bool _locationEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _casesFuture = ApiService.getAmbulanceCases();
-    // Auto-refresh every 5 seconds
-    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+    _startLocationTracking();
+    
+    // Auto-refresh cases every 5 seconds
+    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (mounted) {
         setState(() {
           _casesFuture = ApiService.getAmbulanceCases();
@@ -31,9 +38,55 @@ class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
     });
   }
 
+  Future<void> _startLocationTracking() async {
+    try {
+      // Request location permission
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.whileInUse || 
+          permission == LocationPermission.always) {
+        setState(() => _locationEnabled = true);
+        
+        // Fetch location every 1 second (throttle to avoid resource exhaustion)
+        _locationTimer = Timer.periodic(const Duration(seconds: 1), (_) async {
+          await _fetchAndUpdateLocation();
+        });
+        
+        // Fetch initial location immediately
+        await _fetchAndUpdateLocation();
+      }
+    } catch (e) {
+      print("Location tracking error: $e");
+    }
+  }
+
+  Future<void> _fetchAndUpdateLocation() async {
+    try {
+      final Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).timeout(const Duration(seconds: 5));
+
+      if (mounted) {
+        setState(() {
+          _currentLat = position.latitude;
+          _currentLng = position.longitude;
+        });
+        
+        // Send location to backend (optional - for tracking purposes)
+        await ApiService.updateAmbulanceLocation(_currentLat, _currentLng);
+      }
+    } catch (e) {
+      print("Location fetch error: $e");
+    }
+  }
+
   @override
   void dispose() {
     _refreshTimer?.cancel();
+    _locationTimer?.cancel();
     super.dispose();
   }
 
@@ -229,7 +282,7 @@ class _AmbulanceDashboardState extends State<AmbulanceDashboard> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => AmbulanceTracking(
+                                builder: (_) => CitizenTracking(
                                   alertId: alertId,
                                 ),
                               ),

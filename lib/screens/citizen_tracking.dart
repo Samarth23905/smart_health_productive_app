@@ -5,15 +5,15 @@ import '../services/api_services.dart';
 import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
 
-class AmbulanceTracking extends StatefulWidget {
+class CitizenTracking extends StatefulWidget {
   final int alertId;
-  const AmbulanceTracking({required this.alertId, Key? key}) : super(key: key);
+  const CitizenTracking({required this.alertId, Key? key}) : super(key: key);
 
   @override
-  State<AmbulanceTracking> createState() => _AmbulanceTrackingState();
+  State<CitizenTracking> createState() => _CitizenTrackingState();
 }
 
-class _AmbulanceTrackingState extends State<AmbulanceTracking> {
+class _CitizenTrackingState extends State<CitizenTracking> {
   Timer? _timer;
   bool _isLoading = true;
   int eta = 0;
@@ -610,9 +610,9 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () => _openMapsApp(ambulanceLat, ambulanceLon),
+                onPressed: () => _openMapsApp(citizenLat, citizenLon),
                 icon: const Icon(Icons.map),
-                label: const Text('Navigate to ambulance location'),
+                label: const Text('Navigate to Citizen'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 12),

@@ -51,8 +51,9 @@ CREATE TABLE severities (
     id SERIAL PRIMARY KEY,
     citizen_id INTEGER NOT NULL REFERENCES citizens(id) ON DELETE CASCADE,
     symptoms TEXT NOT NULL,
-    severity_level VARCHAR(20) NOT NULL CHECK (severity_level IN ('mild', 'moderate', 'severe')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    severity_level VARCHAR(20) NOT NULL CHECK (severity_level IN ('low','mild','moderate','severe','very_severe')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_severities_citizen_id ON severities(citizen_id);
@@ -72,6 +73,8 @@ CREATE TABLE ambulance_alerts (
         'delivered'
     )),
     eta_minutes INTEGER,
+    ambulance_latitude FLOAT,
+    ambulance_longitude FLOAT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	delivered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -81,6 +84,7 @@ CREATE INDEX idx_ambulance_alerts_citizen_id ON ambulance_alerts(citizen_id);
 CREATE INDEX idx_ambulance_alerts_hospital_id ON ambulance_alerts(hospital_id);
 CREATE INDEX idx_ambulance_alerts_status ON ambulance_alerts(status);
 CREATE INDEX idx_ambulance_alerts_created_at ON ambulance_alerts(created_at DESC);
+CREATE INDEX idx_ambulance_alerts_location ON ambulance_alerts(ambulance_latitude, ambulance_longitude);
 
 CREATE TABLE government_analysis (
     id SERIAL PRIMARY KEY,

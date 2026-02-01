@@ -21,7 +21,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
   void initState() {
     super.initState();
     _casesFuture = ApiService.getHospitalCases();
-    // Auto-refresh every 5 seconds
+    // Auto-refresh every 10 seconds
     _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       if (mounted) {
         setState(() {
@@ -77,6 +77,15 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
         elevation: 0,
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: "Refresh",
+            onPressed: () {
+              setState(() {
+                _casesFuture = ApiService.getHospitalCases();
+              });
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.edit_outlined),
             tooltip: loc.edit_hospital_profile,
             onPressed: () {
@@ -124,7 +133,25 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 8),
-                    Text("${snapshot.error}"),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        "${snapshot.error}",
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _casesFuture = ApiService.getHospitalCases();
+                        });
+                      },
+                      child: Text(loc.retry),
+                    ),
                   ],
                 ),
               );

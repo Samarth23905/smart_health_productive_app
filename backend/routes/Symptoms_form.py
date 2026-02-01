@@ -2,8 +2,11 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import Citizen, Severity, db
 from datetime import datetime
+import logging
+import traceback
 
 symptoms_form_bp = Blueprint("symptoms_form", __name__)
+logger = logging.getLogger(__name__)
 
 @symptoms_form_bp.route("/submit", methods=["POST"])
 @jwt_required()
@@ -17,16 +20,20 @@ def submit_symptoms():
     """
     try:
         current_user_id = int(get_jwt_identity())
+        logger.info(f"[SubmitSymptoms] User ID: {current_user_id}")
         
         # Get citizen record
         citizen = Citizen.query.filter_by(user_id=current_user_id).first()
         if not citizen:
+            logger.error(f"[SubmitSymptoms] Citizen record not found for user {current_user_id}")
             return jsonify({"error": "Citizen record not found"}), 404
         
         data = request.get_json()
         symptoms_text = data.get('symptoms', '')
+        logger.info(f"[SubmitSymptoms] Received symptoms text: {symptoms_text[:100]}...")
         
         if not symptoms_text:
+            logger.warning(f"[SubmitSymptoms] Empty symptoms for user {current_user_id}")
             return jsonify({"error": "Symptoms cannot be empty"}), 400
         
         # Parse symptoms string to extract just the symptom names
@@ -38,7 +45,10 @@ def submit_symptoms():
             if symptom_name:
                 symptoms_list.append(symptom_name)
         
+        logger.info(f"[SubmitSymptoms] Parsed symptoms: {symptoms_list}")
+        
         if not symptoms_list:
+            logger.warning(f"[SubmitSymptoms] No valid symptoms after parsing")
             return jsonify({"error": "No valid symptoms provided"}), 400
         
         # Check if citizen already has a severity record today
@@ -83,8 +93,10 @@ def submit_symptoms():
             }), 201
         
     except Exception as e:
+        logger.error(f"[SubmitSymptoms] Error: {str(e)}")
+        traceback.print_exc()
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e), "type": type(e).__name__}), 500
 
 
 @symptoms_form_bp.route("/get/<int:citizen_id>", methods=["GET"])

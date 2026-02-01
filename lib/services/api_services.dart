@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -6,7 +7,7 @@ import 'package:open_file/open_file.dart';
 import 'secure_storage.dart';
 
 class ApiService {
-  static const baseUrl = "https://smart-health-productive-app.onrender.com";
+  static const baseUrl = "http://127.0.0.1:5000";
   static String? token;
 
   // Get token from secure storage or static variable
@@ -131,12 +132,30 @@ class ApiService {
 
   static Future<List<dynamic>> getHospitalCases() async {
     try {
+      final token = await _getToken();
+      if (token == null) {
+        print("GetHospitalCases: No token available");
+        return [];
+      }
+      
       print("GetHospitalCases - Token: $token");
       final res = await http.get(
         Uri.parse("$baseUrl/hospital/cases"),
-        headers: {"Authorization": "Bearer $token"},
-      );
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json"
+        },
+      ).timeout(const Duration(seconds: 30), onTimeout: () {
+        print("GetHospitalCases: Request timeout after 30 seconds");
+        throw TimeoutException("Hospital cases request timed out");
+      });
+      
       print("GetHospitalCases Response: ${res.statusCode} - ${res.body}");
+      
+      if (res.statusCode != 200) {
+        print("GetHospitalCases error: ${res.statusCode} - ${res.body}");
+        return [];
+      }
       
       final data = jsonDecode(res.body);
       if (data is List) {
@@ -235,6 +254,14 @@ class ApiService {
   static Future<bool> submitSymptoms(String symptoms) async {
     try {
       final token = await _getToken();
+      if (token == null) {
+        print("SubmitSymptoms: No token available");
+        throw Exception("Authentication token not found");
+      }
+      
+      print("SubmitSymptoms - Token: $token");
+      print("SubmitSymptoms - Symptoms: $symptoms");
+      
       final response = await http.post(
         Uri.parse('$baseUrl/symptoms/submit'),
         headers: {
@@ -243,12 +270,22 @@ class ApiService {
         },
         body: jsonEncode({'symptoms': symptoms}),
       );
+      
+      print("SubmitSymptoms Response: ${response.statusCode} - ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return true;
       }
-      throw Exception('Failed to submit symptoms');
+      
+      // Try to get error message from response
+      try {
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['error'] ?? 'Failed to submit symptoms');
+      } catch (_) {
+        throw Exception('Failed to submit symptoms (${response.statusCode})');
+      }
     } catch (e) {
+      print("SubmitSymptoms error: $e");
       throw Exception('Error: $e');
     }
   }
@@ -361,6 +398,61 @@ class ApiService {
     } catch (e) {
       print("Exception in completeAlert: $e");
       return false;
+    }
+  }
+
+  static Future<bool> updateAmbulanceLocation(double latitude, double longitude) async {
+    try {
+      final authToken = await _getToken();
+      if (authToken == null) {
+        print("Error: No authentication token available");
+        return false;
+      }
+
+      final res = await http.post(
+        Uri.parse("$baseUrl/ambulance/location"),
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode({
+          "latitude": latitude,
+          "longitude": longitude,
+        }),
+      );
+
+      print("UpdateAmbulanceLocation - Status: ${res.statusCode}, Lat: $latitude, Lon: $longitude");
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print("Exception in updateAmbulanceLocation: $e");
+      return false;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getAmbulanceLocation(int alertId) async {
+    try {
+      final authToken = await _getToken();
+      if (authToken == null) {
+        print("Error: No authentication token available");
+        return null;
+      }
+
+      final res = await http.get(
+        Uri.parse("$baseUrl/ambulance/location/$alertId"),
+        headers: {"Authorization": "Bearer $authToken"},
+      );
+
+      if (res.statusCode == 200) {
+        return jsonDecode(res.body);
+      }
+      return null;
+    } catch (e) {
+      print("Exception in getAmbulanceLocation: $e");
+      return null;
     }
   }
 }
