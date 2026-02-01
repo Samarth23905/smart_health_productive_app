@@ -2,6 +2,7 @@ services:
   - type: web
     name: smart_health_api
     runtime: docker
+    rootDir: .
     dockerfilePath: ./Dockerfile
     dockerfile:
       buildArgs: []
