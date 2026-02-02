@@ -63,11 +63,14 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/img/icon.png
 
-flutter icons:
+flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/img/icon.png"
+  image_path: assets/img/icon.png
+
 
 
   # To add assets to your application, add an assets section, like this:
