@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     
     <application
-        android:label="smarth_health_project"
+        android:label="MediAlert"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
