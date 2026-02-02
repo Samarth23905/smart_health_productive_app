@@ -38,6 +38,79 @@ class Hospital(db.Model):
     icu_beds = db.Column(db.Integer)
     oxygen_available = db.Column(db.Boolean, default=True)
     profile_pic = db.Column(db.Text)  # base64 encoded image
+    # Ward resources
+    general_total = db.Column(db.Integer, default=0)
+    general_available = db.Column(db.Integer, default=0)
+    semi_total = db.Column(db.Integer, default=0)
+    semi_available = db.Column(db.Integer, default=0)
+    private_total = db.Column(db.Integer, default=0)
+    private_available = db.Column(db.Integer, default=0)
+    isolation_total = db.Column(db.Integer, default=0)
+    isolation_available = db.Column(db.Integer, default=0)
+
+    # ICU breakdowns
+    micu_total = db.Column(db.Integer, default=0)
+    micu_available = db.Column(db.Integer, default=0)
+    micu_ventilators = db.Column(db.Integer, default=0)
+    micu_monitors = db.Column(db.Integer, default=0)
+    micu_oxygen = db.Column(db.Boolean, default=False)
+
+    sicu_total = db.Column(db.Integer, default=0)
+    sicu_available = db.Column(db.Integer, default=0)
+    sicu_ventilators = db.Column(db.Integer, default=0)
+    sicu_monitors = db.Column(db.Integer, default=0)
+    sicu_oxygen = db.Column(db.Boolean, default=False)
+
+    nicu_total = db.Column(db.Integer, default=0)
+    nicu_available = db.Column(db.Integer, default=0)
+    nicu_ventilators = db.Column(db.Integer, default=0)
+    nicu_monitors = db.Column(db.Integer, default=0)
+    nicu_oxygen = db.Column(db.Boolean, default=False)
+
+    ccu_total = db.Column(db.Integer, default=0)
+    ccu_available = db.Column(db.Integer, default=0)
+    ccu_ventilators = db.Column(db.Integer, default=0)
+    ccu_monitors = db.Column(db.Integer, default=0)
+    ccu_oxygen = db.Column(db.Boolean, default=False)
+
+    picu_total = db.Column(db.Integer, default=0)
+    picu_available = db.Column(db.Integer, default=0)
+    picu_ventilators = db.Column(db.Integer, default=0)
+    picu_monitors = db.Column(db.Integer, default=0)
+    picu_oxygen = db.Column(db.Boolean, default=False)
+
+    # Emergency & life-saving
+    emergency_24x7 = db.Column(db.Boolean, default=False)
+    ambulance_available = db.Column(db.Boolean, default=False)
+    ambulance_count = db.Column(db.Integer, default=0)
+    defibrillator = db.Column(db.Boolean, default=False)
+    central_oxygen = db.Column(db.Boolean, default=False)
+
+    # Diagnostics
+    lab = db.Column(db.Boolean, default=False)
+    xray = db.Column(db.Boolean, default=False)
+    ecg = db.Column(db.Boolean, default=False)
+    ultrasound = db.Column(db.Boolean, default=False)
+    ct_scan = db.Column(db.Boolean, default=False)
+    mri = db.Column(db.Boolean, default=False)
+
+    # Pharmacy & supplies
+    in_house_pharmacy = db.Column(db.Boolean, default=False)
+    pharmacy_24x7 = db.Column(db.Boolean, default=False)
+    oxygen_cylinders = db.Column(db.Integer, default=0)
+    essential_drugs = db.Column(db.Boolean, default=False)
+
+    # Human resources
+    doctors_count = db.Column(db.Integer, default=0)
+    nurses_count = db.Column(db.Integer, default=0)
+    icu_trained_staff = db.Column(db.Boolean, default=False)
+    anesthetist_available = db.Column(db.Boolean, default=False)
+
+    # Support resources
+    blood_bank = db.Column(db.Boolean, default=False)
+    dialysis_unit = db.Column(db.Boolean, default=False)
+    cssd = db.Column(db.Boolean, default=False)
+    mortuary = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

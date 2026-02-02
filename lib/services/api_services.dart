@@ -7,7 +7,7 @@ import 'package:open_file/open_file.dart';
 import 'secure_storage.dart';
 
 class ApiService {
-  static const baseUrl = "https://smart-health-productive-app.onrender.com";
+  static const baseUrl = "http://127.0.0.1:5000";
   static String? token;
 
   // Get token from secure storage or static variable
@@ -82,7 +82,11 @@ class ApiService {
       print("DirectSOS - Token: $authToken");
       final res = await http.post(
         Uri.parse("$baseUrl/citizen/direct-sos"),
-        headers: {"Authorization": "Bearer $authToken"},
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode({}),
       );
       
       print("DirectSOS Response: ${res.statusCode} - ${res.body}");

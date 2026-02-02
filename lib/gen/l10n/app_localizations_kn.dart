@@ -758,4 +758,82 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get navigate_button => '📍 ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿ';
+
+  @override
+  String get ward_general => 'ಜನರಲ್ ವಾರ್ಡ್';
+
+  @override
+  String get ward_semi_private => 'ಸೆಮಿ-ಪ್ರೈವೇಟ್ ವಾರ್ಡ್';
+
+  @override
+  String get ward_private => 'ಪ್ರೈವೇಟ್ ವಾರ್ಡ್';
+
+  @override
+  String get ward_isolation => 'ಐಸೋಲೇಷನ್ ವಾರ್ಡ್';
+
+  @override
+  String get micu => 'MICU';
+
+  @override
+  String get sicu => 'SICU';
+
+  @override
+  String get nicu => 'NICU';
+
+  @override
+  String get ccu => 'CCU';
+
+  @override
+  String get picu => 'PICU';
+
+  @override
+  String get ventilators => 'ವೆಂಟಿಲೇಟರ್ಸ್';
+
+  @override
+  String get monitors => 'ಮಾನಿಟರ್‌ಗಳು';
+
+  @override
+  String get emergency_24x7_label => 'ತುರ್ತು 24x7';
+
+  @override
+  String get defibrillator => 'ಡಿಫಿಬ್ರಿಲೇಟರ್';
+
+  @override
+  String get central_oxygen_label => 'ಕೇಂದ್ರೀಯ ಆಮ್ಲಜನಕ';
+
+  @override
+  String get in_house_pharmacy => 'ಇನ್-ಹೌಸ್ ಫಾರ್ಮಸಿ';
+
+  @override
+  String get pharmacy_24x7 => 'ಫಾರ್ಮಸಿ 24x7';
+
+  @override
+  String get oxygen_cylinders => 'ಆಮ್ಲಜನಕ ಸಿಲಿಂಡರ್‌ಗಳು';
+
+  @override
+  String get essential_drugs => 'ಅವಶ್ಯಕ ಔಷಧಿ';
+
+  @override
+  String get doctors_count => 'ವೈದ್ಯರ ಸಂಖ್ಯೆ';
+
+  @override
+  String get nurses_count => 'ನರ್ಸಸ್ ಸಂಖ್ಯೆ';
+
+  @override
+  String get icu_trained_staff => 'ICU ತರಬೇತಿ ಸಿಬ್ಬಂದಿ';
+
+  @override
+  String get anesthetist_available => 'ಎನಸ್ತೆಥಿಸ್ಟ್ ಲಭ್ಯವಿದೆ';
+
+  @override
+  String get blood_bank => 'ಬ್ಲಡ್ ಬ್ಯಾಂಕ್';
+
+  @override
+  String get dialysis_unit => 'ಡಯಾಲಿಸಿಸ್ ಯುನಿಟ್';
+
+  @override
+  String get cssd => 'CSSD';
+
+  @override
+  String get mortuary => 'ಮೋರ್ಟುವರಿ';
 }

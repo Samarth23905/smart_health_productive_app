@@ -6,6 +6,42 @@ from datetime import datetime
 
 citizen_bp = Blueprint("citizen", __name__)
 
+def _hospital_has_resources(h):
+    """Check if hospital has ALL meaningful resources available"""
+    # Requirement 1: Must have beds (general OR ICU)
+    total_beds = (h.total_beds or 0) + (h.icu_beds or 0)
+    ward_available = sum((getattr(h, x, 0) or 0) for x in ['general_available','semi_available','private_available','isolation_available'])
+    icu_available = sum((getattr(h, x, 0) or 0) for x in ['micu_available','sicu_available','nicu_available','ccu_available','picu_available'])
+    
+    if total_beds <= 0 and ward_available <= 0 and icu_available <= 0:
+        return False
+    
+    # Requirement 2: Must have oxygen (any form)
+    if not (h.oxygen_available or h.central_oxygen or (getattr(h, 'oxygen_cylinders', 0) or 0) > 0):
+        return False
+    
+    # Requirement 3: Must have ambulance
+    if not (h.ambulance_available or (getattr(h, 'ambulance_count', 0) or 0) > 0):
+        return False
+    
+    # Requirement 4: Must have at least some staff
+    doctors = getattr(h, 'doctors_count', 0) or 0
+    nurses = getattr(h, 'nurses_count', 0) or 0
+    if doctors <= 0 and nurses <= 0:
+        return False
+    
+    # Requirement 5: Must have at least one diagnostic facility
+    diagnostics = [h.lab, h.xray, h.ecg, h.ultrasound, h.ct_scan, h.mri]
+    if not any(getattr(h, x, False) for x in ['lab','xray','ecg','ultrasound','ct_scan','mri']):
+        return False
+    
+    # Requirement 6: Must have pharmacy
+    if not (h.in_house_pharmacy or h.pharmacy_24x7 or h.essential_drugs):
+        return False
+    
+    return True
+
+
 @citizen_bp.route("/location", methods=["POST"])
 @jwt_required()
 def update_citizen_location():
@@ -80,6 +116,10 @@ def get_hospitals():
         hospitals = Hospital.query.all()
         response = []
         for h in hospitals:
+            # Skip hospitals with no resources
+            if not _hospital_has_resources(h):
+                continue
+
             user = User.query.get(h.user_id)
             response.append({
                 "id": h.id,
@@ -107,37 +147,78 @@ def direct_sos():
         if not citizen.latitude or not citizen.longitude:
             return jsonify(error="Citizen location not set. Please update your profile with location."), 400
         
-        # Get all hospitals
-        all_hospitals = Hospital.query.all()
-        print(f"[DirectSOS] Total hospitals in DB: {len(all_hospitals)}")
-        for h in all_hospitals:
-            print(f"  - {h.id}: oxygen={h.oxygen_available}, lat={h.latitude}, lon={h.longitude}")
-        
-        hospitals = Hospital.query.filter_by(oxygen_available=True).all()
-        print(f"[DirectSOS] Hospitals with oxygen: {len(hospitals)}")
-        
-        if not hospitals:
-            return jsonify(error="No hospitals available with oxygen. Please enable oxygen at your hospital."), 404
-        
-        # Filter hospitals with valid location data
-        hospitals_with_location = [h for h in hospitals if h.latitude and h.longitude]
-        print(f"[DirectSOS] Hospitals with location: {len(hospitals_with_location)}")
-        
-        if not hospitals_with_location:
-            return jsonify(error="No hospitals have location data set"), 400
-        
-        best, best_eta = None, 999
-        for h in hospitals_with_location:
+        # Accept resource requirements in request JSON
+        data = request.get_json() or {}
+        needs_icu = bool(data.get("needs_icu", False))
+        needs_ventilator = bool(data.get("needs_ventilator", False))
+        needs_oxygen = bool(data.get("needs_oxygen", True))
+        needs_ambulance = bool(data.get("needs_ambulance", False))
+        # diagnostic requirements (optional)
+        needs_lab = bool(data.get("needs_lab", False))
+        needs_ct = bool(data.get("needs_ct", False))
+        needs_mri = bool(data.get("needs_mri", False))
+        max_distance_km = float(data.get("max_distance_km", 50.0))
+
+        # Query hospitals and evaluate per-hospital if they match ALL requested resources
+        candidates = Hospital.query.all()
+        matching = []
+        for h in candidates:
+            # skip hospitals lacking geo or with no resources at all
+            if h.latitude is None or h.longitude is None:
+                continue
+            
+            # skip hospitals with no meaningful resources
+            if not _hospital_has_resources(h):
+                continue
+
+            # basic boolean checks
+            if needs_oxygen and not bool(h.oxygen_available):
+                continue
+            if needs_ambulance and not (bool(h.ambulance_available) or (getattr(h, 'ambulance_count', 0) or 0) > 0):
+                continue
+            if needs_lab and not bool(getattr(h, 'lab', False)):
+                continue
+            if needs_ct and not bool(getattr(h, 'ct_scan', False)):
+                continue
+            if needs_mri and not bool(getattr(h, 'mri', False)):
+                continue
+
+            # ICU requirement: ensure any ICU available count > 0
+            if needs_icu:
+                icu_avail = sum((getattr(h, x, 0) or 0) for x in ['micu_available','sicu_available','nicu_available','ccu_available','picu_available'])
+                if icu_avail <= 0:
+                    continue
+
+            # Ventilator requirement: ensure ventilator counts > 0
+            if needs_ventilator:
+                vents = sum((getattr(h, x, 0) or 0) for x in ['micu_ventilators','sicu_ventilators','nicu_ventilators','ccu_ventilators','picu_ventilators'])
+                if vents <= 0:
+                    continue
+
+            # Beds: ensure aggregated available beds > 0
+            available_beds = sum((getattr(h, x, 0) or 0) for x in [
+                'general_available','semi_available','private_available','isolation_available',
+                'micu_available','sicu_available','nicu_available','ccu_available','picu_available'
+            ])
+            if available_beds <= 0:
+                continue
+
+            # Passed checks; compute distance
             dist = haversine(citizen.latitude, citizen.longitude, h.latitude, h.longitude)
-            eta = estimate_eta(dist, severe=True)
-            print(f"[DirectSOS] Hospital {h.id}: distance={dist}km, eta={eta}min")
-            if eta < best_eta:
-                best, best_eta = h, eta
-        
-        print(f"[DirectSOS] Selected hospital: {best.id if best else None}, eta={best_eta}")
-        
-        if not best:
-            return jsonify(error="Could not calculate suitable hospital"), 400
+            if dist is None:
+                continue
+            if dist > max_distance_km:
+                continue
+
+            matching.append((h, dist))
+
+        if not matching:
+            return jsonify(error="No hospital matching all requested resources was found within the search radius."), 404
+
+        # choose nearest matching hospital
+        matching.sort(key=lambda x: x[1])
+        best, best_dist = matching[0]
+        best_eta = estimate_eta(best_dist, severe=True)
 
         alert = AmbulanceAlert(
             citizen_id=citizen.id,
@@ -148,7 +229,13 @@ def direct_sos():
         db.session.add(alert)
         db.session.commit()
 
-        return jsonify(alert_id=alert.id, eta=best_eta), 201
+        return jsonify({
+            "alert_id": alert.id,
+            "hospital_id": best.id,
+            "hospital_name": ( __import__('models').User.query.get(best.user_id).name if best.user_id else None),
+            "distance_km": round(best_dist,2),
+            "eta_minutes": best_eta
+        }), 201
     except Exception as e:
         import traceback
         traceback.print_exc()

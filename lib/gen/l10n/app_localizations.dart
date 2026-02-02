@@ -1575,6 +1575,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'📍 Navigate'**
   String get navigate_button;
+
+  /// No description provided for @ward_general.
+  ///
+  /// In en, this message translates to:
+  /// **'General Ward'**
+  String get ward_general;
+
+  /// No description provided for @ward_semi_private.
+  ///
+  /// In en, this message translates to:
+  /// **'Semi-private Ward'**
+  String get ward_semi_private;
+
+  /// No description provided for @ward_private.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Ward'**
+  String get ward_private;
+
+  /// No description provided for @ward_isolation.
+  ///
+  /// In en, this message translates to:
+  /// **'Isolation Ward'**
+  String get ward_isolation;
+
+  /// No description provided for @micu.
+  ///
+  /// In en, this message translates to:
+  /// **'MICU'**
+  String get micu;
+
+  /// No description provided for @sicu.
+  ///
+  /// In en, this message translates to:
+  /// **'SICU'**
+  String get sicu;
+
+  /// No description provided for @nicu.
+  ///
+  /// In en, this message translates to:
+  /// **'NICU'**
+  String get nicu;
+
+  /// No description provided for @ccu.
+  ///
+  /// In en, this message translates to:
+  /// **'CCU'**
+  String get ccu;
+
+  /// No description provided for @picu.
+  ///
+  /// In en, this message translates to:
+  /// **'PICU'**
+  String get picu;
+
+  /// No description provided for @ventilators.
+  ///
+  /// In en, this message translates to:
+  /// **'Ventilators'**
+  String get ventilators;
+
+  /// No description provided for @monitors.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitors'**
+  String get monitors;
+
+  /// No description provided for @emergency_24x7_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency 24x7'**
+  String get emergency_24x7_label;
+
+  /// No description provided for @defibrillator.
+  ///
+  /// In en, this message translates to:
+  /// **'Defibrillator'**
+  String get defibrillator;
+
+  /// No description provided for @central_oxygen_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Central Oxygen'**
+  String get central_oxygen_label;
+
+  /// No description provided for @in_house_pharmacy.
+  ///
+  /// In en, this message translates to:
+  /// **'In-house Pharmacy'**
+  String get in_house_pharmacy;
+
+  /// No description provided for @pharmacy_24x7.
+  ///
+  /// In en, this message translates to:
+  /// **'Pharmacy 24x7'**
+  String get pharmacy_24x7;
+
+  /// No description provided for @oxygen_cylinders.
+  ///
+  /// In en, this message translates to:
+  /// **'Oxygen Cylinders'**
+  String get oxygen_cylinders;
+
+  /// No description provided for @essential_drugs.
+  ///
+  /// In en, this message translates to:
+  /// **'Essential Drugs'**
+  String get essential_drugs;
+
+  /// No description provided for @doctors_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctors Count'**
+  String get doctors_count;
+
+  /// No description provided for @nurses_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Nurses Count'**
+  String get nurses_count;
+
+  /// No description provided for @icu_trained_staff.
+  ///
+  /// In en, this message translates to:
+  /// **'ICU Trained Staff'**
+  String get icu_trained_staff;
+
+  /// No description provided for @anesthetist_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Anesthetist Available'**
+  String get anesthetist_available;
+
+  /// No description provided for @blood_bank.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Bank'**
+  String get blood_bank;
+
+  /// No description provided for @dialysis_unit.
+  ///
+  /// In en, this message translates to:
+  /// **'Dialysis Unit'**
+  String get dialysis_unit;
+
+  /// No description provided for @cssd.
+  ///
+  /// In en, this message translates to:
+  /// **'CSSD'**
+  String get cssd;
+
+  /// No description provided for @mortuary.
+  ///
+  /// In en, this message translates to:
+  /// **'Mortuary'**
+  String get mortuary;
 }
 
 class _AppLocalizationsDelegate

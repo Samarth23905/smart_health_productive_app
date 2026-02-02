@@ -753,4 +753,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navigate_button => '📍 Navigate';
+
+  @override
+  String get ward_general => 'General Ward';
+
+  @override
+  String get ward_semi_private => 'Semi-private Ward';
+
+  @override
+  String get ward_private => 'Private Ward';
+
+  @override
+  String get ward_isolation => 'Isolation Ward';
+
+  @override
+  String get micu => 'MICU';
+
+  @override
+  String get sicu => 'SICU';
+
+  @override
+  String get nicu => 'NICU';
+
+  @override
+  String get ccu => 'CCU';
+
+  @override
+  String get picu => 'PICU';
+
+  @override
+  String get ventilators => 'Ventilators';
+
+  @override
+  String get monitors => 'Monitors';
+
+  @override
+  String get emergency_24x7_label => 'Emergency 24x7';
+
+  @override
+  String get defibrillator => 'Defibrillator';
+
+  @override
+  String get central_oxygen_label => 'Central Oxygen';
+
+  @override
+  String get in_house_pharmacy => 'In-house Pharmacy';
+
+  @override
+  String get pharmacy_24x7 => 'Pharmacy 24x7';
+
+  @override
+  String get oxygen_cylinders => 'Oxygen Cylinders';
+
+  @override
+  String get essential_drugs => 'Essential Drugs';
+
+  @override
+  String get doctors_count => 'Doctors Count';
+
+  @override
+  String get nurses_count => 'Nurses Count';
+
+  @override
+  String get icu_trained_staff => 'ICU Trained Staff';
+
+  @override
+  String get anesthetist_available => 'Anesthetist Available';
+
+  @override
+  String get blood_bank => 'Blood Bank';
+
+  @override
+  String get dialysis_unit => 'Dialysis Unit';
+
+  @override
+  String get cssd => 'CSSD';
+
+  @override
+  String get mortuary => 'Mortuary';
 }

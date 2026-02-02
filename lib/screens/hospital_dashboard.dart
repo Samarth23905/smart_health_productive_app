@@ -22,7 +22,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
     super.initState();
     _casesFuture = ApiService.getHospitalCases();
     // Auto-refresh every 2 seconds to match ambulance_tracking updates
-    _refreshTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       if (mounted) {
         setState(() {
           _casesFuture = ApiService.getHospitalCases();
