@@ -161,9 +161,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
         "role": role,
         "name": nameCtrl.text,
         "email": emailCtrl.text,
-        "phone": phoneCtrl.text,
         "password": passCtrl.text,
       };
+
+      // Add phone only for non-government roles
+      if (role != "government") {
+        data["phone"] = phoneCtrl.text;
+      }
 
       if (role == "citizen") {
         data["sex"] = sex;
@@ -356,18 +360,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
             const SizedBox(height: 15),
 
-            // Phone Field
-            TextField(
-              controller: phoneCtrl,
-              decoration: InputDecoration(
-                labelText: loc.phone_number,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            // Phone Field (skip for government)
+            if (role != "government")
+              TextField(
+                controller: phoneCtrl,
+                decoration: InputDecoration(
+                  labelText: loc.phone_number,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.phone),
                 ),
-                prefixIcon: const Icon(Icons.phone),
               ),
-            ),
-            const SizedBox(height: 15),
+            if (role != "government") const SizedBox(height: 15),
 
             // Gender Field (only for citizen)
             if (role == "citizen")
