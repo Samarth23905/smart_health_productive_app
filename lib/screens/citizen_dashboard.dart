@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../services/api_services.dart';
 import '../gen/l10n/app_localizations.dart';
 import 'login.dart';
@@ -14,6 +16,46 @@ class CitizenDashboard extends StatefulWidget {
 }
 
 class _CitizenDashboardState extends State<CitizenDashboard> {
+  Timer? _locationTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Start continuous location tracking when citizen logs in
+    _startLocationTracking();
+  }
+
+  void _startLocationTracking() {
+    _locationTimer?.cancel();
+    // Update location every 5 seconds in database
+    _locationTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      try {
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+        }
+
+        if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+          final Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+          );
+
+          // Send location to server
+          await ApiService.updateCitizenLocation(position.latitude, position.longitude);
+          print("[CitizenDashboard] Location updated: (${position.latitude}, ${position.longitude})");
+        }
+      } catch (e) {
+        print("[CitizenDashboard] Location tracking error: $e");
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _locationTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;

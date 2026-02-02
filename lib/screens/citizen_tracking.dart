@@ -53,6 +53,12 @@ class _CitizenTrackingState extends State<CitizenTracking> {
             _createdAt = null;
           }
           status = data["status"] as String? ?? "";
+          
+          // When arrived or delivered, set ETA to 0
+          if (status == "arrived" || status == "delivered") {
+            eta = 0;
+          }
+          
           citizenLat = (data["citizen_latitude"] as num?)?.toDouble() ?? 0.0;
           citizenLon = (data["citizen_longitude"] as num?)?.toDouble() ?? 0.0;
           ambulanceLat = (data["ambulance_latitude"] as num?)?.toDouble() ?? 0.0;
@@ -94,6 +100,12 @@ class _CitizenTrackingState extends State<CitizenTracking> {
           citizenLon = (data["citizen_longitude"] as num?)?.toDouble() ?? citizenLon;
           ambulanceLat = (data["ambulance_latitude"] as num?)?.toDouble() ?? ambulanceLat;
           ambulanceLon = (data["ambulance_longitude"] as num?)?.toDouble() ?? ambulanceLon;
+          
+          // When arrived or delivered, set ETA to 0
+          if (status == "arrived" || status == "delivered") {
+            eta = 0;
+          }
+          
           try {
             final createdAtStr = data["created_at"] as String?;
             if (createdAtStr != null && createdAtStr.isNotEmpty) {

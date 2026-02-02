@@ -6,6 +6,34 @@ from datetime import datetime
 
 citizen_bp = Blueprint("citizen", __name__)
 
+@citizen_bp.route("/location", methods=["POST"])
+@jwt_required()
+def update_citizen_location():
+    """Update citizen's current location"""
+    try:
+        uid = int(get_jwt_identity())
+        citizen = Citizen.query.filter_by(user_id=uid).first()
+        
+        if not citizen:
+            return jsonify(msg="Citizen not found"), 404
+        
+        data = request.get_json()
+        latitude = data.get("latitude")
+        longitude = data.get("longitude")
+        
+        if latitude is None or longitude is None:
+            return jsonify(msg="Latitude and longitude required"), 400
+        
+        citizen.latitude = float(latitude)
+        citizen.longitude = float(longitude)
+        db.session.commit()
+        
+        print(f"[CitizenLocation] Updated citizen {citizen.id} location: ({latitude}, {longitude})")
+        return jsonify(msg="Location updated"), 200
+    except Exception as e:
+        print(f"[CitizenLocation Error] {e}")
+        return jsonify(error=str(e)), 500
+
 @citizen_bp.route("/check-severity", methods=["POST"])
 @jwt_required()
 def check_severity():

@@ -127,21 +127,36 @@ class _RegistrationPageState extends State<RegistrationPage> {
       return;
     }
 
-    if (role != "government") {
-      try {
-        double.parse(latCtrl.text);
-        double.parse(lngCtrl.text);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(loc.valid_lat_lng)),
-        );
-        return;
+    // For hospitals, validate lat/lng if provided; for citizens auto-fetch will happen
+    if (role == "hospital") {
+      if (latCtrl.text.isNotEmpty || lngCtrl.text.isNotEmpty) {
+        try {
+          double.parse(latCtrl.text);
+          double.parse(lngCtrl.text);
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(loc.valid_lat_lng)),
+          );
+          return;
+        }
       }
     }
 
     setState(() => isLoading = true);
 
     try {
+      // For citizens, auto-fetch location if not already set
+      if (role == "citizen" && latCtrl.text.isEmpty) {
+        await autoFetchLocation(loc);
+        if (latCtrl.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(loc.location_permission_denied)),
+          );
+          setState(() => isLoading = false);
+          return;
+        }
+      }
+
       final data = <String, dynamic>{
         "role": role,
         "name": nameCtrl.text,
@@ -156,15 +171,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
         data["longitude"] = double.parse(lngCtrl.text);
         if (profilePicBase64 != null) data["profile_pic"] = profilePicBase64;
       } else if (role == "hospital") {
-        data["latitude"] = double.parse(latCtrl.text);
-        data["longitude"] = double.parse(lngCtrl.text);
+        if (latCtrl.text.isNotEmpty) data["latitude"] = double.parse(latCtrl.text);
+        if (lngCtrl.text.isNotEmpty) data["longitude"] = double.parse(lngCtrl.text);
         data["total_beds"] = int.tryParse(totalBedsCtrl.text) ?? 0;
         data["icu_beds"] = int.tryParse(icuBedsCtrl.text) ?? 0;
         data["oxygen_available"] = oxygenAvailable;
         if (profilePicBase64 != null) data["profile_pic"] = profilePicBase64;
       } else if (role == "ambulance") {
-        data["latitude"] = double.parse(latCtrl.text);
-        data["longitude"] = double.parse(lngCtrl.text);
+        // For ambulance, location will be continuously updated after login
+        if (latCtrl.text.isNotEmpty) data["latitude"] = double.parse(latCtrl.text);
+        if (lngCtrl.text.isNotEmpty) data["longitude"] = double.parse(lngCtrl.text);
         if (profilePicBase64 != null) data["profile_pic"] = profilePicBase64;
       }
 
@@ -372,38 +388,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
             if (role == "citizen") const SizedBox(height: 15),
 
-            // Latitude Field (only for citizen and hospital)
-            if (role != "government")
-              TextField(
-                controller: latCtrl,
-                decoration: InputDecoration(
-                  labelText: loc.latitude,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.location_on),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            if (role != "government") const SizedBox(height: 15),
-
-            // Longitude Field (only for citizen and hospital)
-            if (role != "government")
-              TextField(
-                controller: lngCtrl,
-                decoration: InputDecoration(
-                  labelText: loc.longitude,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.location_on),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            if (role != "government") const SizedBox(height: 15),
-
-            // Auto-fetch Location Button
-            if (role != "government")
+            // Auto-fetch Location Button (only for citizens)
+            if (role == "citizen")
               ElevatedButton(
                 onPressed: () => autoFetchLocation(loc),
                 style: ElevatedButton.styleFrom(

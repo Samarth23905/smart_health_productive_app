@@ -21,8 +21,8 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
   void initState() {
     super.initState();
     _casesFuture = ApiService.getHospitalCases();
-    // Auto-refresh every 10 seconds
-    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+    // Auto-refresh every 2 seconds to match ambulance_tracking updates
+    _refreshTimer = Timer.periodic(const Duration(seconds: 2), (_) {
       if (mounted) {
         setState(() {
           _casesFuture = ApiService.getHospitalCases();
@@ -200,6 +200,25 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
               itemCount: cases.length,
               itemBuilder: (context, index) {
                 final c = cases[index];
+                
+                // Calculate real-time ETA like ambulance_tracking does
+                int displayEta = c["eta"] as int? ?? 0;
+                if (c["status"] != "arrived" && c["status"] != "delivered") {
+                  try {
+                    final createdAtStr = c["created_at"] as String?;
+                    if (createdAtStr != null && createdAtStr.isNotEmpty) {
+                      final createdAt = DateTime.parse(createdAtStr).toUtc();
+                      final elapsed = (DateTime.now().toUtc().difference(createdAt).inSeconds / 60).toInt();
+                      displayEta = ((c["eta"] as int? ?? 0) - elapsed).clamp(0, 999);
+                    }
+                  } catch (_) {
+                    // Use original ETA if parsing fails
+                  }
+                } else {
+                  // When arrived or delivered, show 0
+                  displayEta = 0;
+                }
+                
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
@@ -284,7 +303,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
                                   Icon(Icons.timer_outlined, size: 16, color: Colors.grey[600]),
                                   const SizedBox(width: 6),
                                   Text(
-                                    "ETA: ${c["eta"]} min",
+                                    "ETA: $displayEta min",
                                     style: Theme.of(context).textTheme.bodySmall,
                                   ),
                                 ],

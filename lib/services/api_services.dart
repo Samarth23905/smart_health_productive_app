@@ -455,4 +455,36 @@ class ApiService {
       return null;
     }
   }
+
+  static Future<bool> updateCitizenLocation(double latitude, double longitude) async {
+    try {
+      final authToken = await _getToken();
+      if (authToken == null) {
+        print("Error: No authentication token available");
+        return false;
+      }
+
+      final res = await http.post(
+        Uri.parse("$baseUrl/citizen/location"),
+        headers: {
+          "Authorization": "Bearer $authToken",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode({
+          "latitude": latitude,
+          "longitude": longitude,
+        }),
+      );
+
+      print("UpdateCitizenLocation - Status: ${res.statusCode}, Lat: $latitude, Lon: $longitude");
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print("Exception in updateCitizenLocation: $e");
+      return false;
+    }
+  }
 }
