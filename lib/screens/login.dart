@@ -116,68 +116,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Language Dropdown
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.border),
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: DropdownButton<Locale>(
-                      value: languageProvider.locale,
-                      icon: const Icon(Icons.language_outlined, color: AppColors.primary),
-                      iconSize: 24,
-                      elevation: 4,
-                      style: const TextStyle(color: AppColors.primary),
-                      dropdownColor: Colors.white,
-                      underline: const SizedBox(),
-                      hint: Row(
-                        children: const [
-                          Text('Select language   '),
-                        ],
-                      ),
-                      items: [
-                        DropdownMenuItem(
-                          value: const Locale('en'),
-                          child: Row(
-                            children: const [
-                              Text('🇬🇧 '),
-                              Text('English'),
-                            ],
-                          ),
-                        ),
-                        DropdownMenuItem(
-                          value: const Locale('hi'),
-                          child: Row(
-                            children: const [
-                              Text('🇮🇳 '),
-                              Text('हिन्दी'),
-                            ],
-                          ),
-                        ),
-                        DropdownMenuItem(
-                          value: const Locale('kn'),
-                          child: Row(
-                            children: const [
-                              Text('🇮🇳 '),
-                              Text('ಕನ್ನಡ'),
-                            ],
-                          ),
-                        ),
-                      ],
-                      onChanged: (Locale? value) {
-                        if (value != null) {
-                          languageProvider.setLocale(value);
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
                 // Header
                 Padding(
                   padding: const EdgeInsets.only(bottom: 40),

@@ -91,6 +91,19 @@
   "finish": "समाप्त",
   "or_text": "या",
   "your_trusted_healthcare": "आपकी विश्वसनीय स्वास्थ्यसेवा साथी",
+  "proposed_solution": "प्रस्तावित समाधान",
+  "unified_health_dashboard": "एकीकृत स्वास्थ्य डैशबोर्ड",
+  "digital_records_history": "डिजिटल स्वास्थ्य रिकॉर्ड और इतिहास",
+  "all_health_info": "एक जगह पर सभी स्वास्थ्य जानकारी",
+  "preventive_health_alerts": "निवारक स्वास्थ्य सतर्कता",
+  "area_based_outbreak": "क्षेत्र-आधारित प्रकोप सतर्कता",
+  "city_wide_warnings": "शहर-व्यापी स्वास्थ्य चेतावनी",
+  "one_touch_sos": "एक-टच SOS बटन",
+  "quick_emergency_help": "त्वरित आपातकालीन सहायता",
+  "smart_integrated_system": "स्मार्ट, सुलभ और एकीकृत स्वास्थ्य प्रबंधन प्रणाली",
+  "hospital_label": "अस्पताल",
+  "app_label": "ऐप्लिकेशन",
+  "government_label": "सरकार",
   "no_patients": "अभी कोई रोगी नहीं",
   "awaiting_ambulance": "आने वाली एम्बुलेंस सतर्कता की प्रतीक्षा",
   "no_active_alerts": "कोई सक्रिय सतर्कता नहीं",
@@ -298,4 +311,6 @@
   "reset_password": "पासवर्ड रीसेट करें",
   "success": "सफलता",
   "password_updated_successfully": "आपका पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है"
+  ,"get_started": "शुरू करें",
+  "already_have_account": "क्या पहले से एक खाता है?"
 }

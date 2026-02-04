@@ -91,6 +91,19 @@
   "finish": "Finish",
   "or_text": "OR",
   "your_trusted_healthcare": "Your trusted healthcare companion",
+  "proposed_solution": "Proposed Solution",
+  "unified_health_dashboard": "Unified Health Dashboard",
+  "digital_records_history": "Digital health records & history",
+  "all_health_info": "All health info in one place",
+  "preventive_health_alerts": "Preventive Health Alerts",
+  "area_based_outbreak": "Area-based outbreak alerts",
+  "city_wide_warnings": "City-wide health warnings",
+  "one_touch_sos": "One-touch SOS button",
+  "quick_emergency_help": "Quick emergency help",
+  "smart_integrated_system": "Smart, Accessible & Integrated Health Management System",
+  "hospital_label": "Hospital",
+  "app_label": "App",
+  "government_label": "Government",
   "no_patients": "No Patients Yet",
   "awaiting_ambulance": "Awaiting incoming ambulance alerts",
   "no_active_alerts": "No Active Alerts",
@@ -298,4 +311,6 @@
   "reset_password": "Reset Password",
   "success": "Success",
   "password_updated_successfully": "Your password has been updated successfully"
+  ,"get_started": "Get Started",
+  "already_have_account": "Already have an account?"
 }

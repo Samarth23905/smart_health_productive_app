@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'gen/l10n/app_localizations.dart';
 import 'providers/language_provider.dart';
-import 'screens/login.dart';
+import 'screens/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -171,7 +171,10 @@ class SmartHealthApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xFFFAFAFA),
       ),
-      home: LoginPage(),
+      home: const HomePage(),
+      routes: {
+        '/home': (context) => const HomePage(),
+      },
     );
   }
 }

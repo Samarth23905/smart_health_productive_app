@@ -284,6 +284,46 @@ class AppLocalizationsHi extends AppLocalizations {
   String get your_trusted_healthcare => 'आपकी विश्वसनीय स्वास्थ्यसेवा साथी';
 
   @override
+  String get proposed_solution => 'प्रस्तावित समाधान';
+
+  @override
+  String get unified_health_dashboard => 'एकीकृत स्वास्थ्य डैशबोर्ड';
+
+  @override
+  String get digital_records_history => 'डिजिटल स्वास्थ्य रिकॉर्ड और इतिहास';
+
+  @override
+  String get all_health_info => 'एक जगह पर सभी स्वास्थ्य जानकारी';
+
+  @override
+  String get preventive_health_alerts => 'निवारक स्वास्थ्य सतर्कता';
+
+  @override
+  String get area_based_outbreak => 'क्षेत्र-आधारित प्रकोप सतर्कता';
+
+  @override
+  String get city_wide_warnings => 'शहर-व्यापी स्वास्थ्य चेतावनी';
+
+  @override
+  String get one_touch_sos => 'एक-टच SOS बटन';
+
+  @override
+  String get quick_emergency_help => 'त्वरित आपातकालीन सहायता';
+
+  @override
+  String get smart_integrated_system =>
+      'स्मार्ट, सुलभ और एकीकृत स्वास्थ्य प्रबंधन प्रणाली';
+
+  @override
+  String get hospital_label => 'अस्पताल';
+
+  @override
+  String get app_label => 'ऐप्लिकेशन';
+
+  @override
+  String get government_label => 'सरकार';
+
+  @override
   String get no_patients => 'अभी कोई रोगी नहीं';
 
   @override
@@ -886,4 +926,10 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get password_updated_successfully =>
       'आपका पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है';
+
+  @override
+  String get get_started => 'शुरू करें';
+
+  @override
+  String get already_have_account => 'क्या पहले से एक खाता है?';
 }

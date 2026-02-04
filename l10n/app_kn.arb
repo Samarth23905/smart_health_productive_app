@@ -91,6 +91,19 @@
   "finish": "ಮುಗಿಸಿ",
   "or_text": "ಅಥವಾ",
   "your_trusted_healthcare": "ನಿಮ್ಮ ವಿಶ್ವಾಸಾರ್ಹ ಆರೋಗ್ಯಸೇವಾ ಸಾಥಿ",
+  "proposed_solution": "ಪ್ರಸ್ತಾವಿತ ಪರಿಹಾರ",
+  "unified_health_dashboard": "ಸಂಯೋಜಿತ ಆರೋಗ್ಯ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+  "digital_records_history": "ಡಿಜಿಟಲ್ ಆರೋಗ್ಯ ದಾಖಲೆ ಮತ್ತು ಇತಿಹಾಸ",
+  "all_health_info": "ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ಎಲ್ಲಾ ಆರೋಗ್ಯ ಮಾಹಿತಿ",
+  "preventive_health_alerts": "ತಡೆಗಟ್ಟುವ ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆ",
+  "area_based_outbreak": "ಪ್ರದೇಶ-ಆಧಾರಿತ ಸಾಂಕ್ರಾಮಿಕ ಎಚ್ಚರಿಕೆ",
+  "city_wide_warnings": "ನಗರ-ವ್ಯಾಪಿ ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆ",
+  "one_touch_sos": "ಒಂದು-ಸ್ಪರ್ಶ SOS ಬಟನ್",
+  "quick_emergency_help": "ತ್ವರಿತ ತುರ್ತು ಸಹಾಯ",
+  "smart_integrated_system": "ಸ್ಮಾರ್ಟ, ಪ್ರವೇಶಾರ್ಹ ಮತ್ತು ಸಂಯೋಜಿತ ಆರೋಗ್ಯ ನಿರ್ವಹಣ ವ್ಯವಸ್ಥೆ",
+  "hospital_label": "ಆಸ್ಪತ್ರೆ",
+  "app_label": "ಅಪ್ಲಿಕೇಶನ್",
+  "government_label": "ಸರ್ಕಾರ",
   "no_patients": "ಇನ್ನೂ ರೋಗಿಗಳಿಲ್ಲ",
   "awaiting_ambulance": "ಆಗುವ ಆಂಬುಲೆನ್ಸ್ ಎಚ್ಚರಿಕೆ ಪ್ರತೀಕ್ಷೆ",
   "no_active_alerts": "ಸಕ್ರಿಯ ಎಚ್ಚರಿಕೆಗಳಿಲ್ಲ",
@@ -298,4 +311,6 @@
   "reset_password": "Reset Password",
   "success": "Success",
   "password_updated_successfully": "Your password has been updated successfully"
+  ,"get_started": "Get Started",
+  "already_have_account": "Already have an account?"
 }

@@ -285,6 +285,46 @@ class AppLocalizationsKn extends AppLocalizations {
   String get your_trusted_healthcare => 'ನಿಮ್ಮ ವಿಶ್ವಾಸಾರ್ಹ ಆರೋಗ್ಯಸೇವಾ ಸಾಥಿ';
 
   @override
+  String get proposed_solution => 'ಪ್ರಸ್ತಾವಿತ ಪರಿಹಾರ';
+
+  @override
+  String get unified_health_dashboard => 'ಸಂಯೋಜಿತ ಆರೋಗ್ಯ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್';
+
+  @override
+  String get digital_records_history => 'ಡಿಜಿಟಲ್ ಆರೋಗ್ಯ ದಾಖಲೆ ಮತ್ತು ಇತಿಹಾಸ';
+
+  @override
+  String get all_health_info => 'ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ಎಲ್ಲಾ ಆರೋಗ್ಯ ಮಾಹಿತಿ';
+
+  @override
+  String get preventive_health_alerts => 'ತಡೆಗಟ್ಟುವ ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆ';
+
+  @override
+  String get area_based_outbreak => 'ಪ್ರದೇಶ-ಆಧಾರಿತ ಸಾಂಕ್ರಾಮಿಕ ಎಚ್ಚರಿಕೆ';
+
+  @override
+  String get city_wide_warnings => 'ನಗರ-ವ್ಯಾಪಿ ಆರೋಗ್ಯ ಎಚ್ಚರಿಕೆ';
+
+  @override
+  String get one_touch_sos => 'ಒಂದು-ಸ್ಪರ್ಶ SOS ಬಟನ್';
+
+  @override
+  String get quick_emergency_help => 'ತ್ವರಿತ ತುರ್ತು ಸಹಾಯ';
+
+  @override
+  String get smart_integrated_system =>
+      'ಸ್ಮಾರ್ಟ, ಪ್ರವೇಶಾರ್ಹ ಮತ್ತು ಸಂಯೋಜಿತ ಆರೋಗ್ಯ ನಿರ್ವಹಣ ವ್ಯವಸ್ಥೆ';
+
+  @override
+  String get hospital_label => 'ಆಸ್ಪತ್ರೆ';
+
+  @override
+  String get app_label => 'ಅಪ್ಲಿಕೇಶನ್';
+
+  @override
+  String get government_label => 'ಸರ್ಕಾರ';
+
+  @override
   String get no_patients => 'ಇನ್ನೂ ರೋಗಿಗಳಿಲ್ಲ';
 
   @override
@@ -890,4 +930,10 @@ class AppLocalizationsKn extends AppLocalizations {
   @override
   String get password_updated_successfully =>
       'Your password has been updated successfully';
+
+  @override
+  String get get_started => 'Get Started';
+
+  @override
+  String get already_have_account => 'Already have an account?';
 }

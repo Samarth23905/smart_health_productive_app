@@ -4,478 +4,480 @@ import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
-/// The translations for English (`en`).
-class AppLocalizationsEn extends AppLocalizations {
-  AppLocalizationsEn([String locale = 'en']) : super(locale);
+/// The translations for Marathi (`mr`).
+class AppLocalizationsMr extends AppLocalizations {
+  AppLocalizationsMr([String locale = 'mr']) : super(locale);
 
   @override
-  String get appTitle => 'Smart Health';
+  String get appTitle => 'स्मार्ट हेल्थ';
 
   @override
-  String get login_as => 'Login As';
+  String get login_as => 'अ‍ॅडमिनिस्ट्रेटर म्हणून लॉगिन करा';
 
   @override
-  String get citizen => 'Citizen';
+  String get citizen => 'नागरिक';
 
   @override
-  String get hospital => 'Hospital';
+  String get hospital => 'रुग्णालय';
 
   @override
-  String get ambulance => 'Ambulance';
+  String get ambulance => 'रुग्णवाहिका';
 
   @override
-  String get government => 'Government';
+  String get government => 'सरकार';
 
   @override
-  String get placeholder_citizen => 'Name / Email / Phone';
+  String get placeholder_citizen => 'नाव / ईमेल / फोन';
 
   @override
-  String get placeholder_hospital => 'Hospital Name';
+  String get placeholder_hospital => 'रुग्णालयाचे नाव';
 
   @override
-  String get placeholder_ambulance => 'Hospital Name';
+  String get placeholder_ambulance => 'रुग्णालयाचे नाव';
 
   @override
-  String get placeholder_government => 'Admin Username';
+  String get placeholder_government => 'प्रशासक वापरकर्ता नाव';
 
   @override
-  String get password => 'Password';
+  String get password => 'पासवर्ड';
 
   @override
-  String get forgot_password => 'Forgot Password?';
+  String get forgot_password => 'पासवर्ड विसरलात?';
 
   @override
-  String get sign_in => 'Sign In';
+  String get sign_in => 'साइन इन करा';
 
   @override
-  String get no_account => 'Don\'t have an account?';
+  String get no_account => 'खाते नाही का?';
 
   @override
-  String get sign_up => 'Sign Up';
+  String get sign_up => 'साइन अप करा';
 
   @override
-  String get invalid_credentials => 'Invalid credentials or server error';
+  String get invalid_credentials => 'अमान्य प्रमाणपत्र किंवा सर्व्हर त्रुटी';
 
   @override
-  String get enter_all_fields => 'Please enter all fields';
+  String get enter_all_fields => 'कृपया सर्व फील्ड भरा';
 
   @override
-  String get select_language => 'Select Language';
+  String get select_language => 'भाषा निवडा';
 
   @override
-  String get register => 'Register';
+  String get register => 'नोंदणी करा';
 
   @override
-  String get create_account => 'Create Account';
+  String get create_account => 'खाते तयार करा';
 
   @override
-  String get full_name => 'Full Name';
+  String get full_name => 'पूर्ण नाव';
 
   @override
-  String get hospital_name => 'Hospital Name';
+  String get hospital_name => 'रुग्णालयाचे नाव';
 
   @override
-  String get username => 'Username';
+  String get username => 'वापरकर्ता नाव';
 
   @override
-  String get phone_number => 'Phone Number';
+  String get phone_number => 'फोन नंबर';
 
   @override
-  String get email => 'Email';
+  String get email => 'ईमेल';
 
   @override
-  String get gender => 'Gender';
+  String get gender => 'लिंग';
 
   @override
-  String get male => 'Male';
+  String get male => 'पुरुष';
 
   @override
-  String get female => 'Female';
+  String get female => 'महिला';
 
   @override
-  String get other => 'Other';
+  String get other => 'इतर';
 
   @override
-  String get total_beds => 'Total Beds';
+  String get total_beds => 'एकूण बेड';
 
   @override
-  String get icu_beds => 'ICU Beds';
+  String get icu_beds => 'ICU बेड';
 
   @override
-  String get oxygen_available => 'Oxygen Available';
+  String get oxygen_available => 'ऑक्सिजन उपलब्ध';
 
   @override
-  String get latitude => 'Latitude';
+  String get latitude => 'अक्षांश';
 
   @override
-  String get longitude => 'Longitude';
+  String get longitude => 'रेखांश';
 
   @override
-  String get auto_fetch_location => '📍 Auto-fetch Location';
+  String get auto_fetch_location => '📍 स्वयंचलित स्थान मिळवा';
 
   @override
-  String get add_photo => 'Add Photo';
+  String get add_photo => 'फोटो जोडा';
 
   @override
-  String get take_photo => 'Take Photo';
+  String get take_photo => 'फोटो घ्या';
 
   @override
-  String get choose_gallery => 'Choose from Gallery';
+  String get choose_gallery => 'गॅलरीतून निवडा';
 
   @override
-  String get add_profile_picture => 'Add Profile Picture';
+  String get add_profile_picture => 'प्रोफाइल चित्र जोडा';
 
   @override
-  String get registration_successful => 'Registration successful!';
+  String get registration_successful => 'नोंदणी यशस्वी!';
 
   @override
-  String get registration_failed => 'Registration failed';
+  String get registration_failed => 'नोंदणी अयशस्वी';
 
   @override
-  String get fill_required_fields => 'Please fill required fields';
+  String get fill_required_fields => 'कृपया आवश्यक फील्ड भरा';
 
   @override
-  String get valid_lat_lng => 'Please enter valid latitude and longitude';
+  String get valid_lat_lng => 'कृपया वैध अक्षांश आणि रेखांश प्रविष्ट करा';
 
   @override
-  String get location_permission_denied => 'Location permission denied';
+  String get location_permission_denied => 'स्थान अनुमती नाकारली';
 
   @override
-  String get location_fetched => 'Location fetched successfully';
+  String get location_fetched => 'स्थान यशस्वीरित्या मिळाले';
 
   @override
-  String get camera_error => 'Camera error';
+  String get camera_error => 'कॅमेरा त्रुटी';
 
   @override
-  String get gallery_error => 'Gallery error';
+  String get gallery_error => 'गॅलरी त्रुटी';
 
   @override
-  String get photo_captured => 'Photo captured successfully';
+  String get photo_captured => 'फोटो यशस्वीरित्या कॅप्चर झाला';
 
   @override
-  String get image_selected => 'Image selected successfully';
+  String get image_selected => 'प्रतिमा यशस्वीरित्या निवडली';
 
   @override
-  String get welcome_back => 'Welcome Back';
+  String get welcome_back => 'स्वागत आहे';
 
   @override
   String get health_priority =>
-      'Your health is our priority. Quick access to healthcare services.';
+      'तुमचे स्वास्थ्य आमचे प्राधान्य. आरोग्य सेवांतर्फे द्रुत प्रवेश.';
 
   @override
-  String get emergency_sos => 'Emergency SOS';
+  String get emergency_sos => 'आपातकालीन SOS';
 
   @override
-  String get dispatch_ambulance => 'Tap to dispatch ambulance immediately';
+  String get dispatch_ambulance => 'तत्काळ रुग्णवाहिका पाठवण्यासाठी टॅप करा';
 
   @override
-  String get healthcare_services => 'Healthcare Services';
+  String get healthcare_services => 'आरोग्य सेवा';
 
   @override
-  String get symptom_checker => 'Symptom Checker';
+  String get symptom_checker => 'लक्षण तपासक';
 
   @override
-  String get instant_assessment => 'Get instant health assessment';
+  String get instant_assessment => 'तत्काळ आरोग्य मूल्यांकन मिळवा';
 
   @override
-  String get find_hospital => 'Find Hospital';
+  String get find_hospital => 'रुग्णालय शोधा';
 
   @override
-  String get locate_facility => 'Locate nearest medical facility';
+  String get locate_facility => 'जवळचे वैद्यकीय सुविधा शोधा';
 
   @override
-  String get health_records => 'Health Records';
+  String get health_records => 'आरोग्य रेकॉर्ड';
 
   @override
-  String get medical_history => 'View your medical history';
+  String get medical_history => 'तुमचा वैद्यकीय इतिहास पाहा';
 
   @override
-  String get about_app => 'About Smart Health';
+  String get about_app => 'स्मार्ट हेल्थ बद्दल';
 
   @override
-  String get learn_more => 'Learn more about our platform';
+  String get learn_more => 'आमच्या प्लॅटफॉर्मबद्दल अधिक जाणून घ्या';
 
   @override
-  String get edit_profile => 'Edit Profile';
+  String get edit_profile => 'प्रोफाइल संपादित करा';
 
   @override
-  String get logout => 'Logout';
+  String get logout => 'लॉगआउट';
 
   @override
-  String get smart_health => 'Smart Health';
+  String get smart_health => 'स्मार्ट हेल्थ';
 
   @override
-  String get ambulance_dispatch => 'Emergency alert sent! Ambulance en route.';
+  String get ambulance_dispatch =>
+      'आपातकालीन सतर्कता पाठवली! रुग्णवाहिका रस्त्यावर आहे.';
 
   @override
-  String get dispatch_failed => 'Failed to send emergency alert';
+  String get dispatch_failed => 'आपातकालीन सतर्कता पाठवण्यास अयशस्वी';
 
   @override
-  String get hospital_operations => 'Hospital Operations';
+  String get hospital_operations => 'रुग्णालय संचालन';
 
   @override
-  String get active_alerts => 'Active Alerts';
+  String get active_alerts => 'सक्रिय सतर्कता';
 
   @override
-  String get my_profile => 'My Profile';
+  String get my_profile => 'माझी प्रोफाइल';
 
   @override
-  String get edit_hospital_profile => 'Edit Hospital Profile';
+  String get edit_hospital_profile => 'रुग्णालय प्रोफाइल संपादित करा';
 
   @override
-  String get beds => 'Beds';
+  String get beds => 'बेड';
 
   @override
-  String get icu_beds_label => 'ICU Beds';
+  String get icu_beds_label => 'ICU बेड';
 
   @override
-  String get oxygen => 'Oxygen';
+  String get oxygen => 'ऑक्सिजन';
 
   @override
-  String get distance => 'Distance';
+  String get distance => 'अंतर';
 
   @override
-  String get km => 'km';
+  String get km => 'किमी';
 
   @override
-  String get call => 'Call';
+  String get call => 'कॉल करा';
 
   @override
-  String get navigate => 'Navigate';
+  String get navigate => 'नेव्हिगेट करा';
 
   @override
-  String get no_hospitals_found => 'No hospitals found';
+  String get no_hospitals_found => 'कोणतेही रुग्णालय सापडले नाही';
 
   @override
-  String get loading => 'Loading...';
+  String get loading => 'लोड होत आहे...';
 
   @override
-  String get error => 'Error';
+  String get error => 'त्रुटी';
 
   @override
-  String get save => 'Save';
+  String get save => 'जतन करा';
 
   @override
-  String get cancel => 'Cancel';
+  String get cancel => 'रद्द करा';
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'हटवा';
 
   @override
-  String get update => 'Update';
+  String get update => 'अपडेट करा';
 
   @override
-  String get submit => 'Submit';
+  String get submit => 'सबमिट करा';
 
   @override
-  String get back => 'Back';
+  String get back => 'मागे';
 
   @override
-  String get next => 'Next';
+  String get next => 'पुढे';
 
   @override
-  String get finish => 'Finish';
+  String get finish => 'संपन्न';
 
   @override
-  String get or_text => 'OR';
+  String get or_text => 'किंवा';
 
   @override
-  String get your_trusted_healthcare => 'Your trusted healthcare companion';
+  String get your_trusted_healthcare => 'आपली विश्वस्त आरोग्य सेवा साथी';
 
   @override
-  String get proposed_solution => 'Proposed Solution';
+  String get proposed_solution => 'प्रस्तावित समाधान';
 
   @override
-  String get unified_health_dashboard => 'Unified Health Dashboard';
+  String get unified_health_dashboard => 'एकीकृत आरोग्य डॅशबोर्ड';
 
   @override
-  String get digital_records_history => 'Digital health records & history';
+  String get digital_records_history => 'डिजिटल आरोग्य रेकॉर्ड आणि इतिहास';
 
   @override
-  String get all_health_info => 'All health info in one place';
+  String get all_health_info => 'एक जागेत सर्व आरोग्य माहिती';
 
   @override
-  String get preventive_health_alerts => 'Preventive Health Alerts';
+  String get preventive_health_alerts => 'प्रतिबंधक आरोग्य सतर्कता';
 
   @override
-  String get area_based_outbreak => 'Area-based outbreak alerts';
+  String get area_based_outbreak => 'क्षेत्र-आधारित प्रादुर्भाव सतर्कता';
 
   @override
-  String get city_wide_warnings => 'City-wide health warnings';
+  String get city_wide_warnings => 'शहर-व्यापी आरोग्य चेतावणी';
 
   @override
-  String get one_touch_sos => 'One-touch SOS button';
+  String get one_touch_sos => 'एक-टॅप SOS बटण';
 
   @override
-  String get quick_emergency_help => 'Quick emergency help';
+  String get quick_emergency_help => 'त्वरित आपातकालीन मदत';
 
   @override
   String get smart_integrated_system =>
-      'Smart, Accessible & Integrated Health Management System';
+      'स्मार्ट, प्रवेशयोग्य आणि एकीकृत आरोग्य व्यवस्थापन प्रणाली';
 
   @override
-  String get hospital_label => 'Hospital';
+  String get hospital_label => 'रुग्णालय';
 
   @override
-  String get app_label => 'App';
+  String get app_label => 'अ‍ॅप';
 
   @override
-  String get government_label => 'Government';
+  String get government_label => 'सरकार';
 
   @override
-  String get no_patients => 'No Patients Yet';
+  String get no_patients => 'अद्याप कोणतेही रुग्ण नाहीत';
 
   @override
-  String get awaiting_ambulance => 'Awaiting incoming ambulance alerts';
+  String get awaiting_ambulance =>
+      'येणारी रुग्णवाहिका सतर्कता प्रतीक्षा करत आहे';
 
   @override
-  String get no_active_alerts => 'No Active Alerts';
+  String get no_active_alerts => 'कोणतीही सक्रिय सतर्कता नाही';
 
   @override
-  String get waiting_dispatch => 'Waiting for emergency dispatch';
+  String get waiting_dispatch => 'आपातकालीन प्रेषण प्रतीक्षा करत आहे';
 
   @override
-  String get health_analytics => 'Health Analytics Dashboard';
+  String get health_analytics => 'आरोग्य विश्लेषण डॅशबोर्ड';
 
   @override
-  String get government_analytics => 'Government Analytics';
+  String get government_analytics => 'सरकार विश्लेषण';
 
   @override
-  String get active_hospitals => 'Active Hospitals';
+  String get active_hospitals => 'सक्रिय रुग्णालय';
 
   @override
-  String get ambulance_count => 'Ambulance Count';
+  String get ambulance_count => 'रुग्णवाहिका गणना';
 
   @override
-  String get avg_eta => 'Average ETA (min)';
+  String get avg_eta => 'सरासरी ETA (मिनिट)';
 
   @override
-  String get completed_alerts => 'Completed Alerts';
+  String get completed_alerts => 'पूर्ण सतर्कता';
 
   @override
-  String get refresh_data => 'Refresh Data';
+  String get refresh_data => 'डेटा रिफ्रेश करा';
 
   @override
-  String get no_data => 'No data available';
+  String get no_data => 'कोणताही डेटा उपलब्ध नाही';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'पुन्हा प्रयत्न करा';
 
   @override
-  String get failed_load_analytics => 'Failed to load analytics';
+  String get failed_load_analytics => 'विश्लेषण लोड करणे अयशस्वी';
 
   @override
-  String get digital_adoption => 'Digital Adoption (%)';
+  String get digital_adoption => 'डिजिटल अवलंबन (%)';
 
   @override
-  String get oxygen_hospitals => 'Oxygen-ready Hospitals';
+  String get oxygen_hospitals => 'ऑक्सिजन-तयार रुग्णालय';
 
   @override
-  String get registered_citizens => 'Registered Citizens';
+  String get registered_citizens => 'नोंदणीकृत नागरिक';
 
   @override
-  String get total_alerts => 'Total Alerts';
+  String get total_alerts => 'एकूण सतर्कता';
 
   @override
-  String get total_citizens => 'Total Citizens';
+  String get total_citizens => 'एकूण नागरिक';
 
   @override
-  String get not_set => 'Not set';
+  String get not_set => 'सेट नाही';
 
   @override
-  String get personal_information => '👤 Personal Information';
+  String get personal_information => '👤 व्यक्तिगत माहिती';
 
   @override
-  String get save_changes => '💾 Save Changes';
+  String get save_changes => '💾 बदल जतन करा';
 
   @override
-  String get hospital_resources => '🏥 Hospital Resources';
+  String get hospital_resources => '🏥 रुग्णालय संसाधन';
 
   @override
-  String get bed_capacity => 'Bed Capacity';
+  String get bed_capacity => 'बेड क्षमता';
 
   @override
-  String get medical_supplies => 'Medical Supplies';
+  String get medical_supplies => 'वैद्यकीय पुरवठा';
 
   @override
-  String get available => '✓ Available';
+  String get available => '✓ उपलब्ध';
 
   @override
-  String get not_available => '✗ Not available';
+  String get not_available => '✗ उपलब्ध नाही';
 
   @override
   String get oxygen_info_message =>
-      'Enable oxygen if available for emergency SOS dispatch';
+      'आपातकालीन SOS प्रेषणसाठी ऑक्सिजन उपलब्ध असल्यास सक्षम करा';
 
   @override
-  String get symptom_check => '🩺 Symptom Check';
+  String get symptom_check => '🩺 लक्षण तपास';
 
   @override
   String get select_symptoms_with_details =>
-      'Expand categories and select symptoms with details:';
+      'श्रेणी विस्तृत करा आणि तपशीलांसह लक्षण निवडा:';
 
   @override
-  String get selected_symptoms => '✅ Selected Symptoms:';
+  String get selected_symptoms => '✅ निवडलेले लक्षण:';
 
   @override
-  String get selected => 'selected';
+  String get selected => 'निवडले';
 
   @override
-  String get duration => 'Duration';
+  String get duration => 'अवधी';
 
   @override
-  String get severity => 'Severity';
+  String get severity => 'गंभीरता';
 
   @override
-  String get submitting => 'Submitting...';
+  String get submitting => 'सबमिट करत आहे...';
 
   @override
-  String get submit_symptoms => 'Submit Symptoms';
+  String get submit_symptoms => 'लक्षण सबमिट करा';
 
   @override
-  String get days => 'days';
+  String get days => 'दिवस';
 
   @override
-  String get refresh => 'Refresh';
+  String get refresh => 'रिफ्रेश करा';
 
   @override
-  String get how_many_days => 'How many days?';
+  String get how_many_days => 'किती दिवस?';
 
   @override
-  String get enter_number_of_days => 'Enter number of days';
+  String get enter_number_of_days => 'दिवसांची संख्या प्रविष्ट करा';
 
   @override
-  String get severity_level => 'Severity Level:';
+  String get severity_level => 'गंभीरता स्तर:';
 
   @override
-  String get mild => 'Mild';
+  String get mild => 'हल्का';
 
   @override
-  String get moderate => 'Moderate';
+  String get moderate => 'मध्यम';
 
   @override
-  String get severe => 'Severe';
+  String get severe => 'गंभीर';
 
   @override
-  String get add_symptom => 'Add Symptom';
+  String get add_symptom => 'लक्षण जोडा';
 
   @override
-  String get ambulance_tracking => 'Ambulance Tracking';
+  String get ambulance_tracking => 'रुग्णवाहिका ट्रॅकिंग';
 
   @override
-  String get hospital_delivery => 'Hospital Delivery';
+  String get hospital_delivery => 'रुग्णालय वितरण';
 
   @override
-  String get patient_delivery_in_progress => 'Patient delivery in progress';
+  String get patient_delivery_in_progress => 'रुग्ण वितरण प्रगतीत';
 
   @override
-  String get tracking_timeline => 'Tracking Timeline';
+  String get tracking_timeline => 'ट्रॅकिंग टाइमलाइन';
 
   @override
-  String get dispatched => 'Dispatched';
+  String get dispatched => 'प्रेषित';
 
   @override
-  String get on_the_way => 'On the Way';
+  String get on_the_way => 'रस्त्यावर';
 
   @override
   String get arrived => 'Arrived';

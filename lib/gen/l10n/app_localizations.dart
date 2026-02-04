@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'app_localizations_en.dart';
 import 'app_localizations_hi.dart';
 import 'app_localizations_kn.dart';
+import 'app_localizations_mr.dart';
 
 // ignore_for_file: type=lint
 
@@ -97,7 +98,8 @@ abstract class AppLocalizations {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('hi'),
-    Locale('kn')
+    Locale('kn'),
+    Locale('mr')
   ];
 
   /// No description provided for @appTitle.
@@ -645,6 +647,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your trusted healthcare companion'**
   String get your_trusted_healthcare;
+
+  /// No description provided for @proposed_solution.
+  ///
+  /// In en, this message translates to:
+  /// **'Proposed Solution'**
+  String get proposed_solution;
+
+  /// No description provided for @unified_health_dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Unified Health Dashboard'**
+  String get unified_health_dashboard;
+
+  /// No description provided for @digital_records_history.
+  ///
+  /// In en, this message translates to:
+  /// **'Digital health records & history'**
+  String get digital_records_history;
+
+  /// No description provided for @all_health_info.
+  ///
+  /// In en, this message translates to:
+  /// **'All health info in one place'**
+  String get all_health_info;
+
+  /// No description provided for @preventive_health_alerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Preventive Health Alerts'**
+  String get preventive_health_alerts;
+
+  /// No description provided for @area_based_outbreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Area-based outbreak alerts'**
+  String get area_based_outbreak;
+
+  /// No description provided for @city_wide_warnings.
+  ///
+  /// In en, this message translates to:
+  /// **'City-wide health warnings'**
+  String get city_wide_warnings;
+
+  /// No description provided for @one_touch_sos.
+  ///
+  /// In en, this message translates to:
+  /// **'One-touch SOS button'**
+  String get one_touch_sos;
+
+  /// No description provided for @quick_emergency_help.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick emergency help'**
+  String get quick_emergency_help;
+
+  /// No description provided for @smart_integrated_system.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart, Accessible & Integrated Health Management System'**
+  String get smart_integrated_system;
+
+  /// No description provided for @hospital_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Hospital'**
+  String get hospital_label;
+
+  /// No description provided for @app_label.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get app_label;
+
+  /// No description provided for @government_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Government'**
+  String get government_label;
 
   /// No description provided for @no_patients.
   ///
@@ -1833,6 +1913,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your password has been updated successfully'**
   String get password_updated_successfully;
+
+  /// No description provided for @get_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get get_started;
+
+  /// No description provided for @already_have_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get already_have_account;
 }
 
 class _AppLocalizationsDelegate
@@ -1846,7 +1938,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'hi', 'kn'].contains(locale.languageCode);
+      <String>['en', 'hi', 'kn', 'mr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1861,6 +1953,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
       return AppLocalizationsHi();
     case 'kn':
       return AppLocalizationsKn();
+    case 'mr':
+      return AppLocalizationsMr();
   }
 
   throw FlutterError(
