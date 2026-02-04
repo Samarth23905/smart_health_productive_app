@@ -23,7 +23,7 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
     _analyticsFuture = ApiService.getGovernmentAnalytics();
     
     // Auto-refresh analytics every 30 seconds
-    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 120), (_) {
       if (mounted) {
         setState(() {
           _analyticsFuture = ApiService.getGovernmentAnalytics();

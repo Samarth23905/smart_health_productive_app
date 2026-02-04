@@ -96,7 +96,7 @@ CREATE TABLE hospitals (
     ambulance_count INTEGER DEFAULT 0,
 
     -- Equipment & oxygen
-    oxygen_available BOOLEAN DEFAULT TRUE,
+    oxygen_available BOOLEAN DEFAULT FALSE,
     central_oxygen BOOLEAN DEFAULT FALSE,
     oxygen_cylinders INTEGER DEFAULT 0,
     defibrillator BOOLEAN DEFAULT FALSE,
@@ -149,7 +149,7 @@ CREATE TABLE ambulance_alerts (
     citizen_id INTEGER NOT NULL REFERENCES citizens(id) ON DELETE CASCADE,
     hospital_id INTEGER NOT NULL REFERENCES hospitals(id) ON DELETE CASCADE,
 	ambulance_latitude  DOUBLE PRECISION,
-    ambulance_longitude DOUBLE PRECISION
+    ambulance_longitude DOUBLE PRECISION,
     status VARCHAR(30) NOT NULL DEFAULT 'dispatched' CHECK (status IN (
         'dispatched',
         'on_the_way',
@@ -214,7 +214,3 @@ CREATE TABLE government_analysis (
 
 CREATE INDEX idx_government_analysis_date ON government_analysis(report_date DESC);
 
-
-select * from users;
-
-delete from users where id=3 and id=5;

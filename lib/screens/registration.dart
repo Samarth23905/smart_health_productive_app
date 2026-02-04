@@ -20,7 +20,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Uint8List? imageBytes;
   String? profilePicBase64;
   bool isLoading = false;
-  bool oxygenAvailable = false;
 
   final nameCtrl = TextEditingController();
   final emailCtrl = TextEditingController();
@@ -28,8 +27,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final latCtrl = TextEditingController();
   final lngCtrl = TextEditingController();
   final passCtrl = TextEditingController();
-  final totalBedsCtrl = TextEditingController();
-  final icuBedsCtrl = TextEditingController();
 
   Future<void> autoFetchLocation(AppLocalizations loc) async {
     try {
@@ -160,7 +157,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       final data = <String, dynamic>{
         "role": role,
         "name": nameCtrl.text,
-        "email": emailCtrl.text,
         "password": passCtrl.text,
       };
 
@@ -177,9 +173,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
       } else if (role == "hospital") {
         if (latCtrl.text.isNotEmpty) data["latitude"] = double.parse(latCtrl.text);
         if (lngCtrl.text.isNotEmpty) data["longitude"] = double.parse(lngCtrl.text);
-        data["total_beds"] = int.tryParse(totalBedsCtrl.text) ?? 0;
-        data["icu_beds"] = int.tryParse(icuBedsCtrl.text) ?? 0;
-        data["oxygen_available"] = oxygenAvailable;
         if (profilePicBase64 != null) data["profile_pic"] = profilePicBase64;
       } else if (role == "ambulance") {
         // For ambulance, location will be continuously updated after login
@@ -347,17 +340,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
             ),
             const SizedBox(height: 15),
 
-            // Email Field
-            TextField(
-              controller: emailCtrl,
-              decoration: InputDecoration(
-                labelText: loc.email,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            // Email Field (skip for government)
+            if (role != "government")
+              TextField(
+                controller: emailCtrl,
+                decoration: InputDecoration(
+                  labelText: loc.email,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.email),
                 ),
-                prefixIcon: const Icon(Icons.email),
               ),
-            ),
             const SizedBox(height: 15),
 
             // Phone Field (skip for government)
@@ -434,45 +428,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
             if (role == "citizen" || role == "hospital") const SizedBox(height: 15),
 
-            // Total Beds (only for hospital)
-            if (role == "hospital")
-              TextField(
-                controller: totalBedsCtrl,
-                decoration: InputDecoration(
-                  labelText: loc.total_beds,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.hotel),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            if (role == "hospital") const SizedBox(height: 15),
-
-            // ICU Beds (only for hospital)
-            if (role == "hospital")
-              TextField(
-                controller: icuBedsCtrl,
-                decoration: InputDecoration(
-                  labelText: loc.icu_beds,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.hotel),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            if (role == "hospital") const SizedBox(height: 15),
-
-            // Oxygen Available (only for hospital)
-            if (role == "hospital")
-              CheckboxListTile(
-                title: Text(loc.oxygen_available),
-                value: oxygenAvailable,
-                onChanged: (v) => setState(() => oxygenAvailable = v!),
-              ),
-            if (role == "hospital") const SizedBox(height: 15),
-
             // Password Field
             TextField(
               controller: passCtrl,
@@ -513,8 +468,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
     latCtrl.dispose();
     lngCtrl.dispose();
     passCtrl.dispose();
-    totalBedsCtrl.dispose();
-    icuBedsCtrl.dispose();
     super.dispose();
   }
 }
