@@ -393,8 +393,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
             if (role == "citizen") const SizedBox(height: 15),
 
-            // Auto-fetch Location Button (only for citizens)
-            if (role == "citizen")
+            // Auto-fetch Location Button (for citizens and hospitals)
+            if (role == "citizen" || role == "hospital")
               ElevatedButton(
                 onPressed: () => autoFetchLocation(loc),
                 style: ElevatedButton.styleFrom(
@@ -402,7 +402,37 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
                 child: Text(loc.auto_fetch_location),
               ),
-            if (role != "government") const SizedBox(height: 15),
+            if (role == "citizen" || role == "hospital") const SizedBox(height: 15),
+
+            // Latitude Field (for citizens and hospitals)
+            if (role == "citizen" || role == "hospital")
+              TextField(
+                controller: latCtrl,
+                decoration: InputDecoration(
+                  labelText: "Latitude",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.location_on),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            if (role == "citizen" || role == "hospital") const SizedBox(height: 15),
+
+            // Longitude Field (for citizens and hospitals)
+            if (role == "citizen" || role == "hospital")
+              TextField(
+                controller: lngCtrl,
+                decoration: InputDecoration(
+                  labelText: "Longitude",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.location_on),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            if (role == "citizen" || role == "hospital") const SizedBox(height: 15),
 
             // Total Beds (only for hospital)
             if (role == "hospital")

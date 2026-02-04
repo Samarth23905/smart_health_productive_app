@@ -385,7 +385,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 24),
 
                 // Register Link
-                if (role == "citizen" || role == "hospital")
+                if (role == "citizen" || role == "hospital" || role == "government")
                   Center(
                     child: RichText(
                       text: TextSpan(
