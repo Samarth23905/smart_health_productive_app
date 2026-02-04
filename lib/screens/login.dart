@@ -6,6 +6,7 @@ import '../services/api_services.dart';
 import '../constants/app_colors.dart';
 import '../providers/language_provider.dart';
 import 'registration.dart';
+import 'forgot_password.dart';
 import 'citizen_dashboard.dart';
 import 'hospital_dashboard.dart';
 import 'ambulance_dashboard.dart';
@@ -331,7 +332,14 @@ class _LoginPageState extends State<LoginPage> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ForgotPasswordPage(),
+                        ),
+                      );
+                    },
                     child: Text(
                       loc.forgot_password,
                       style: const TextStyle(

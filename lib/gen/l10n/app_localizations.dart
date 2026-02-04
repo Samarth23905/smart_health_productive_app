@@ -1731,6 +1731,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mortuary'**
   String get mortuary;
+
+  /// No description provided for @user_found.
+  ///
+  /// In en, this message translates to:
+  /// **'User found'**
+  String get user_found;
+
+  /// No description provided for @user_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found'**
+  String get user_not_found;
+
+  /// No description provided for @passwords_do_not_match.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwords_do_not_match;
+
+  /// No description provided for @password_reset_successful.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset successfully'**
+  String get password_reset_successful;
+
+  /// No description provided for @password_reset_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to reset password'**
+  String get password_reset_failed;
+
+  /// No description provided for @account_recovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Account recovery'**
+  String get account_recovery;
+
+  /// No description provided for @enter_email_or_username.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email or username to recover your account'**
+  String get enter_email_or_username;
+
+  /// No description provided for @email_or_username.
+  ///
+  /// In en, this message translates to:
+  /// **'Email or Username'**
+  String get email_or_username;
+
+  /// No description provided for @verify_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Account'**
+  String get verify_account;
+
+  /// No description provided for @back_to_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get back_to_login;
+
+  /// No description provided for @set_new_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Set New Password'**
+  String get set_new_password;
+
+  /// No description provided for @enter_secure_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a new secure password for your account'**
+  String get enter_secure_password;
+
+  /// No description provided for @new_password.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get new_password;
+
+  /// No description provided for @confirm_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirm_password;
+
+  /// No description provided for @reset_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get reset_password;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @password_updated_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password has been updated successfully'**
+  String get password_updated_successfully;
 }
 
 class _AppLocalizationsDelegate

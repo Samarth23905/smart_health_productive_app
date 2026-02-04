@@ -832,4 +832,58 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get mortuary => 'मोर्ट्यूरी';
+
+  @override
+  String get user_found => 'उपयोगकर्ता मिला';
+
+  @override
+  String get user_not_found => 'उपयोगकर्ता नहीं मिला';
+
+  @override
+  String get passwords_do_not_match => 'पासवर्ड मेल नहीं खाते';
+
+  @override
+  String get password_reset_successful => 'पासवर्ड सफलतापूर्वक रीसेट किया गया';
+
+  @override
+  String get password_reset_failed => 'पासवर्ड रीसेट विफल';
+
+  @override
+  String get account_recovery => 'खाता पुनर्प्राप्ति';
+
+  @override
+  String get enter_email_or_username =>
+      'अपना खाता पुनर्प्राप्त करने के लिए अपना ईमेल या उपयोगकर्ता नाम दर्ज करें';
+
+  @override
+  String get email_or_username => 'ईमेल या उपयोगकर्ता नाम';
+
+  @override
+  String get verify_account => 'खाता सत्यापित करें';
+
+  @override
+  String get back_to_login => 'लॉगिन पर वापस';
+
+  @override
+  String get set_new_password => 'नया पासवर्ड सेट करें';
+
+  @override
+  String get enter_secure_password =>
+      'अपने खाते के लिए एक नया सुरक्षित पासवर्ड दर्ज करें';
+
+  @override
+  String get new_password => 'नया पासवर्ड';
+
+  @override
+  String get confirm_password => 'पासवर्ड की पुष्टि करें';
+
+  @override
+  String get reset_password => 'पासवर्ड रीसेट करें';
+
+  @override
+  String get success => 'सफलता';
+
+  @override
+  String get password_updated_successfully =>
+      'आपका पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है';
 }

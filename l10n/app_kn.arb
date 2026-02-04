@@ -280,4 +280,22 @@
   "dialysis_unit": "ಡಯಾಲಿಸಿಸ್ ಯುನಿಟ್",
   "cssd": "CSSD",
   "mortuary": "ಮೋರ್ಟುವರಿ"
+,
+  "user_found": "User found",
+  "user_not_found": "User not found",
+  "passwords_do_not_match": "Passwords do not match",
+  "password_reset_successful": "Password reset successfully",
+  "password_reset_failed": "Failed to reset password",
+  "account_recovery": "Account recovery",
+  "enter_email_or_username": "Enter your email or username to recover your account",
+  "email_or_username": "Email or Username",
+  "verify_account": "Verify Account",
+  "back_to_login": "Back to Login",
+  "set_new_password": "Set New Password",
+  "enter_secure_password": "Enter a new secure password for your account",
+  "new_password": "New Password",
+  "confirm_password": "Confirm Password",
+  "reset_password": "Reset Password",
+  "success": "Success",
+  "password_updated_successfully": "Your password has been updated successfully"
 }

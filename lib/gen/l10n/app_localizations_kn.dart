@@ -836,4 +836,58 @@ class AppLocalizationsKn extends AppLocalizations {
 
   @override
   String get mortuary => 'ಮೋರ್ಟುವರಿ';
+
+  @override
+  String get user_found => 'User found';
+
+  @override
+  String get user_not_found => 'User not found';
+
+  @override
+  String get passwords_do_not_match => 'Passwords do not match';
+
+  @override
+  String get password_reset_successful => 'Password reset successfully';
+
+  @override
+  String get password_reset_failed => 'Failed to reset password';
+
+  @override
+  String get account_recovery => 'Account recovery';
+
+  @override
+  String get enter_email_or_username =>
+      'Enter your email or username to recover your account';
+
+  @override
+  String get email_or_username => 'Email or Username';
+
+  @override
+  String get verify_account => 'Verify Account';
+
+  @override
+  String get back_to_login => 'Back to Login';
+
+  @override
+  String get set_new_password => 'Set New Password';
+
+  @override
+  String get enter_secure_password =>
+      'Enter a new secure password for your account';
+
+  @override
+  String get new_password => 'New Password';
+
+  @override
+  String get confirm_password => 'Confirm Password';
+
+  @override
+  String get reset_password => 'Reset Password';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get password_updated_successfully =>
+      'Your password has been updated successfully';
 }

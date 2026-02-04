@@ -491,4 +491,43 @@ class ApiService {
       return false;
     }
   }
+
+  static Future<bool> verifyUserExists(String identifier, String role) async {
+    try {
+      final res = await http.post(
+        Uri.parse("$baseUrl/auth/verify-user"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "credential": identifier,
+          "role": role,
+        }),
+      );
+
+      print("VerifyUser - Status: ${res.statusCode}");
+      return res.statusCode == 200;
+    } catch (e) {
+      print("Exception in verifyUserExists: $e");
+      return false;
+    }
+  }
+
+  static Future<bool> resetPassword(String identifier, String newPassword, String role) async {
+    try {
+      final res = await http.post(
+        Uri.parse("$baseUrl/auth/reset-password"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "credential": identifier,
+          "new_password": newPassword,
+          "role": role,
+        }),
+      );
+
+      print("ResetPassword - Status: ${res.statusCode}");
+      return res.statusCode == 200;
+    } catch (e) {
+      print("Exception in resetPassword: $e");
+      return false;
+    }
+  }
 }

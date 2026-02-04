@@ -152,3 +152,98 @@ def login():
         traceback.print_exc()
         logger.error(f"Login error: {str(e)}", exc_info=True)
         return jsonify(error=str(e)), 500
+@auth_bp.route("/verify-user", methods=["POST"])
+def verify_user():
+    """Verify if a user exists by credential and role"""
+    try:
+        data = request.json
+        
+        if not data or not data.get("credential") or not data.get("role"):
+            return jsonify(error="Missing required fields: credential, role"), 400
+        
+        role = data["role"]
+        credential = data.get("credential")
+        
+        user = None
+        
+        if role == "citizen":
+            # Try to find by email, phone, or name
+            if "@" in credential:
+                user = User.query.filter_by(email=credential, role="citizen").first()
+            else:
+                phone_digits = ''.join(c for c in credential if c.isdigit())
+                if len(phone_digits) >= 10 and phone_digits == credential.replace("-", "").replace(" ", ""):
+                    user = User.query.filter_by(phone=credential, role="citizen").first()
+                    if not user:
+                        citizen_obj = Citizen.query.filter_by(phone=credential).first()
+                        if citizen_obj:
+                            user = User.query.get(citizen_obj.user_id)
+                else:
+                    user = User.query.filter_by(name=credential, role="citizen").first()
+        else:
+            # For hospital, government - search by name
+            user = User.query.filter_by(name=credential, role=role).first()
+        
+        if user:
+            print(f"[VerifyUser] User found: {credential}, role: {role}")
+            return jsonify(msg="User found"), 200
+        else:
+            print(f"[VerifyUser] User not found: {credential}, role: {role}")
+            return jsonify(error="User not found"), 401
+    
+    except Exception as e:
+        print(f"[VerifyUser Error] {str(e)}")
+        traceback.print_exc()
+        logger.error(f"VerifyUser error: {str(e)}", exc_info=True)
+        return jsonify(error=str(e)), 500
+
+@auth_bp.route("/reset-password", methods=["POST"])
+def reset_password():
+    """Reset user password by credential"""
+    try:
+        data = request.json
+        
+        if not data or not data.get("credential") or not data.get("new_password") or not data.get("role"):
+            return jsonify(error="Missing required fields: credential, new_password, role"), 400
+        
+        role = data["role"]
+        credential = data.get("credential")
+        new_password = data.get("new_password")
+        
+        user = None
+        
+        if role == "citizen":
+            # Try to find by email, phone, or name
+            if "@" in credential:
+                user = User.query.filter_by(email=credential, role="citizen").first()
+            else:
+                phone_digits = ''.join(c for c in credential if c.isdigit())
+                if len(phone_digits) >= 10 and phone_digits == credential.replace("-", "").replace(" ", ""):
+                    user = User.query.filter_by(phone=credential, role="citizen").first()
+                    if not user:
+                        citizen_obj = Citizen.query.filter_by(phone=credential).first()
+                        if citizen_obj:
+                            user = User.query.get(citizen_obj.user_id)
+                else:
+                    user = User.query.filter_by(name=credential, role="citizen").first()
+        else:
+            # For hospital, government - search by name
+            user = User.query.filter_by(name=credential, role=role).first()
+        
+        if not user:
+            print(f"[ResetPassword] User not found: {credential}, role: {role}")
+            return jsonify(error="User not found"), 401
+        
+        # Update password
+        user.password = generate_password_hash(new_password)
+        db.session.commit()
+        
+        print(f"[ResetPassword] Password reset successfully for user: {credential}, role: {role}")
+        return jsonify(msg="Password reset successfully"), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ResetPassword Error] {str(e)}")
+        traceback.print_exc()
+        logger.error(f"ResetPassword error: {str(e)}", exc_info=True)
+        return jsonify(error=str(e)), 500

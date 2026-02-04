@@ -280,4 +280,22 @@
   "dialysis_unit": "डायलिसिस यूनिट",
   "cssd": "CSSD",
   "mortuary": "मोर्ट्यूरी"
+,
+  "user_found": "उपयोगकर्ता मिला",
+  "user_not_found": "उपयोगकर्ता नहीं मिला",
+  "passwords_do_not_match": "पासवर्ड मेल नहीं खाते",
+  "password_reset_successful": "पासवर्ड सफलतापूर्वक रीसेट किया गया",
+  "password_reset_failed": "पासवर्ड रीसेट विफल",
+  "account_recovery": "खाता पुनर्प्राप्ति",
+  "enter_email_or_username": "अपना खाता पुनर्प्राप्त करने के लिए अपना ईमेल या उपयोगकर्ता नाम दर्ज करें",
+  "email_or_username": "ईमेल या उपयोगकर्ता नाम",
+  "verify_account": "खाता सत्यापित करें",
+  "back_to_login": "लॉगिन पर वापस",
+  "set_new_password": "नया पासवर्ड सेट करें",
+  "enter_secure_password": "अपने खाते के लिए एक नया सुरक्षित पासवर्ड दर्ज करें",
+  "new_password": "नया पासवर्ड",
+  "confirm_password": "पासवर्ड की पुष्टि करें",
+  "reset_password": "पासवर्ड रीसेट करें",
+  "success": "सफलता",
+  "password_updated_successfully": "आपका पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है"
 }
