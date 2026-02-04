@@ -34,9 +34,9 @@ class Hospital(db.Model):
     phone = db.Column(db.String(20))
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
-    total_beds = db.Column(db.Integer)
-    icu_beds = db.Column(db.Integer)
-    oxygen_available = db.Column(db.Boolean, default=True)
+    total_beds = db.Column(db.Integer, default=0)
+    icu_beds = db.Column(db.Integer, default=0)
+    oxygen_available = db.Column(db.Boolean, default=False)
     profile_pic = db.Column(db.Text)  # base64 encoded image
     # Ward resources
     general_total = db.Column(db.Integer, default=0)
