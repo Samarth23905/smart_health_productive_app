@@ -28,18 +28,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final lngCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
-  // Password validation states
+  // validation states
   bool has6Characters = false;
   bool hasSpecialCharacter = false;
   bool hasCapitalLetter = false;
-
-  // Email validation state
   bool hasValidEmail = false;
 
-  // Phone validation state
   bool hasValidPhone = false;
 
-  // Password validation method
   void validatePassword(String password) {
     setState(() {
       has6Characters = password.length >= 6;
@@ -48,28 +44,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
     });
   }
 
-  // Email validation method
   void validateEmail(String email) {
     setState(() {
       hasValidEmail = email.contains('@');
     });
   }
 
-  // Phone validation method
   void validatePhone(String phone) {
     setState(() {
       hasValidPhone = phone.length == 10 && RegExp(r'^\d+$').hasMatch(phone);
     });
   }
 
-  // Check if all validations are met based on role
   bool areAllValidationsMet() {
-    // Password validations are required for all roles
     if (!has6Characters || !hasSpecialCharacter || !hasCapitalLetter) {
       return false;
     }
 
-    // Email and phone validations for non-government roles
     if (role != "government") {
       if (!hasValidEmail || !hasValidPhone) {
         return false;
