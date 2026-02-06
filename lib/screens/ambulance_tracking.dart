@@ -232,9 +232,9 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
 
         // Wait a moment then navigate back to dashboard
         await Future.delayed(const Duration(seconds: 2));
-        
+
         if (mounted) {
-          Navigator.popUntil(context, (route) => route.isFirst);
+          Navigator.pop(context);
         }
       } else {
         if (mounted) {
