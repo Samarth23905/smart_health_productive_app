@@ -28,6 +28,57 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final lngCtrl = TextEditingController();
   final passCtrl = TextEditingController();
 
+  // Password validation states
+  bool has6Characters = false;
+  bool hasSpecialCharacter = false;
+  bool hasCapitalLetter = false;
+
+  // Email validation state
+  bool hasValidEmail = false;
+
+  // Phone validation state
+  bool hasValidPhone = false;
+
+  // Password validation method
+  void validatePassword(String password) {
+    setState(() {
+      has6Characters = password.length >= 6;
+      hasSpecialCharacter = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password);
+      hasCapitalLetter = password.isNotEmpty && password[0].toUpperCase() == password[0];
+    });
+  }
+
+  // Email validation method
+  void validateEmail(String email) {
+    setState(() {
+      hasValidEmail = email.contains('@');
+    });
+  }
+
+  // Phone validation method
+  void validatePhone(String phone) {
+    setState(() {
+      hasValidPhone = phone.length == 10 && RegExp(r'^\d+$').hasMatch(phone);
+    });
+  }
+
+  // Check if all validations are met based on role
+  bool areAllValidationsMet() {
+    // Password validations are required for all roles
+    if (!has6Characters || !hasSpecialCharacter || !hasCapitalLetter) {
+      return false;
+    }
+
+    // Email and phone validations for non-government roles
+    if (role != "government") {
+      if (!hasValidEmail || !hasValidPhone) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   Future<void> autoFetchLocation(AppLocalizations loc) async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -124,6 +175,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
       return;
     }
 
+    // Validate password requirements
+    if (!has6Characters || !hasSpecialCharacter || !hasCapitalLetter) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password must have 6+ characters, a special character, and start with uppercase")),
+      );
+      return;
+    }
+
+    // Validate email (skip for government)
+    if (role != "government") {
+      if (!hasValidEmail) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Email must contain '@' symbol")),
+        );
+        return;
+      }
+
+      // Validate phone
+      if (!hasValidPhone) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Phone number must be exactly 10 digits")),
+        );
+        return;
+      }
+    }
+
     // For hospitals, validate lat/lng if provided; for citizens auto-fetch will happen
     if (role == "hospital") {
       if (latCtrl.text.isNotEmpty || lngCtrl.text.isNotEmpty) {
@@ -200,6 +277,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
     } finally {
       setState(() => isLoading = false);
     }
+  }
+
+  // Build validation row with tick symbol
+  Widget _buildValidationRow(String text, bool isValid) {
+    return Row(
+      children: [
+        Icon(
+          isValid ? Icons.check_circle : Icons.radio_button_unchecked,
+          color: isValid ? Colors.green : Colors.grey,
+          size: 20,
+        ),
+        const SizedBox(width: 10),
+        Text(
+          text,
+          style: TextStyle(
+            color: isValid ? Colors.green : Colors.grey,
+            fontWeight: isValid ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -344,6 +442,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             if (role != "government")
               TextField(
                 controller: emailCtrl,
+                onChanged: validateEmail,
                 decoration: InputDecoration(
                   labelText: loc.email,
                   border: OutlineInputBorder(
@@ -353,11 +452,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
               ),
             const SizedBox(height: 15),
+            // Email Validation Indicator (skip for government)
+            if (role != "government")
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey[50],
+                ),
+                child: _buildValidationRow("Email contains '@' symbol", hasValidEmail),
+              ),
+            if (role != "government") const SizedBox(height: 20),
 
             // Phone Field (skip for government)
             if (role != "government")
               TextField(
                 controller: phoneCtrl,
+                onChanged: validatePhone,
                 decoration: InputDecoration(
                   labelText: loc.phone_number,
                   border: OutlineInputBorder(
@@ -367,6 +479,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
               ),
             if (role != "government") const SizedBox(height: 15),
+
+            // Phone Validation Indicator (skip for government)
+            if (role != "government")
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey[50],
+                ),
+                child: _buildValidationRow("Phone number is 10 digits", hasValidPhone),
+              ),
+            if (role != "government") const SizedBox(height: 20),
 
             // Gender Field (only for citizen)
             if (role == "citizen")
@@ -432,6 +557,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
             TextField(
               controller: passCtrl,
               obscureText: true,
+              onChanged: validatePassword,
               decoration: InputDecoration(
                 labelText: loc.password,
                 border: OutlineInputBorder(
@@ -440,14 +566,35 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 prefixIcon: const Icon(Icons.lock),
               ),
             ),
+            const SizedBox(height: 15),
+
+            // Password Validation Indicators
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[300]!),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.grey[50],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildValidationRow("At least 6 characters", has6Characters),
+                  const SizedBox(height: 10),
+                  _buildValidationRow("One special character (!@#\$%^&*...)", hasSpecialCharacter),
+                  const SizedBox(height: 10),
+                  _buildValidationRow("First letter is uppercase", hasCapitalLetter),
+                ],
+              ),
+            ),
             const SizedBox(height: 20),
 
             // Register Button
             ElevatedButton(
-              onPressed: isLoading ? null : () => register(loc),
+              onPressed: (isLoading || !areAllValidationsMet()) ? null : () => register(loc),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: AppColors.primary,
+                backgroundColor: areAllValidationsMet() ? AppColors.primary : Colors.grey,
                 foregroundColor: Colors.white,
               ),
               child: isLoading
