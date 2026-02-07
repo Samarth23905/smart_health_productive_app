@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/api_services.dart';
@@ -25,6 +26,12 @@ class _CitizenTrackingState extends State<CitizenTracking> {
   double ambulanceLon = 0.0;
   DateTime? _createdAt;
 
+  // For speed tracking
+  double prevAmbulanceLat = 0.0;
+  double prevAmbulanceLon = 0.0;
+  DateTime? _lastLocationUpdate;
+  double currentAmbulanceSpeedKmh = 0.0; // Default speed
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +47,7 @@ class _CitizenTrackingState extends State<CitizenTracking> {
     try {
       final data = await ApiService.getAmbulanceStatus(widget.alertId);
       if (data != null && mounted) {
+        print("[CitizenTracking] API Response: eta_minutes=${data["eta_minutes"]}, created_at=${data["created_at"]}, status=${data["status"]}");
         setState(() {
           eta = data["eta_minutes"] as int? ?? 0;
           initialEta = data["eta_minutes"] as int? ?? 0;
@@ -93,19 +101,49 @@ class _CitizenTrackingState extends State<CitizenTracking> {
     try {
       final data = await ApiService.getAmbulanceStatus(widget.alertId);
       if (data != null && mounted) {
+        final newAmbulanceLat = (data["ambulance_latitude"] as num?)?.toDouble() ?? 0.0;
+        final newAmbulanceLon = (data["ambulance_longitude"] as num?)?.toDouble() ?? 0.0;
+
+        // Calculate speed if we have previous location and time
+        if (prevAmbulanceLat != 0.0 && _lastLocationUpdate != null) {
+          final distance = _calculateDistance(
+            prevAmbulanceLat,
+            prevAmbulanceLon,
+            newAmbulanceLat,
+            newAmbulanceLon,
+          );
+
+          final timeDiffSeconds = DateTime.now().difference(_lastLocationUpdate!).inSeconds;
+          if (timeDiffSeconds > 0) {
+            final timeDiffHours = timeDiffSeconds / 3600.0;
+            final speedKmh = distance / timeDiffHours;
+
+            // Use exponential moving average to smooth out speed variations
+            // This prevents erratic speed changes from GPS noise
+            currentAmbulanceSpeedKmh = (currentAmbulanceSpeedKmh * 0.7) + (speedKmh * 0.3);
+            print("[CitizenTracking] Speed calculated: ${speedKmh.toStringAsFixed(2)} km/h, Smoothed: ${currentAmbulanceSpeedKmh.toStringAsFixed(2)} km/h");
+          }
+        }
+
+        // Update previous location for next calculation
+        prevAmbulanceLat = newAmbulanceLat;
+        prevAmbulanceLon = newAmbulanceLon;
+        _lastLocationUpdate = DateTime.now();
+
         setState(() {
-          eta = data["eta_minutes"] as int? ?? eta;
+          eta = data["eta_minutes"] as int? ?? 0;
           status = data["status"] as String? ?? status;
           citizenLat = (data["citizen_latitude"] as num?)?.toDouble() ?? citizenLat;
           citizenLon = (data["citizen_longitude"] as num?)?.toDouble() ?? citizenLon;
-          ambulanceLat = (data["ambulance_latitude"] as num?)?.toDouble() ?? ambulanceLat;
-          ambulanceLon = (data["ambulance_longitude"] as num?)?.toDouble() ?? ambulanceLon;
-          
-          // When arrived or delivered, set ETA to 0
+          ambulanceLat = newAmbulanceLat;
+          ambulanceLon = newAmbulanceLon;
+
+          // When arrived or delivered, set ETA to 0 and speed to 0
           if (status == "arrived" || status == "delivered") {
             eta = 0;
+            currentAmbulanceSpeedKmh = 0.0;  // Reset speed when arrived/delivered
           }
-          
+
           try {
             final createdAtStr = data["created_at"] as String?;
             if (createdAtStr != null && createdAtStr.isNotEmpty) {
@@ -141,6 +179,45 @@ class _CitizenTrackingState extends State<CitizenTracking> {
     final elapsed = DateTime.now().difference(_createdAt!).inSeconds;
     final progress = (elapsed / totalSeconds).clamp(0.0, 1.0);
     return progress;
+  }
+
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    // Haversine formula to calculate distance in kilometers
+    const p = 0.017453292519943295;
+    final a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) *
+            cos(lat2 * p) *
+            (1 - cos((lon2 - lon1) * p)) /
+            2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  int getRemainingETA() {
+    // Calculate ETA using Haversine formula based on real-time positions
+    // and actual ambulance speed calculated from location updates
+
+    if (status == "arrived" || status == "delivered") {
+      print("[CitizenTracking] ETA: 0 (arrived/delivered)");
+      return 0;
+    }
+
+    // Use calculated speed (with minimum of 10 km/h to avoid division issues)
+    final speedToUse = currentAmbulanceSpeedKmh > 0 ? currentAmbulanceSpeedKmh : 45.0;
+
+    // Calculate distance from ambulance to citizen location
+    final distance = _calculateDistance(
+      ambulanceLat,
+      ambulanceLon,
+      citizenLat,
+      citizenLon,
+    );
+
+    // Calculate ETA in minutes: (distance in km / speed in km/h) * 60
+    final etaMinutes = (distance / speedToUse * 60).ceil();
+    print("[CitizenTracking] Distance: ${distance.toStringAsFixed(2)} km, Speed: ${speedToUse.toStringAsFixed(2)} km/h, ETA: $etaMinutes minutes");
+
+    return etaMinutes.clamp(0, 999);
   }
 
   String getStatusLabel() {
@@ -284,6 +361,49 @@ class _CitizenTrackingState extends State<CitizenTracking> {
     }
   }
 
+  Widget _buildSpeedometer() {
+    // Speedometer display showing current ambulance speed
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.blue.shade50,
+        border: Border.all(color: Colors.blue, width: 3),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            currentAmbulanceSpeedKmh.toStringAsFixed(1),
+            style: TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue.shade700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'km/h',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTrackingTimeline() {
     final loc = AppLocalizations.of(context)!;
     final steps = [
@@ -419,11 +539,13 @@ class _CitizenTrackingState extends State<CitizenTracking> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
             // Hospital Delivery Card
             Card(
               elevation: 8,
@@ -500,7 +622,7 @@ class _CitizenTrackingState extends State<CitizenTracking> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      '$eta minutes',
+                      '${getRemainingETA()} minutes',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -671,8 +793,16 @@ class _CitizenTrackingState extends State<CitizenTracking> {
                 ],
               ),
             ),
-          ],
-        ),
+              ],
+            ),
+          ),
+          // Speedometer positioned at bottom left
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: _buildSpeedometer(),
+          ),
+        ],
       ),
     );
   }

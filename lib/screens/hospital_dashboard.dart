@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
@@ -17,11 +18,15 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
   Timer? _refreshTimer;
   late Future<List> _casesFuture;
 
+  // For speed tracking per ambulance
+  final Map<int, double> _ambulanceSpeedMap = {};
+  final Map<int, Map<String, dynamic>> _prevLocationMap = {};
+
   @override
   void initState() {
     super.initState();
     _casesFuture = ApiService.getHospitalCases();
-    // Auto-refresh every 2 seconds to match ambulance_tracking updates
+    // Auto-refresh every 30 seconds
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
       if (mounted) {
         setState(() {
@@ -43,6 +48,87 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
       MaterialPageRoute(builder: (_) => LoginPage()),
       (route) => false,
     );
+  }
+
+  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    // Haversine formula to calculate distance in kilometers
+    const p = 0.017453292519943295;
+    final a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) *
+            cos(lat2 * p) *
+            (1 - cos((lon2 - lon1) * p)) /
+            2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  int _calculateRemainingETA(Map<String, dynamic> caseData) {
+    // Calculate ETA using Haversine formula and real-time speed tracking
+    final status = caseData["status"] as String? ?? "";
+    final alertId = caseData["id"] ?? caseData["alert_id"];
+
+    // Show 0 when arrived or delivered
+    if (status == "arrived" || status == "delivered") {
+      print("[HospitalDashboard] ETA alert_id=$alertId: 0 (arrived/delivered)");
+      return 0;
+    }
+
+    // Get ambulance and hospital locations
+    final ambulanceLat = (caseData["ambulance_latitude"] as num?)?.toDouble() ?? 0.0;
+    final ambulanceLon = (caseData["ambulance_longitude"] as num?)?.toDouble() ?? 0.0;
+    final hospitalLat = (caseData["hospital_latitude"] as num?)?.toDouble() ?? 0.0;
+    final hospitalLon = (caseData["hospital_longitude"] as num?)?.toDouble() ?? 0.0;
+
+    // Update speed tracking if we have previous location
+    if (_prevLocationMap.containsKey(alertId)) {
+      final prevData = _prevLocationMap[alertId]!;
+      final prevLat = prevData['lat'] as double;
+      final prevLon = prevData['lon'] as double;
+      final prevTime = prevData['time'] as DateTime;
+
+      final distance = _calculateDistance(prevLat, prevLon, ambulanceLat, ambulanceLon);
+      final timeDiffSeconds = DateTime.now().difference(prevTime).inSeconds;
+
+      if (timeDiffSeconds > 0) {
+        final timeDiffHours = timeDiffSeconds / 3600.0;
+        final speedKmh = distance / timeDiffHours;
+
+        // Use exponential moving average to smooth speed
+        if (_ambulanceSpeedMap.containsKey(alertId)) {
+          final prevSpeed = _ambulanceSpeedMap[alertId]!;
+          _ambulanceSpeedMap[alertId] = (prevSpeed * 0.7) + (speedKmh * 0.3);
+        } else {
+          _ambulanceSpeedMap[alertId] = speedKmh;
+        }
+
+        print("[HospitalDashboard] Alert $alertId - Speed: ${speedKmh.toStringAsFixed(2)} km/h, Smoothed: ${_ambulanceSpeedMap[alertId]!.toStringAsFixed(2)} km/h");
+      }
+    }
+
+    // Store current location for next calculation
+    _prevLocationMap[alertId] = {
+      'lat': ambulanceLat,
+      'lon': ambulanceLon,
+      'time': DateTime.now(),
+    };
+
+    // Calculate distance to hospital
+    final distanceToHospital = _calculateDistance(
+      ambulanceLat,
+      ambulanceLon,
+      hospitalLat,
+      hospitalLon,
+    );
+
+    // Use calculated speed or default 45 km/h
+    final speedToUse = _ambulanceSpeedMap[alertId] ?? 45.0;
+
+    // Calculate ETA in minutes
+    final etaMinutes = (distanceToHospital / speedToUse * 60).ceil();
+
+    print("[HospitalDashboard] ETA alert_id=$alertId: Distance=${distanceToHospital.toStringAsFixed(2)} km, Speed=${speedToUse.toStringAsFixed(2)} km/h, ETA=$etaMinutes minutes");
+
+    return etaMinutes.clamp(0, 999);
   }
 
   Color _getStatusColor(String status) {
@@ -200,25 +286,8 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
               itemCount: cases.length,
               itemBuilder: (context, index) {
                 final c = cases[index];
-                
-                // Calculate real-time ETA like ambulance_tracking does
-                int displayEta = c["eta"] as int? ?? 0;
-                if (c["status"] != "arrived" && c["status"] != "delivered") {
-                  try {
-                    final createdAtStr = c["created_at"] as String?;
-                    if (createdAtStr != null && createdAtStr.isNotEmpty) {
-                      final createdAt = DateTime.parse(createdAtStr).toUtc();
-                      final elapsed = (DateTime.now().toUtc().difference(createdAt).inSeconds / 60).toInt();
-                      displayEta = ((c["eta"] as int? ?? 0) - elapsed).clamp(0, 999);
-                    }
-                  } catch (_) {
-                    // Use original ETA if parsing fails
-                  }
-                } else {
-                  // When arrived or delivered, show 0
-                  displayEta = 0;
-                }
-                
+                final displayEta = _calculateRemainingETA(c);
+
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(

@@ -159,6 +159,11 @@ CREATE TABLE ambulance_alerts (
         'delivered'
     )),
     eta_minutes INTEGER,
+    ambulance_speed_kmh FLOAT DEFAULT 0,
+    prev_ambulance_latitude FLOAT,
+    prev_ambulance_longitude FLOAT,
+    last_location_update TIMESTAMP,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	delivered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -169,6 +174,7 @@ CREATE INDEX idx_ambulance_alerts_citizen_id ON ambulance_alerts(citizen_id);
 CREATE INDEX idx_ambulance_alerts_hospital_id ON ambulance_alerts(hospital_id);
 CREATE INDEX idx_ambulance_alerts_status ON ambulance_alerts(status);
 CREATE INDEX idx_ambulance_alerts_created_at ON ambulance_alerts(created_at DESC);
+CREATE INDEX idx_ambulance_alerts_speed ON ambulance_alerts(ambulance_speed_kmh);
 
 CREATE TABLE government_analysis (
     id SERIAL PRIMARY KEY,

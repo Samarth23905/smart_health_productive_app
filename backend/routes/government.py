@@ -4,8 +4,54 @@ from models import db, User, Citizen, Hospital, Severity, AmbulanceAlert
 from datetime import datetime, timedelta
 from sqlalchemy import func, or_
 import statistics
+import math
 
 government_bp = Blueprint("government", __name__)
+
+def _haversine_distance(lat1, lon1, lat2, lon2):
+    """
+    Calculate distance between two points using Haversine formula.
+    Returns distance in kilometers.
+    """
+    if not all([lat1, lon1, lat2, lon2]):
+        return 0
+
+    try:
+        # Convert to radians
+        p = math.pi / 180.0
+        lat1_rad = lat1 * p
+        lon1_rad = lon1 * p
+        lat2_rad = lat2 * p
+        lon2_rad = lon2 * p
+
+        # Haversine formula
+        dlat = lat2_rad - lat1_rad
+        dlon = lon2_rad - lon1_rad
+        a = (math.sin(dlat / 2) ** 2) + math.cos(lat1_rad) * math.cos(lat2_rad) * (math.sin(dlon / 2) ** 2)
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+        # Earth's radius in km
+        earth_radius_km = 6371.0
+        distance = earth_radius_km * c
+
+        return distance
+    except Exception as e:
+        print(f"[Haversine Error] {str(e)}")
+        return 0
+
+def _calculate_eta_from_haversine(ambulance_lat, ambulance_lon, hospital_lat, hospital_lon, ambulance_speed_kmh=45.0):
+    """
+    Calculate ETA in minutes using Haversine distance and given speed.
+    Default ambulance speed: 45 km/h
+    """
+    if ambulance_speed_kmh <= 0:
+        ambulance_speed_kmh = 45.0
+
+    distance_km = _haversine_distance(ambulance_lat, ambulance_lon, hospital_lat, hospital_lon)
+
+    # ETA in minutes: (distance / speed) * 60
+    eta_minutes = (distance_km / ambulance_speed_kmh) * 60
+    return max(0, math.ceil(eta_minutes))
 
 @government_bp.route("/analytics", methods=["GET"])
 @jwt_required()
@@ -23,9 +69,9 @@ def get_analytics():
         total_alerts = db.session.query(func.count(AmbulanceAlert.id)).scalar() or 0
         total_citizens = db.session.query(func.count(Citizen.id)).scalar() or 0
         active_hospitals = db.session.query(func.count(Hospital.id)).scalar() or 0
-        ambulance_count = db.session.query(func.count(AmbulanceAlert.id)).filter(
-            AmbulanceAlert.status.in_(["dispatched", "on_the_way", "arrived"])
-        ).scalar() or 0
+
+        # Count ambulances by summing ambulance_count from all hospitals
+        ambulance_count = db.session.query(func.sum(Hospital.ambulance_count)).scalar() or 0
         
         # ============================================
         # SECTION 2: SEVERITY DISTRIBUTION
@@ -55,13 +101,58 @@ def get_analytics():
         ).scalar() or 0
         
         # ============================================
-        # SECTION 4: ETA STATISTICS
+        # SECTION 4: ETA STATISTICS (USING HAVERSINE)
         # ============================================
-        eta_values = db.session.query(AmbulanceAlert.eta_minutes).filter(
-            AmbulanceAlert.eta_minutes.isnot(None)
+        # Get all active alerts with location data
+        active_alerts = AmbulanceAlert.query.filter(
+            AmbulanceAlert.status.in_(["dispatched", "on_the_way", "arrived"])
         ).all()
-        eta_list = sorted([e[0] for e in eta_values if e[0] is not None])
-        
+
+        eta_list = []
+
+        # Calculate ETA for active alerts using Haversine formula
+        for alert in active_alerts:
+            try:
+                # Get ambulance location
+                ambulance_lat = alert.ambulance_latitude
+                ambulance_lon = alert.ambulance_longitude
+
+                # Get hospital location from hospital_id
+                hospital = Hospital.query.get(alert.hospital_id)
+                if not hospital or not hospital.latitude or not hospital.longitude:
+                    continue
+
+                hospital_lat = hospital.latitude
+                hospital_lon = hospital.longitude
+
+                # Use real-time ambulance speed if available, fallback to 45 km/h
+                ambulance_speed = alert.ambulance_speed_kmh if alert.ambulance_speed_kmh > 0 else 45.0
+
+                # Calculate ETA using Haversine formula with real-time speed
+                calculated_eta = _calculate_eta_from_haversine(
+                    ambulance_lat, ambulance_lon,
+                    hospital_lat, hospital_lon,
+                    ambulance_speed_kmh=ambulance_speed
+                )
+
+                if calculated_eta > 0:
+                    eta_list.append(calculated_eta)
+                    print(f"[Government Analytics] Alert {alert.id}: Distance ETA calculated, Speed={ambulance_speed:.2f}km/h, ETA={calculated_eta}min")
+            except Exception as e:
+                print(f"[Government Analytics] Error calculating ETA for alert {alert.id}: {str(e)}")
+                continue
+
+        # Fallback: if no active alerts, use historical data
+        if not eta_list:
+            eta_values = db.session.query(AmbulanceAlert.eta_minutes).filter(
+                AmbulanceAlert.eta_minutes.isnot(None)
+            ).all()
+            eta_list = sorted([e[0] for e in eta_values if e[0] is not None])
+
+        eta_list = sorted(eta_list)
+
+        print(f"[Government Analytics] ETA list size: {len(eta_list)}, Active alerts: {len(active_alerts)}, Calculated using Haversine: {len(active_alerts) > 0}")
+
         # Calculate statistics
         eta_statistics = {
             "mean": round(sum(eta_list) / len(eta_list), 2) if eta_list else 0,
@@ -80,6 +171,11 @@ def get_analytics():
         hospitals = Hospital.query.all()
         total_beds = sum(h.total_beds or 0 for h in hospitals)
         icu_beds = sum(h.icu_beds or 0 for h in hospitals)
+
+        print(f"[Government Analytics] Hospitals count: {len(hospitals)}, Total beds: {total_beds}, ICU beds: {icu_beds}")
+        if hospitals:
+            print(f"[Government Analytics] Hospital bed details: {[(h.name if hasattr(h, 'name') else h.id, h.total_beds, h.icu_beds) for h in hospitals[:3]]}")
+
         oxygen_hospitals = db.session.query(func.count(Hospital.id)).filter(
             Hospital.oxygen_available == True
         ).scalar() or 0
@@ -116,37 +212,26 @@ def get_analytics():
         
         status_distribution = {status: count for status, count in status_counts}
         
-        print(f"[Government Analytics] Total alerts: {total_alerts}, Citizens: {total_citizens}")
-        
+        print(f"[Government Analytics] ✓ Haversine-based ETA - Active alerts: {len(active_alerts)}")
+        print(f"[Government Analytics] ETA Statistics (Haversine-calculated) - Mean: {eta_statistics['mean']}min, Median: {eta_statistics['median']}min, Std Dev: {eta_statistics['std_dev']}, P95: {eta_statistics['p95']}min")
+
         return jsonify({
-            # Section 1: Unified Data
-            "total_alerts": total_alerts,
-            "total_citizens": total_citizens,
-            "active_hospitals": active_hospitals,
-            "ambulance_count": ambulance_count,
-            
-            # Section 2: Severity
-            "severity_distribution": severity_distribution,
-            
-            # Section 3: Completion
-            "completed_alerts": completed_alerts,
-            
-            # Section 4: ETA Analytics
+            # ETA Analysis & Estimation (using real-time speed)
             "eta_statistics": eta_statistics,
-            
-            # Section 5: Infrastructure
-            "total_beds": total_beds,
-            "icu_beds": icu_beds,
-            "oxygen_hospitals": oxygen_hospitals,
-            # Section 6b: Adoption
-            "registered_citizens": registered_citizens,
-            "digital_adoption": digital_adoption,
-            
-            # Section 6: Engagement
-            "avg_eta": avg_eta,
-            
-            # Section 7: Status Distribution
-            "status_distribution": status_distribution,
+            "eta_calculation_method": "haversine_distance_with_realtime_speed" if len(active_alerts) > 0 else "historical_data",
+            "active_alerts_with_eta": len(eta_list),
+            "average_eta": eta_statistics["mean"],
+            "median_eta": eta_statistics["median"],
+            "min_eta": eta_statistics["min"],
+            "max_eta": eta_statistics["max"],
+            "eta_percentiles": {
+                "p50": eta_statistics["p50"],
+                "p95": eta_statistics["p95"],
+                "p99": eta_statistics["p99"]
+            },
+            "eta_std_deviation": eta_statistics["std_dev"],
+            "total_active_alerts": len(active_alerts),
+            "calculation_timestamp": datetime.utcnow().isoformat()
         }), 200
     
     except Exception as e:

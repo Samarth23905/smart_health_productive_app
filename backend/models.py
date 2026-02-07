@@ -123,6 +123,13 @@ class AmbulanceAlert(db.Model):
     eta_minutes = db.Column(db.Integer)
     ambulance_latitude = db.Column(db.Float, nullable=True)  # Ambulance's current location
     ambulance_longitude = db.Column(db.Float, nullable=True)  # Ambulance's current location
+
+    # Real-time speed tracking
+    ambulance_speed_kmh = db.Column(db.Float, default=0)  # Current calculated speed in km/h
+    prev_ambulance_latitude = db.Column(db.Float, nullable=True)  # Previous location for speed calculation
+    prev_ambulance_longitude = db.Column(db.Float, nullable=True)  # Previous location for speed calculation
+    last_location_update = db.Column(db.DateTime, nullable=True)  # Timestamp of last location update
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     delivered_at = db.Column(db.DateTime, nullable=True)
