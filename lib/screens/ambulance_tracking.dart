@@ -61,9 +61,10 @@ class _AmbulanceTrackingState extends State<AmbulanceTracking> {
             _createdAt = null;
           }
           status = data["status"] as String? ?? "";
-          // When arrived or delivered, set ETA to 0
+          // When arrived or delivered, set ETA to 0 and speed to 0
           if (status == "arrived" || status == "delivered") {
             eta = 0;
+            currentAmbulanceSpeedKmh = 0.0;  // Reset speed when arrived/delivered
           }
           citizenLat = (data["citizen_latitude"] as num?)?.toDouble() ?? 0.0;
           citizenLon = (data["citizen_longitude"] as num?)?.toDouble() ?? 0.0;

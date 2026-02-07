@@ -5,6 +5,7 @@ import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
 import 'login.dart';
 import 'citizen_profile_edit.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GovernmentDashboard extends StatefulWidget {
   const GovernmentDashboard({Key? key}) : super(key: key);
@@ -44,6 +45,90 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
       MaterialPageRoute(builder: (_) => LoginPage()),
       (route) => false,
     );
+  }
+
+  Future<void> _downloadAnalyticsCSV() async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preparing ETA Analysis Report...')),
+      );
+
+      // Build the API URL
+      final apiUrl = '${ApiService.baseUrl}/government/download/analytics-csv';
+      final url = Uri.parse(apiUrl);
+
+      // Launch URL to trigger download
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('ETA Analysis Report download started!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not initiate download')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    }
+  }
+
+  Future<void> _downloadHospitalsCSV() async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preparing Hospital Details Report...')),
+      );
+
+      // Build the API URL
+      final apiUrl = '${ApiService.baseUrl}/government/download/hospitals-csv';
+      final url = Uri.parse(apiUrl);
+
+      // Launch URL to trigger download
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Hospital Details Report download started!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not initiate download')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
+    }
   }
 
   @override
@@ -186,6 +271,35 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
                   buildRow(loc.total_alerts, '${data['total_alerts'] ?? 0}'),
                   buildRow(loc.total_beds, '${data['total_beds'] ?? 0}'),
                   buildRow(loc.total_citizens, '${data['total_citizens'] ?? 0}'),
+                  const SizedBox(height: 20),
+                  // Download buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: _downloadAnalyticsCSV,
+                          icon: const Icon(Icons.download_outlined),
+                          label: const Text('Download Analysis'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: _downloadHospitalsCSV,
+                          icon: const Icon(Icons.download_outlined),
+                          label: const Text('Download Hospitals'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
