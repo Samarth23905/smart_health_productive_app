@@ -139,7 +139,13 @@ class Severity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     citizen_id = db.Column(db.Integer, db.ForeignKey('citizens.id'), nullable=False)
     symptoms = db.Column(db.Text, nullable=False)  # Stored as comma-separated string (set format)
-    severity_level = db.Column(db.String(20), default='low')  # low, moderate, severe
+    severity_level = db.Column(db.String(20), default='low')  # low, moderate, severe (DEPRECATED - use max_severity)
+
+    # NEW FIELDS: Store detailed symptom information
+    symptom_details = db.Column(db.JSON, default=None)  # JSON: {"Chest Pain": {"days": 3, "severity": "severe"}, ...}
+    max_severity = db.Column(db.String(20), default='low')  # Most severe symptom: mild, moderate, severe
+    total_days_symptomatic = db.Column(db.Integer, default=0)  # Duration of longest symptom
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -147,21 +153,52 @@ class Severity(db.Model):
         """Store symptoms as a set (comma-separated, unique values)"""
         unique_symptoms = set(symptoms_list)
         self.symptoms = ",".join(sorted(unique_symptoms))
-    
+
+    def set_symptom_details(self, symptom_details_dict):
+        """
+        Store detailed symptom information
+        Format: {"Chest Pain": {"days": 3, "severity": "severe"}, ...}
+        """
+        self.symptom_details = symptom_details_dict
+
+        # Calculate max_severity
+        if symptom_details_dict:
+            severity_rank = {"mild": 1, "moderate": 2, "severe": 3}
+            max_sev_rank = max(
+                [severity_rank.get(d.get("severity", "mild"), 0)
+                 for d in symptom_details_dict.values()],
+                default=0
+            )
+            severity_map = {0: "low", 1: "mild", 2: "moderate", 3: "severe"}
+            self.max_severity = severity_map.get(max_sev_rank, "low")
+
+            # Calculate total days symptomatic (longest duration)
+            self.total_days_symptomatic = max(
+                [d.get("days", 0) for d in symptom_details_dict.values()],
+                default=0
+            )
+        else:
+            self.max_severity = "low"
+            self.total_days_symptomatic = 0
+
     def get_symptoms(self):
         """Retrieve symptoms as a list"""
         if not self.symptoms:
             return []
         return self.symptoms.split(",")
-    
+
     def get_symptoms_set(self):
         """Retrieve symptoms as a set"""
         if not self.symptoms:
             return set()
         return set(self.symptoms.split(","))
 
+    def get_symptom_details(self):
+        """Retrieve detailed symptom information with days and severity"""
+        return self.symptom_details if self.symptom_details else {}
+
     def __repr__(self):
-        return f'<Severity {self.id}: {self.get_symptoms_set()}>'
+        return f'<Severity {self.id}: {self.get_symptoms_set()} (Max: {self.max_severity})>'
 
 class GovernmentAnalysis(db.Model):
     __tablename__ = 'government_analysis'

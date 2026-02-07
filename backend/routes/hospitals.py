@@ -6,7 +6,7 @@ from datetime import datetime
 
 hospitals_bp = Blueprint("hospitals", __name__)
 
-@symptoms_form_bp.route("/get-hospitals", methods=["GET"])
+@hospitals_bp.route("/get-hospitals", methods=["GET"])
 @jwt_required()
 def get_hospitals():
     try:

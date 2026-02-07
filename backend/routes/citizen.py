@@ -344,3 +344,376 @@ def complete_alert(alert_id):
         import traceback
         traceback.print_exc()
         return jsonify(error=str(e)), 500
+
+
+# Symptom to Hospital Requirements Mapping
+SYMPTOM_TO_REQUIREMENTS = {
+    # Cardiac/Respiratory
+    "chest pain": {"icu": True, "ccu": True, "oxygen": True, "ecg": True, "lab": True, "specialty": "Cardiology"},
+    "chest pain or pressure": {"icu": True, "ccu": True, "oxygen": True, "ecg": True, "lab": True, "specialty": "Cardiology"},
+    "breathlessness": {"oxygen": True, "icu": True, "ventilator": True, "specialty": "Pulmonology"},
+    "shortness of breath": {"oxygen": True, "icu": True, "ventilator": True, "specialty": "Pulmonology"},
+    "getting breathless easily": {"oxygen": True, "icu": True, "ventilator": True},
+    "trouble breathing lying": {"oxygen": True, "icu": True, "ventilator": True},
+    "waking breathless": {"oxygen": True, "icu": True, "ventilator": True},
+    "heart attack": {"icu": True, "ccu": True, "oxygen": True, "ecg": True, "cathlab": True, "specialty": "Cardiology"},
+    "heart beating fast": {"ecg": True, "oxygen": True, "lab": True},
+    "feeling your heart beating fast or irregularly": {"ecg": True, "oxygen": True, "lab": True},
+    "fainting": {"icu": True, "ecg": True, "oxygen": True},
+    "bluish lips": {"oxygen": True, "icu": True, "ventilator": True},
+    "bluish lips or fingers": {"oxygen": True, "icu": True, "ventilator": True},
+    "stroke": {"icu": True, "ct_scan": True, "mri": True, "lab": True, "specialty": "Neurology"},
+
+    # Trauma
+    "severe bleeding": {"oxygen": True, "lab": True, "xray": True, "surgery": True, "blood_bank": True},
+    "fracture": {"xray": True, "orthopedic": True},
+    "trauma": {"icu": True, "oxygen": True, "surgery": True, "xray": True},
+
+    # Infectious
+    "fever": {"isolation": True, "lab": True, "oxygen": True},
+    "cough": {"isolation": True, "lab": True, "oxygen": True},
+    "mucus cough": {"isolation": True, "lab": True, "oxygen": True},
+    "blood cough": {"isolation": True, "lab": True, "oxygen": True, "xray": True},
+    "covid": {"isolation": True, "oxygen": True, "ventilator": True, "lab": True},
+
+    # Neurological
+    "seizure": {"icu": True, "neuro_monitor": True, "lab": True},
+    "seizures": {"icu": True, "neuro_monitor": True, "lab": True},
+    "headache": {"ct_scan": True, "lab": True},
+    "blacking out": {"icu": True, "ct_scan": True, "lab": True},
+    "unconsciousness": {"icu": True, "oxygen": True, "ventilator": True},
+    "weakness limbs": {"icu": True, "lab": True},
+    "numbness": {"ct_scan": True, "mri": True, "lab": True},
+    "trouble speaking": {"ct_scan": True, "mri": True, "lab": True},
+    "blurred vision": {"ct_scan": True, "lab": True},
+    "difficulty walking": {"icu": True, "lab": True},
+
+    # Gastrointestinal
+    "severe abdominal pain": {"surgery": True, "lab": True, "ultrasound": True, "ct_scan": True},
+    "vomiting": {"lab": True, "iv_setup": True},
+    "feeling nausea": {"lab": True, "oxygen": True},
+    "burning chest": {"lab": True, "ecg": True},
+    "stomach pain": {"ultrasound": True, "ct_scan": True, "lab": True},
+    "loose motions": {"lab": True, "isolation": True},
+    "constipation": {"ultrasound": True, "lab": True},
+
+    # Other General
+    "severe injury": {"icu": True, "oxygen": True, "surgery": True, "xray": True},
+    "poisoning": {"icu": True, "lab": True, "stomach_wash": True},
+    "allergy": {"icu": True, "oxygen": True},
+    "burn": {"surgery": True, "oxygen": True, "icu": True},
+    "dizziness": {"lab": True, "ecg": True},
+}
+
+
+def _hospital_has_resource(hospital, resource_name):
+    """Check if hospital has a specific resource"""
+    resource_map = {
+        "icu": lambda h: (getattr(h, 'icu_beds', 0) or 0) > 0 or sum((getattr(h, x, 0) or 0) for x in ['micu_available','sicu_available','nicu_available','ccu_available','picu_available']) > 0,
+        "ccu": lambda h: (getattr(h, 'ccu_available', 0) or 0) > 0,
+        "micu": lambda h: (getattr(h, 'micu_available', 0) or 0) > 0,
+        "sicu": lambda h: (getattr(h, 'sicu_available', 0) or 0) > 0,
+        "nicu": lambda h: (getattr(h, 'nicu_available', 0) or 0) > 0,
+        "oxygen": lambda h: bool(h.oxygen_available) or bool(h.central_oxygen) or (getattr(h, 'oxygen_cylinders', 0) or 0) > 0,
+        "ventilator": lambda h: sum((getattr(h, x, 0) or 0) for x in ['micu_ventilators','sicu_ventilators','nicu_ventilators','ccu_ventilators','picu_ventilators']) > 0,
+        "ecg": lambda h: bool(getattr(h, 'ecg', False)),
+        "xray": lambda h: bool(getattr(h, 'xray', False)),
+        "ct_scan": lambda h: bool(getattr(h, 'ct_scan', False)),
+        "mri": lambda h: bool(getattr(h, 'mri', False)),
+        "lab": lambda h: bool(getattr(h, 'lab', False)),
+        "ultrasound": lambda h: bool(getattr(h, 'ultrasound', False)),
+        "isolation": lambda h: (getattr(h, 'isolation_available', 0) or 0) > 0,
+        "surgery": lambda h: bool(getattr(h, 'operation_theater', False)),
+        "cathlab": lambda h: bool(getattr(h, 'catheterization_lab', False)),
+        "blood_bank": lambda h: bool(getattr(h, 'blood_bank', False)),
+        "neuro_monitor": lambda h: bool(getattr(h, 'neuro_monitor', False)),
+        "iv_setup": lambda h: bool(getattr(h, 'iv_therapy', False)),
+        "stomach_wash": lambda h: bool(getattr(h, 'stomach_wash', False)),
+        "orthopedic": lambda h: bool(getattr(h, 'orthopedic_dept', False)),
+    }
+    
+    if resource_name in resource_map:
+        try:
+            return resource_map[resource_name](hospital)
+        except:
+            return False
+    return False
+
+
+@citizen_bp.route("/hospitals-by-severity/<int:severity_id>", methods=["GET"])
+@jwt_required()
+def get_hospitals_by_severity(severity_id):
+    """Get hospitals ranked by symptom severity and requirements match"""
+    try:
+        uid = int(get_jwt_identity())
+        citizen = Citizen.query.filter_by(user_id=uid).first()
+        
+        if not citizen:
+            return jsonify(error="Citizen not found"), 404
+        
+        # Get severity record
+        severity = Severity.query.get(severity_id)
+        if not severity:
+            return jsonify(error="Severity record not found"), 404
+        
+        if severity.citizen_id != citizen.id:
+            return jsonify(error="Unauthorized"), 403
+        
+        # Parse symptoms: prefer structured `symptom_details` JSON when present
+        symptoms_text = (severity.symptoms or "")
+        symptoms_list = []
+        try:
+            details = getattr(severity, 'symptom_details', None)
+            if details:
+                # symptom_details may already be a dict or a JSON string
+                if isinstance(details, str):
+                    import json
+                    try:
+                        details = json.loads(details)
+                    except Exception:
+                        details = None
+
+            if details and isinstance(details, dict):
+                # Use keys from symptom_details (these are the canonical symptom names)
+                symptoms_list = [k.strip().lower() for k in details.keys() if k and k.strip()]
+                symptoms_source = 'symptom_details'
+            else:
+                # Fallback: split the raw symptoms string (frontend may use '|' or ',')
+                raw = symptoms_text or ""
+                delim = '|' if '|' in raw else ','
+                symptoms_list = [s.split('(')[0].strip().lower() for s in raw.split(delim) if s.strip()]
+                symptoms_source = 'symptoms_text'
+        except Exception as e:
+            print(f"[HospitalsBySeverity] Error parsing symptoms: {e}")
+            symptoms_list = []
+
+        # Collect all required resources from symptoms
+        required_resources = set()
+        symptom_matches = {}
+
+        for symptom in symptoms_list:
+            symptom = symptom.strip()
+            if not symptom:
+                continue
+
+            # symptom already normalized (lowercase, no trailing details)
+            symptom_name = symptom
+            print(f"[HospitalsBySeverity] Processing symptom (from {symptoms_source}): '{symptom_name}'")
+
+            # Try exact match first
+            if symptom_name in SYMPTOM_TO_REQUIREMENTS:
+                reqs = SYMPTOM_TO_REQUIREMENTS[symptom_name]
+                symptom_matches[symptom_name] = reqs
+                print(f"[HospitalsBySeverity] Exact match found for '{symptom_name}': {reqs}")
+                for key in reqs:
+                    if key != "specialty":
+                        required_resources.add(key)
+            else:
+                # Try partial match
+                found = False
+                for mapped_symptom, reqs in SYMPTOM_TO_REQUIREMENTS.items():
+                    if symptom_name in mapped_symptom or mapped_symptom in symptom_name:
+                        symptom_matches[symptom_name] = reqs
+                        print(f"[HospitalsBySeverity] Partial match found: '{symptom_name}' -> '{mapped_symptom}'")
+                        for key in reqs:
+                            if key != "specialty":
+                                required_resources.add(key)
+                        found = True
+                        break
+
+                if not found:
+                    print(f"[HospitalsBySeverity] No match found for symptom: '{symptom_name}'")
+        
+        # Query all hospitals
+        hospitals = Hospital.query.all()
+        ranked_hospitals = []
+
+        print(f"[HospitalsBySeverity] Processing {len(hospitals)} hospitals")
+        print(f"[HospitalsBySeverity] Citizen location: ({citizen.latitude}, {citizen.longitude})")
+        print(f"[HospitalsBySeverity] Severity max_severity: {severity.max_severity}")
+        print(f"[HospitalsBySeverity] Raw symptoms: {symptoms_text}")
+        print(f"[HospitalsBySeverity] Parsed symptoms list: {symptoms_list}")
+        print(f"[HospitalsBySeverity] Symptom matches: {symptom_matches}")
+        print(f"[HospitalsBySeverity] Required resources: {required_resources}")
+
+        for hospital in hospitals:
+            # Skip hospitals without location
+            if hospital.latitude is None or hospital.longitude is None:
+                print(f"[HospitalsBySeverity] Skipping hospital {hospital.id}: No location")
+                continue
+
+            # Skip hospitals with no meaningful resources
+            if not _hospital_has_resources(hospital):
+                print(f"[HospitalsBySeverity] Skipping hospital {hospital.id}: No resources")
+                continue
+
+            # Calculate distance
+            distance_km = 0.0
+            if citizen.latitude and citizen.longitude:
+                dist_result = haversine(citizen.latitude, citizen.longitude, hospital.latitude, hospital.longitude)
+                if dist_result:
+                    distance_km = round(dist_result, 2)
+
+            # Calculate match score (ROBUST ALGORITHM)
+            match_score = 0
+            max_score = 0
+            reasons = []
+
+            # 1. Weighted resource availability (60 points max)
+            # Critical resources like ventilators, ICU, CCU worth more than basic diagnostics
+            if required_resources:
+                resource_weights = {
+                    "icu": 2.0,           # Critical for severe cases
+                    "ventilator": 2.0,    # Life-saving equipment
+                    "ccu": 2.0,           # Cardiac critical
+                    "oxygen": 1.5,        # Essential life support
+                    "isolation": 1.5,     # For infectious diseases
+                    "surgery": 2.0,       # Critical for trauma
+                    "blood_bank": 1.5,    # Critical for trauma/surgery
+                    "ecg": 1.0,           # Important cardiac diagnostic
+                    "lab": 1.0,           # Standard diagnostic
+                    "xray": 0.8,          # Standard diagnostic
+                    "ct_scan": 0.9,       # Advanced diagnostic
+                    "mri": 0.9,           # Advanced diagnostic
+                    "ultrasound": 0.7,    # Standard diagnostic
+                }
+
+                total_weight = sum(resource_weights.get(r, 0.5) for r in required_resources)
+                resources_matched = 0
+                weighted_match = 0
+
+                for resource in required_resources:
+                    if _hospital_has_resource(hospital, resource):
+                        resources_matched += 1
+                        weighted_match += resource_weights.get(resource, 0.5)
+
+                if total_weight > 0:
+                    resource_score = (weighted_match / total_weight) * 60
+                    match_score += resource_score
+                max_score += 60
+                reasons.append(f"Resources: {resources_matched}/{len(required_resources)} match")
+            else:
+                max_score += 60
+
+            # 2. Enhanced severity matching (25 points)
+            max_sev = severity.max_severity or "low"
+            if max_sev == "severe":
+                icu_available = sum((getattr(hospital, x, 0) or 0) for x in ['micu_available','sicu_available','nicu_available','ccu_available','picu_available'])
+                if icu_available > 8:
+                    match_score += 25
+                    reasons.append(f"Excellent ICU ({icu_available} beds)")
+                elif icu_available > 4:
+                    match_score += 20
+                    reasons.append(f"Good ICU ({icu_available} beds)")
+                elif icu_available > 0:
+                    match_score += 12
+                    reasons.append(f"Limited ICU ({icu_available} beds)")
+                else:
+                    match_score += 5
+            elif max_sev == "moderate":
+                beds = sum((getattr(hospital, x, 0) or 0) for x in ['general_available','semi_available','private_available','isolation_available'])
+                if beds > 30:
+                    match_score += 22
+                    reasons.append(f"Excellent beds ({beds})")
+                elif beds > 15:
+                    match_score += 18
+                    reasons.append(f"Good beds ({beds})")
+                elif beds > 0:
+                    match_score += 12
+                else:
+                    match_score += 5
+            else:  # mild/low
+                match_score += 15
+                reasons.append("Suitable for mild cases")
+            max_score += 25
+
+            # 3. Equipment & facilities quality bonus (15 points)
+            facility_score = 0
+            facility_items = [
+                ("central_oxygen", 2),
+                ("icu_trained_staff", 2),
+                ("emergency_24x7", 2),
+                ("defibrillator", 1.5),
+                ("blood_bank", 1.5),
+                ("pharmacy_24x7", 1.5),
+                ("anesthetist_available", 1.5),
+                ("lab", 1),
+                ("mri", 1),
+                ("ct_scan", 1),
+            ]
+
+            for attr, points in facility_items:
+                if getattr(hospital, attr, False):
+                    facility_score += points
+
+            facility_score = min(15, facility_score)
+            match_score += facility_score
+            max_score += 15
+
+            # 4. Bed availability & utilization (10 points)
+            total_available = sum((getattr(hospital, x, 0) or 0) for x in [
+                'general_available','semi_available','private_available','isolation_available',
+                'micu_available','sicu_available','nicu_available','ccu_available','picu_available'
+            ])
+
+            if total_available > 0:
+                bed_score = min(10, max(1, total_available / 12))
+                match_score += bed_score
+                reasons.append(f"{total_available} beds available")
+            max_score += 10
+
+            # 5. Distance scoring (5 points - degrading with distance)
+            distance_score = 0
+            if distance_km < 5:
+                distance_score = 5
+                reasons.append(f"Very close ({distance_km}km)")
+            elif distance_km < 10:
+                distance_score = 3
+                reasons.append(f"Close ({distance_km}km)")
+            elif distance_km < 20:
+                distance_score = 1
+            match_score += distance_score
+            max_score += 5
+
+            # Calculate final percentage
+            match_percentage = int((match_score / max_score) * 100) if max_score > 0 else 0
+
+            # Get hospital user info
+            from models import User
+            hospital_user = User.query.get(hospital.user_id)
+            hospital_name = hospital_user.name if hospital_user else f"Hospital {hospital.id}"
+
+            hospital_data = {
+                "id": hospital.id,
+                "name": hospital_name,
+                "match_percentage": match_percentage,
+                "match_score": int(match_score),
+                "phone": hospital.phone,
+                "latitude": hospital.latitude,
+                "longitude": hospital.longitude,
+                "distance_km": distance_km,
+                "beds_available": total_available,
+                "oxygen_available": hospital.oxygen_available,
+                "icu_available": (getattr(hospital, 'icu_beds', 0) or 0) > 0,
+                "recommendation": " | ".join(reasons[:3]) if reasons else "Beds and resources available",
+                "rank_badge": "🥇" if match_percentage >= 80 else ("🥈" if match_percentage >= 60 else "🥉")
+            }
+
+            print(f"[HospitalsBySeverity] Hospital {hospital.id} ({hospital_name}): match={match_percentage}% (score={int(match_score)}/{max_score}), distance={distance_km}km, reasons={reasons}")
+            ranked_hospitals.append(hospital_data)
+        
+        # Sort by match percentage (descending)
+        ranked_hospitals.sort(key=lambda x: x["match_percentage"], reverse=True)
+        
+        return jsonify({
+            "severity_id": severity_id,
+            "symptoms": symptoms_text,
+            "severity_level": severity.severity_level,
+            "hospitals": ranked_hospitals[:10]  # Return top 10
+        }), 200
+    
+    except Exception as e:
+        print(f"[HospitalsBySeverity Error] {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify(error=str(e)), 500
