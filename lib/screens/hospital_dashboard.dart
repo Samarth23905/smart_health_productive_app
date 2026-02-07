@@ -65,7 +65,7 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
   int _calculateRemainingETA(Map<String, dynamic> caseData) {
     // Calculate ETA using Haversine formula and real-time speed tracking
     final status = caseData["status"] as String? ?? "";
-    final alertId = caseData["id"] ?? caseData["alert_id"];
+    final alertId = caseData["id"] ?? caseData["alert_id"] ?? "unknown";
 
     // Show 0 when arrived or delivered
     if (status == "arrived" || status == "delivered") {
@@ -73,11 +73,18 @@ class _HospitalDashboardState extends State<HospitalDashboard> {
       return 0;
     }
 
-    // Get ambulance and hospital locations
+    // Get ambulance and hospital locations with safe conversion
     final ambulanceLat = (caseData["ambulance_latitude"] as num?)?.toDouble() ?? 0.0;
     final ambulanceLon = (caseData["ambulance_longitude"] as num?)?.toDouble() ?? 0.0;
     final hospitalLat = (caseData["hospital_latitude"] as num?)?.toDouble() ?? 0.0;
     final hospitalLon = (caseData["hospital_longitude"] as num?)?.toDouble() ?? 0.0;
+    
+    // If we don't have valid coordinates, return API ETA or 0
+    if (ambulanceLat == 0.0 || ambulanceLon == 0.0 || hospitalLat == 0.0 || hospitalLon == 0.0) {
+      final eta = (caseData["eta"] as num?)?.toInt() ?? 0;
+      print("[HospitalDashboard] ETA alert_id=$alertId: $eta (fallback, missing coordinates)");
+      return eta;
+    }
 
     // Update speed tracking if we have previous location
     if (_prevLocationMap.containsKey(alertId)) {

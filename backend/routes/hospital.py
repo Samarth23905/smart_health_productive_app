@@ -48,6 +48,8 @@ def hospital_cases():
                 continue
 
             response.append({
+                "id": alert.id,
+                "alert_id": alert.id,
                 "name": citizen_user.name,
                 "phone": citizen.phone,
                 "sex": citizen.sex,
@@ -55,7 +57,15 @@ def hospital_cases():
                 "symptoms": "Reported via severity form",
                 "severity": "Auto / User reported",
                 "eta": alert.eta_minutes,
-                "status": alert.status
+                "status": alert.status,
+                # Ambulance location (real-time)
+                "ambulance_latitude": alert.ambulance_latitude or 0.0,
+                "ambulance_longitude": alert.ambulance_longitude or 0.0,
+                # Hospital location
+                "hospital_latitude": hospital.latitude or 0.0,
+                "hospital_longitude": hospital.longitude or 0.0,
+                # For tracking speed
+                "created_at": alert.created_at.isoformat() if alert.created_at else None
             })
 
         logger.info(f"[HospitalCases] Returning {len(response)} cases")
