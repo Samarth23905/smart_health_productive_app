@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
@@ -601,6 +602,21 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
     });
 
     try {
+      // Get current location before submitting symptoms
+      print("[SubmitSymptoms] Requesting location...");
+      try {
+        final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
+        print("[SubmitSymptoms] Got location: ${position.latitude}, ${position.longitude}");
+
+        // Update citizen location in database
+        await ApiService.updateCitizenLocation(position.latitude, position.longitude);
+        print("[SubmitSymptoms] Location updated in database");
+      } catch (locErr) {
+        print("[SubmitSymptoms] Location error: $locErr");
+      }
+
       // Format symptoms with details for backend
       List<String> symptomsList = selectedSymptomsWithDetails.entries.map((e) {
         return "${e.key} (${e.value.days} days, ${e.value.severity})";
@@ -614,7 +630,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
         _isLoading = false;
       });
 
-      if (result) {
+      if (result['success'] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.symptoms_submitted_successfully),
@@ -623,11 +639,16 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
           ),
         );
 
-        // Navigate to Hospitals List
+        // Extract severity_id from result
+        int? severityId = result['severity_id'] as int?;
+
+        // Navigate to Hospitals List with severity_id
         Future.delayed(const Duration(milliseconds: 500), () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) =>  HospitalsList()),
+            MaterialPageRoute(
+              builder: (_) => HospitalsList(severityId: severityId),
+            ),
           );
         });
       }

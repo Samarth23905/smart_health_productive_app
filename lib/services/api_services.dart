@@ -256,17 +256,17 @@ class ApiService {
     }
   }
 
-  static Future<bool> submitSymptoms(String symptoms) async {
+  static Future<Map<String, dynamic>> submitSymptoms(String symptoms) async {
     try {
       final token = await _getToken();
       if (token == null) {
         print("SubmitSymptoms: No token available");
         throw Exception("Authentication token not found");
       }
-      
+
       print("SubmitSymptoms - Token: $token");
       print("SubmitSymptoms - Symptoms: $symptoms");
-      
+
       final response = await http.post(
         Uri.parse('$baseUrl/symptoms/submit'),
         headers: {
@@ -275,13 +275,14 @@ class ApiService {
         },
         body: jsonEncode({'symptoms': symptoms}),
       );
-      
+
       print("SubmitSymptoms Response: ${response.statusCode} - ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return true;
+        final data = jsonDecode(response.body);
+        return data as Map<String, dynamic>;
       }
-      
+
       // Try to get error message from response
       try {
         final errorData = jsonDecode(response.body);
@@ -529,6 +530,35 @@ class ApiService {
     } catch (e) {
       print("Exception in resetPassword: $e");
       return false;
+    }
+  }
+
+  // ===== DYNAMIC HOSPITAL RANKING =====
+  static Future<Map<String, dynamic>> getDynamicHospitals(int severityId) async {
+    try {
+      final authToken = await _getToken();
+      if (authToken == null) {
+        print("Error: No authentication token available");
+        return {"hospitals": [], "error": "No token"};
+      }
+
+      final res = await http.get(
+        Uri.parse("$baseUrl/citizen/hospitals-by-severity/$severityId"),
+        headers: {"Authorization": "Bearer $authToken"},
+      );
+
+      print("GetDynamicHospitals - Status: ${res.statusCode}");
+
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+        return data;
+      } else {
+        print("Error: ${res.body}");
+        return {"hospitals": [], "error": "Failed to fetch hospitals"};
+      }
+    } catch (e) {
+      print("Exception in getDynamicHospitals: $e");
+      return {"hospitals": [], "error": e.toString()};
     }
   }
 }

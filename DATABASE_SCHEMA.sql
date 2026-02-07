@@ -136,10 +136,16 @@ CREATE TABLE severities (
     citizen_id INTEGER NOT NULL REFERENCES citizens(id) ON DELETE CASCADE,
     symptoms TEXT NOT NULL,
     severity_level VARCHAR(20) NOT NULL CHECK (severity_level IN ('low','mild','moderate','severe','very_severe')),
+	total_days_symptomatic INTEGER DEFAULT 0,
+	max_severity VARCHAR(20) DEFAULT 'low',
+	symptom_details JSONB DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+CREATE INDEX IF NOT EXISTS idx_severities_max_severity ON severities(max_severity);
+CREATE INDEX IF NOT EXISTS idx_severities_citizen_date ON severities(citizen_id, created_at DESC);
 CREATE INDEX idx_severities_citizen_id ON severities(citizen_id);
 CREATE INDEX idx_severities_severity_level ON severities(severity_level);
 CREATE INDEX idx_severities_created_at ON severities(created_at DESC);
@@ -159,22 +165,21 @@ CREATE TABLE ambulance_alerts (
         'delivered'
     )),
     eta_minutes INTEGER,
-    ambulance_speed_kmh FLOAT DEFAULT 0,
-    prev_ambulance_latitude FLOAT,
-    prev_ambulance_longitude FLOAT,
-    last_location_update TIMESTAMP,
-
+	ambulance_speed_kmh FLOAT DEFAULT 0,
+	prev_ambulance_latitude FLOAT,
+	prev_ambulance_longitude FLOAT,
+	last_location_update TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	delivered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX idx_ambulance_alerts_speed ON ambulance_alerts(ambulance_speed_kmh);
 CREATE INDEX idx_ambulance_alerts_location ON ambulance_alerts(ambulance_latitude, ambulance_longitude);
 CREATE INDEX idx_ambulance_alerts_citizen_id ON ambulance_alerts(citizen_id);
 CREATE INDEX idx_ambulance_alerts_hospital_id ON ambulance_alerts(hospital_id);
 CREATE INDEX idx_ambulance_alerts_status ON ambulance_alerts(status);
 CREATE INDEX idx_ambulance_alerts_created_at ON ambulance_alerts(created_at DESC);
-CREATE INDEX idx_ambulance_alerts_speed ON ambulance_alerts(ambulance_speed_kmh);
 
 CREATE TABLE government_analysis (
     id SERIAL PRIMARY KEY,
@@ -219,4 +224,3 @@ CREATE TABLE government_analysis (
 );
 
 CREATE INDEX idx_government_analysis_date ON government_analysis(report_date DESC);
-
