@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
 import 'login.dart';
 import 'citizen_profile_edit.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:open_file/open_file.dart';
+import 'dart:html' as html;
 
 class GovernmentDashboard extends StatefulWidget {
   const GovernmentDashboard({Key? key}) : super(key: key);
@@ -53,37 +61,79 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
         const SnackBar(content: Text('Preparing ETA Analysis Report...')),
       );
 
-      // Build the API URL
-      final apiUrl = '${ApiService.baseUrl}/government/download/analytics-csv';
-      final url = Uri.parse(apiUrl);
+      // Get JWT token from ApiService
+      final authToken = await ApiService.getToken();
+      print('[Download] Token retrieved: ${authToken != null ? "YES" : "NO"}');
 
-      // Launch URL to trigger download
-      if (await canLaunchUrl(url)) {
-        await launchUrl(
-          url,
-          mode: LaunchMode.externalApplication,
-        );
-
+      if (authToken == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('ETA Analysis Report download started!'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+              content: Text('Authentication required. Please login again.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Build the API URL
+      final apiUrl = '${ApiService.baseUrl}/government/download/analytics-csv';
+      print('[Download] URL: $apiUrl');
+      print('[Download] Token: ${authToken.substring(0, 20)}...');
+
+      // Make HTTP request with JWT authentication
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'text/csv',
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      print('[Download] Status Code: ${response.statusCode}');
+      print('[Download] Response Length: ${response.bodyBytes.length} bytes');
+
+      if (response.statusCode == 200) {
+        print('[Download] CSV Data received: ${response.body.length} characters');
+
+        if (mounted) {
+          // Save file to device
+          await _saveAndOpenFile(
+            'ETA_Analysis_Report.csv',
+            response.bodyBytes,
+          );
+        }
+      } else if (response.statusCode == 403) {
+        print('[Download] Unauthorized - Status 403');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Unauthorized: Government access required'),
+              backgroundColor: Colors.red,
             ),
           );
         }
       } else {
+        print('[Download] Failed - Status ${response.statusCode}');
+        print('[Download] Response: ${response.body}');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not initiate download')),
+            SnackBar(
+              content: Text('Download failed: ${response.statusCode}'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       }
     } catch (e) {
+      print('[Download] Exception: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -95,37 +145,79 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
         const SnackBar(content: Text('Preparing Hospital Details Report...')),
       );
 
-      // Build the API URL
-      final apiUrl = '${ApiService.baseUrl}/government/download/hospitals-csv';
-      final url = Uri.parse(apiUrl);
+      // Get JWT token from ApiService
+      final authToken = await ApiService.getToken();
+      print('[Download] Token retrieved: ${authToken != null ? "YES" : "NO"}');
 
-      // Launch URL to trigger download
-      if (await canLaunchUrl(url)) {
-        await launchUrl(
-          url,
-          mode: LaunchMode.externalApplication,
-        );
-
+      if (authToken == null) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Hospital Details Report download started!'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+              content: Text('Authentication required. Please login again.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Build the API URL
+      final apiUrl = '${ApiService.baseUrl}/government/download/hospitals-csv';
+      print('[Download] URL: $apiUrl');
+      print('[Download] Token: ${authToken.substring(0, 20)}...');
+
+      // Make HTTP request with JWT authentication
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'text/csv',
+        },
+      ).timeout(const Duration(seconds: 30));
+
+      print('[Download] Status Code: ${response.statusCode}');
+      print('[Download] Response Length: ${response.bodyBytes.length} bytes');
+
+      if (response.statusCode == 200) {
+        print('[Download] CSV Data received: ${response.body.length} characters');
+
+        if (mounted) {
+          // Save file to device
+          await _saveAndOpenFile(
+            'Hospital_Details_Report.csv',
+            response.bodyBytes,
+          );
+        }
+      } else if (response.statusCode == 403) {
+        print('[Download] Unauthorized - Status 403');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Unauthorized: Government access required'),
+              backgroundColor: Colors.red,
             ),
           );
         }
       } else {
+        print('[Download] Failed - Status ${response.statusCode}');
+        print('[Download] Response: ${response.body}');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not initiate download')),
+            SnackBar(
+              content: Text('Download failed: ${response.statusCode}'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       }
     } catch (e) {
+      print('[Download] Exception: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -319,6 +411,139 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
       );
+    }
+  }
+
+  void _copyToClipboard(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('CSV data copied to clipboard!'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Future<void> _saveAndOpenFile(String filename, List<int> bytes) async {
+    try {
+      if (kIsWeb) {
+        // Web implementation: Use browser download
+        _downloadFileOnWeb(filename, bytes);
+      } else {
+        // Mobile implementation: Save to device storage
+        await _downloadFileOnMobile(filename, bytes);
+      }
+    } catch (e) {
+      print('[File] Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error saving file: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _downloadFileOnWeb(String filename, List<int> bytes) {
+    try {
+      print('[Web Download] Creating blob...');
+
+      // Create blob from bytes
+      final blob = html.Blob([bytes]);
+
+      // Create object URL
+      final url = html.Url.createObjectUrlFromBlob(blob);
+
+      // Create anchor element
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute('download', filename)
+        ..style.display = 'none';
+
+      // Add to document and click
+      html.document.body?.append(anchor);
+      anchor.click();
+
+      // Clean up
+      anchor.remove();
+      html.Url.revokeObjectUrl(url);
+
+      print('[Web Download] File downloaded: $filename');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Downloaded: $filename'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      print('[Web Download] Error: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _downloadFileOnMobile(String filename, List<int> bytes) async {
+    try {
+      print('[Mobile Download] Requesting storage permissions...');
+
+      // Request storage permissions
+      final PermissionStatus status = await Permission.storage.request();
+
+      if (status.isDenied) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Storage permission denied'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Try to get downloads directory, fallback to documents directory
+      Directory? directory;
+
+      try {
+        directory = Directory('/storage/emulated/0/Download');
+        if (!await directory.exists()) {
+          directory = await getApplicationDocumentsDirectory();
+        }
+      } catch (e) {
+        print('[Mobile Download] Downloads directory error: $e, using documents directory');
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      print('[Mobile Download] Saving to: ${directory.path}');
+
+      // Create file
+      final file = File('${directory.path}/$filename');
+      await file.writeAsBytes(bytes);
+
+      print('[Mobile Download] File saved: ${file.path}');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Downloaded: ${file.path}'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+
+      // Open file
+      print('[Mobile Download] Opening file: ${file.path}');
+      await OpenFile.open(file.path);
+    } catch (e) {
+      print('[Mobile Download] Error: $e');
+      rethrow;
     }
   }
 

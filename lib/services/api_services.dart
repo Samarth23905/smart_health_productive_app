@@ -7,7 +7,7 @@ import 'package:open_file/open_file.dart';
 import 'secure_storage.dart';
 
 class ApiService {
-  // static const baseUrl = "https://smart-health-productive-app.onrender.com";
+  // static const baseUrl = "https://smart-health-productive-app-1.onrender.com";
   static const baseUrl = "http://127.0.0.1:5000";
   static String? token;
 
@@ -27,6 +27,11 @@ class ApiService {
       print("Error retrieving token: $e");
     }
     return null;
+  }
+
+  // Public method to get token (for external use)
+  static Future<String?> getToken() async {
+    return await _getToken();
   }
 
   static Future<bool> login(String id, String password, String role) async {
