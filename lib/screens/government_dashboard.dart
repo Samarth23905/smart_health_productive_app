@@ -427,13 +427,7 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
 
   Future<void> _saveAndOpenFile(String filename, List<int> bytes) async {
     try {
-      if (kIsWeb) {
-        // Web implementation: Use browser download
-        _downloadFileOnWeb(filename, bytes);
-      } else {
-        // Mobile implementation: Save to device storage
         await _downloadFileOnMobile(filename, bytes);
-      }
     } catch (e) {
       print('[File] Error: $e');
       if (mounted) {
@@ -444,46 +438,6 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
           ),
         );
       }
-    }
-  }
-
-  void _downloadFileOnWeb(String filename, List<int> bytes) {
-    try {
-      print('[Web Download] Creating blob...');
-
-      // Create blob from bytes
-      final blob = html.Blob([bytes]);
-
-      // Create object URL
-      final url = html.Url.createObjectUrlFromBlob(blob);
-
-      // Create anchor element
-      final anchor = html.AnchorElement(href: url)
-        ..setAttribute('download', filename)
-        ..style.display = 'none';
-
-      // Add to document and click
-      html.document.body?.append(anchor);
-      anchor.click();
-
-      // Clean up
-      anchor.remove();
-      html.Url.revokeObjectUrl(url);
-
-      print('[Web Download] File downloaded: $filename');
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Downloaded: $filename'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-    } catch (e) {
-      print('[Web Download] Error: $e');
-      rethrow;
     }
   }
 
