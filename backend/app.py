@@ -12,10 +12,10 @@ from routes.hospital_profile import hospital_profile_bp
 from routes.Symptoms_form import symptoms_form_bp
 import os
 import logging
-import atexit
+import threading
 
 # Setup logging
-logging.basicConfig(level=logging.INFO)  # Changed from DEBUG to INFO for production
+logging.basicConfig(level=logging.INFO)  # Production: INFO level
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -27,30 +27,29 @@ if db_uri:
     masked_uri = db_uri[:50] + "..." if len(db_uri) > 50 else db_uri
     logger.info(f"Database URI configured: {masked_uri}")
 else:
-    logger.warning("⚠ DATABASE_URL not configured - app will run without database")
+    logger.warning("⚠ DATABASE_URL not configured")
 
-# Enable CORS for all routes and allow credentials
+# Enable CORS
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 db.init_app(app)
 JWTManager(app)
 
-# Flag to track if DB was initialized
-_db_initialized = False
-
-def init_db():
-    """Initialize database tables - called once on first request or startup"""
-    global _db_initialized
-    if _db_initialized or not db_uri:
+# Initialize DB in background thread (non-blocking)
+def init_db_async():
+    """Initialize database tables in background - doesn't block startup"""
+    if not db_uri:
+        logger.warning("⚠ Skipping database init: DATABASE_URL not set")
         return
     try:
         with app.app_context():
             db.create_all()
-            logger.info("✓ Database tables created/verified")
-            _db_initialized = True
+            logger.info("✓ Database tables initialized")
     except Exception as e:
-        logger.error(f"⚠ Database initialization warning: {e}")
-        # Don't fail the app if DB init fails - just log and continue
-        _db_initialized = True
+        logger.error(f"⚠ Database init failed: {e}")
+
+# Start DB init in background thread immediately (non-blocking)
+db_init_thread = threading.Thread(target=init_db_async, daemon=True)
+db_init_thread.start()
 
 @app.route("/")
 def home():
@@ -92,9 +91,6 @@ app.register_blueprint(hospital_profile_bp, url_prefix="/hospital")
 app.register_blueprint(ambulance_bp, url_prefix="/ambulance")
 app.register_blueprint(government_bp, url_prefix="/government")
 app.register_blueprint(symptoms_form_bp, url_prefix="/symptoms")
-
-# Initialize database once when app starts (not blocking)
-init_db()
 
 if __name__ == "__main__":
     # Get port from environment or use default

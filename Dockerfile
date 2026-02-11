@@ -29,11 +29,18 @@ COPY backend/ .
 EXPOSE 5000 8000
 
 # Health check using curl (lightweight alternative to requests)
-HEALTHCHECK --interval=30s --timeout=10s --start-period=45s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:${PORT:-5000}/health || exit 1
 
-# Run gunicorn with optimized settings for free tier
-# -w 2: Reduced from 4 workers to 2 for memory efficiency
-# --timeout 60: Increased timeout for database operations
-# --max-requests 100: Restart workers periodically to prevent memory bloat
-CMD gunicorn -w 2 -b 0.0.0.0:${PORT:-5000} --timeout 60 --max-requests 100 app:app
+# Run gunicorn with adaptive worker count
+# Uses WEB_CONCURRENCY env var if set (Render sets this), otherwise defaults to 1
+# --timeout 120: Increased timeout for slow database operations  
+# --max-requests 50: Restart workers to prevent memory bloat
+# --graceful-timeout 30: Give workers time to finish requests
+CMD gunicorn \
+    -w ${WEB_CONCURRENCY:-1} \
+    -b 0.0.0.0:${PORT:-5000} \
+    --timeout 120 \
+    --max-requests 50 \
+    --graceful-timeout 30 \
+    app:app
