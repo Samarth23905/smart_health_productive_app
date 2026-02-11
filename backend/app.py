@@ -12,39 +12,66 @@ from routes.hospital_profile import hospital_profile_bp
 from routes.Symptoms_form import symptoms_form_bp
 import os
 import logging
+import atexit
 
 # Setup logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)  # Changed from DEBUG to INFO for production
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config.from_object("config")
 
-# Debug: Print database URI
+# Check database URI
 db_uri = app.config.get('SQLALCHEMY_DATABASE_URI')
 if db_uri:
     masked_uri = db_uri[:50] + "..." if len(db_uri) > 50 else db_uri
-    logger.info(f"Database URI: {masked_uri}")
+    logger.info(f"Database URI configured: {masked_uri}")
 else:
-    logger.error("❌ DATABASE_URL not configured! Check environment variables.")
+    logger.warning("⚠ DATABASE_URL not configured - app will run without database")
 
-# Enable CORS for all routes and allow credentials (so browser preflight requests succeed)
+# Enable CORS for all routes and allow credentials
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 db.init_app(app)
 JWTManager(app)
+
+# Flag to track if DB was initialized
+_db_initialized = False
+
+def init_db():
+    """Initialize database tables - called once on first request or startup"""
+    global _db_initialized
+    if _db_initialized or not db_uri:
+        return
+    try:
+        with app.app_context():
+            db.create_all()
+            logger.info("✓ Database tables created/verified")
+            _db_initialized = True
+    except Exception as e:
+        logger.error(f"⚠ Database initialization warning: {e}")
+        # Don't fail the app if DB init fails - just log and continue
+        _db_initialized = True
 
 @app.route("/")
 def home():
     return {"status": "Smart Health API is running", "version": "1.0"}
 
+@app.route("/health")
+def health():
+    """Health check endpoint - doesn't require database"""
+    return {"status": "healthy"}, 200
+
 @app.route("/db-test")
 def db_test():
+    """Test database connection"""
+    if not db_uri:
+        return {"status": "Database not configured", "error": "DATABASE_URL env var not set"}, 503
     try:
         result = db.session.execute(db.text("SELECT 1"))
         return {"status": "Database connection successful", "result": str(result.fetchone())}
     except Exception as e:
         logger.error(f"Database test failed: {e}")
-        return {"status": "Database connection failed", "error": str(e)}, 500
+        return {"status": "Database connection failed", "error": str(e)}, 503
 
 @app.errorhandler(404)
 def not_found(error):
@@ -66,14 +93,10 @@ app.register_blueprint(ambulance_bp, url_prefix="/ambulance")
 app.register_blueprint(government_bp, url_prefix="/government")
 app.register_blueprint(symptoms_form_bp, url_prefix="/symptoms")
 
+# Initialize database once when app starts (not blocking)
+init_db()
+
 if __name__ == "__main__":
-    try:
-        with app.app_context():
-            db.create_all()
-            logger.info("✓ Database tables created/verified")
-    except Exception as e:
-        logger.error(f"✗ Database initialization failed: {e}")
-    
     # Get port from environment or use default
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)

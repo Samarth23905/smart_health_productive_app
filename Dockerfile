@@ -25,13 +25,15 @@ RUN pip install --upgrade pip setuptools wheel && \
 # Copy the entire backend code
 COPY backend/ .
 
-# Expose port 5000 (Flask dev) or use 8000 (gunicorn on Render)
+# Expose port 5000, 8000
 EXPOSE 5000 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:5000/health', timeout=5)" || exit 1
+# Health check using curl (lightweight alternative to requests)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=45s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-5000}/health || exit 1
 
-# Run gunicorn (Procfile: web: gunicorn -w 4 -b 0.0.0.0:$PORT app:app)
-# On Render, PORT env var is set automatically; locally defaults to 5000
-CMD gunicorn -w 4 -b 0.0.0.0:${PORT:-5000} app:app
+# Run gunicorn with optimized settings for free tier
+# -w 2: Reduced from 4 workers to 2 for memory efficiency
+# --timeout 60: Increased timeout for database operations
+# --max-requests 100: Restart workers periodically to prevent memory bloat
+CMD gunicorn -w 2 -b 0.0.0.0:${PORT:-5000} --timeout 60 --max-requests 100 app:app

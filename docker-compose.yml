@@ -8,11 +8,11 @@ services:
     ports:
       - "5000:5000"
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://user:password@db:5432/smart_health}
-      SECRET_KEY: ${SECRET_KEY:-dev-secret-key}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-jwt-secret}
-      FLASK_ENV: ${FLASK_ENV:-development}
-      FLASK_DEBUG: ${FLASK_DEBUG:-1}
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      FLASK_ENV: production
+      FLASK_DEBUG: 0
     volumes:
       - ./backend:/app
     depends_on:
