@@ -1925,6 +1925,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Already have an account?'**
   String get already_have_account;
+
+  /// No description provided for @health_risk_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Risk Report'**
+  String get health_risk_report;
+
+  /// No description provided for @download_health_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Health Report (PDF)'**
+  String get download_health_report;
+
+  /// No description provided for @view_recommended_hospitals.
+  ///
+  /// In en, this message translates to:
+  /// **'View Recommended Hospitals'**
+  String get view_recommended_hospitals;
+
+  /// No description provided for @generating_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating Health Report PDF...'**
+  String get generating_report;
+
+  /// No description provided for @report_downloaded_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Health report downloaded successfully!'**
+  String get report_downloaded_successfully;
+
+  /// No description provided for @error_downloading_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Error downloading report: '**
+  String get error_downloading_report;
+
+  /// No description provided for @profile_updated_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully!'**
+  String get profile_updated_successfully;
+
+  /// No description provided for @directions.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions'**
+  String get directions;
+
+  /// No description provided for @select_hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select_hospital;
+
+  /// No description provided for @selected_hospital.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get selected_hospital;
+
+  /// No description provided for @by_relevance.
+  ///
+  /// In en, this message translates to:
+  /// **'By Relevance'**
+  String get by_relevance;
+
+  /// No description provided for @by_distance.
+  ///
+  /// In en, this message translates to:
+  /// **'By Distance'**
+  String get by_distance;
+
+  /// No description provided for @icu_resources.
+  ///
+  /// In en, this message translates to:
+  /// **'ICU Resources'**
+  String get icu_resources;
+
+  /// No description provided for @emergency_life_saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency & Life-saving'**
+  String get emergency_life_saving;
+
+  /// No description provided for @diagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics'**
+  String get diagnostics;
+
+  /// No description provided for @pharmacy_supplies.
+  ///
+  /// In en, this message translates to:
+  /// **'Pharmacy & Supplies'**
+  String get pharmacy_supplies;
+
+  /// No description provided for @human_resources.
+  ///
+  /// In en, this message translates to:
+  /// **'Human Resources'**
+  String get human_resources;
+
+  /// No description provided for @support_resources.
+  ///
+  /// In en, this message translates to:
+  /// **'Support Resources'**
+  String get support_resources;
+
+  /// No description provided for @report_downloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Report downloaded successfully!'**
+  String get report_downloaded;
+
+  /// No description provided for @authentication_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication required. Please login again.'**
+  String get authentication_required;
+
+  /// No description provided for @unauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Unauthorized: Government access required'**
+  String get unauthorized;
+
+  /// No description provided for @download_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed: '**
+  String get download_failed;
+
+  /// No description provided for @password_validation_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must have 6+ characters, a special character, and start with uppercase'**
+  String get password_validation_error;
+
+  /// No description provided for @email_validation_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Email must contain \'@\' symbol'**
+  String get email_validation_error;
+
+  /// No description provided for @phone_validation_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be exactly 10 digits'**
+  String get phone_validation_error;
 }
 
 class _AppLocalizationsDelegate

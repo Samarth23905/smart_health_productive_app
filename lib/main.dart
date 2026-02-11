@@ -4,6 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'gen/l10n/app_localizations.dart';
 import 'providers/language_provider.dart';
 import 'screens/home.dart';
+import 'screens/health_report.dart';
+import 'screens/hospitals_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -174,6 +176,19 @@ class SmartHealthApp extends StatelessWidget {
       home: const HomePage(),
       routes: {
         '/home': (context) => const HomePage(),
+
+        '/health-report': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map;
+          return HealthReportScreen(
+            healthReport: args['healthReport'],
+            severityId: args['severityId'],
+          );
+        },
+
+        '/hospitals': (context) {
+          final severityId = ModalRoute.of(context)!.settings.arguments as int;
+          return HospitalsList(severityId: severityId);
+        },
       },
     );
   }

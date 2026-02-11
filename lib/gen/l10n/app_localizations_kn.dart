@@ -878,62 +878,143 @@ class AppLocalizationsKn extends AppLocalizations {
   String get mortuary => 'ಮೋರ್ಟುವರಿ';
 
   @override
-  String get user_found => 'User found';
+  String get user_found => 'ವವಹಾರಕಾರ ಕಂಡುಬಂದರು';
 
   @override
-  String get user_not_found => 'User not found';
+  String get user_not_found => 'ವವಹಾರಕಾರ ಕಂಡುಬಂದಿಲ್ಲ';
 
   @override
-  String get passwords_do_not_match => 'Passwords do not match';
+  String get passwords_do_not_match => 'ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆ ಇಲ್ಲ';
 
   @override
-  String get password_reset_successful => 'Password reset successfully';
+  String get password_reset_successful =>
+      'ಪಾಸ್‌ವರ್ಡ್ ಯಶಸ್ವಿಯಾಗಿ ರೀಸೆಟ್ ಮಾಡಲಾಗಿದೆ';
 
   @override
-  String get password_reset_failed => 'Failed to reset password';
+  String get password_reset_failed => 'ಪಾಸ್‌ವರ್ಡ್ ರೀಸೆಟ್ ವಿಫಲವಾಗಿದೆ';
 
   @override
-  String get account_recovery => 'Account recovery';
+  String get account_recovery => 'ಖಾತೆ ಪುನರುದ್ಧಾರ';
 
   @override
   String get enter_email_or_username =>
-      'Enter your email or username to recover your account';
+      'ನಿಮ್ಮ ಖಾತೆ ಪುನರುದ್ಧಾರ ಮಾಡಲು ಇಮೇಲ್ ಅಥವಾ ಬಳಕೆದಾರ ಹೆಸರನ್ನು ನಮೂದಿಸಿ';
 
   @override
-  String get email_or_username => 'Email or Username';
+  String get email_or_username => 'ಇಮೇಲ್ ಅಥವಾ ಬಳಕೆದಾರ ಹೆಸರು';
 
   @override
-  String get verify_account => 'Verify Account';
+  String get verify_account => 'ಖಾತೆ ಪರಿಶೋಧಿಸಿ';
 
   @override
-  String get back_to_login => 'Back to Login';
+  String get back_to_login => 'ಲಾಗಿನ್‌ಗೆ ಹಿಂದಿರುಗಿ';
 
   @override
-  String get set_new_password => 'Set New Password';
+  String get set_new_password => 'ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಸಿ';
 
   @override
   String get enter_secure_password =>
-      'Enter a new secure password for your account';
+      'ನಿಮ್ಮ ಖಾತೆಗೆ ಹೊಸ ಸುರಕ್ಷಿತ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ';
 
   @override
-  String get new_password => 'New Password';
+  String get new_password => 'ಹೊಸ ಪಾಸ್‌ವರ್ಡ್';
 
   @override
-  String get confirm_password => 'Confirm Password';
+  String get confirm_password => 'ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ';
 
   @override
-  String get reset_password => 'Reset Password';
+  String get reset_password => 'ಪಾಸ್‌ವರ್ಡ್ ರೀಸೆಟ್ ಮಾಡಿ';
 
   @override
-  String get success => 'Success';
+  String get success => 'ಯಶಸ್ವಿ';
 
   @override
   String get password_updated_successfully =>
-      'Your password has been updated successfully';
+      'ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ';
 
   @override
-  String get get_started => 'Get Started';
+  String get get_started => 'ಪ್ರಾರಂಭ ಮಾಡಿ';
 
   @override
-  String get already_have_account => 'Already have an account?';
+  String get already_have_account => 'ಈಗಾಗಲೇ ಖಾತೆ ಹೊಂದಿದ್ದೀರಾ?';
+
+  @override
+  String get health_risk_report => 'ಆರೋಗ್ಯ ಝೋಖಿಮ ವರದಿ';
+
+  @override
+  String get download_health_report => 'ಆರೋಗ್ಯ ವರದಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ (PDF)';
+
+  @override
+  String get view_recommended_hospitals =>
+      'ಶಿಫಾರಸುಮಾಡಿದ ಆಸ್ಪತ್ರೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ';
+
+  @override
+  String get generating_report => 'ಆರೋಗ್ಯ ವರದಿ PDF ಉತ್ಪಾದಿಸಲಾಗುತ್ತಿದೆ...';
+
+  @override
+  String get report_downloaded_successfully =>
+      'ಆರೋಗ್ಯ ವರದಿ ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆದ!';
+
+  @override
+  String get error_downloading_report => 'ವರದಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ: ';
+
+  @override
+  String get profile_updated_successfully =>
+      'ಪ್ರೊಫೈಲ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ!';
+
+  @override
+  String get directions => 'ನಿರ್ದೇಶನಗಳು';
+
+  @override
+  String get select_hospital => 'ಆರಿಸಿ';
+
+  @override
+  String get selected_hospital => 'ಆರಿಸಿದ';
+
+  @override
+  String get by_relevance => 'ಪ್ರಸಂಗಿಕತೆ ಮೂಲಕ';
+
+  @override
+  String get by_distance => 'ದೂರ ಮೂಲಕ';
+
+  @override
+  String get icu_resources => 'ICU ಸಂಪನ್ಮೂಲಗಳು';
+
+  @override
+  String get emergency_life_saving => 'ತುರ್ತು ಮತ್ತು ಜೀವನ-ರಕ್ಷಣೆ';
+
+  @override
+  String get diagnostics => 'ನೋಟನ್ನು ನೀಡಿ';
+
+  @override
+  String get pharmacy_supplies => 'ಫಾರ್ಮಸಿ ಮತ್ತು ಸರಬರಾಜು';
+
+  @override
+  String get human_resources => 'ಮಾನವ ಸಂಪನ್ಮೂಲ';
+
+  @override
+  String get support_resources => 'ಬೆಂಬಲ ಸಂಪನ್ಮೂಲಗಳು';
+
+  @override
+  String get report_downloaded => 'ವರದಿ ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆದ!';
+
+  @override
+  String get authentication_required =>
+      'ಪ್ರಮಾಣೀಕರಣ ಅಗತ್ಯವಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಲಾಗಿನ್ ಮಾಡಿ.';
+
+  @override
+  String get unauthorized => 'ಅನಧಿಕೃತ: ಸರ್ಕಾರ ಪ್ರವೇಶ ಅಗತ್ಯವಿದೆ';
+
+  @override
+  String get download_failed => 'ಡೌನ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ: ';
+
+  @override
+  String get password_validation_error =>
+      'ಪಾಸ್‌ವರ್ಡ್ 6+ ಅಕ್ಷರಗಳು, ವಿಶೇಷ ಅಕ್ಷರ ಮತ್ತು ದೊಡ್ಡ ವರ್ಣಾಕ್ಷರದೊಂದಿಗೆ ಪ್ರಾರಂಭವಾಗಬೇಕು';
+
+  @override
+  String get email_validation_error => 'ಇಮೇಲ್ \'@\' ಚಿಹ್ನೆ ಹೊಂದಿರಬೇಕು';
+
+  @override
+  String get phone_validation_error => 'ಫೋನ್ ಸಂಖ್ಯೆ ನಿಖರವಾಗಿ 10 ಅಂಕೆಗಳು ಇರಬೇಕು';
 }

@@ -931,4 +931,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get already_have_account => 'Already have an account?';
+
+  @override
+  String get health_risk_report => 'Health Risk Report';
+
+  @override
+  String get download_health_report => 'Download Health Report (PDF)';
+
+  @override
+  String get view_recommended_hospitals => 'View Recommended Hospitals';
+
+  @override
+  String get generating_report => 'Generating Health Report PDF...';
+
+  @override
+  String get report_downloaded_successfully =>
+      'Health report downloaded successfully!';
+
+  @override
+  String get error_downloading_report => 'Error downloading report: ';
+
+  @override
+  String get profile_updated_successfully => 'Profile updated successfully!';
+
+  @override
+  String get directions => 'Directions';
+
+  @override
+  String get select_hospital => 'Select';
+
+  @override
+  String get selected_hospital => 'Selected';
+
+  @override
+  String get by_relevance => 'By Relevance';
+
+  @override
+  String get by_distance => 'By Distance';
+
+  @override
+  String get icu_resources => 'ICU Resources';
+
+  @override
+  String get emergency_life_saving => 'Emergency & Life-saving';
+
+  @override
+  String get diagnostics => 'Diagnostics';
+
+  @override
+  String get pharmacy_supplies => 'Pharmacy & Supplies';
+
+  @override
+  String get human_resources => 'Human Resources';
+
+  @override
+  String get support_resources => 'Support Resources';
+
+  @override
+  String get report_downloaded => 'Report downloaded successfully!';
+
+  @override
+  String get authentication_required =>
+      'Authentication required. Please login again.';
+
+  @override
+  String get unauthorized => 'Unauthorized: Government access required';
+
+  @override
+  String get download_failed => 'Download failed: ';
+
+  @override
+  String get password_validation_error =>
+      'Password must have 6+ characters, a special character, and start with uppercase';
+
+  @override
+  String get email_validation_error => 'Email must contain \'@\' symbol';
+
+  @override
+  String get phone_validation_error => 'Phone number must be exactly 10 digits';
 }

@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
-import 'hospitals_list.dart';
+import 'health_report.dart';
 
 class SymptomsFormPage extends StatefulWidget {
   const SymptomsFormPage({Key? key}) : super(key: key);
@@ -124,7 +124,7 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final symptomsBySystem = _getLocalizedSymptoms(loc);
-    
+
     // Initialize categories as collapsed on first build
     if (expandedCategories.isEmpty) {
       for (var category in symptomsBySystem.keys) {
@@ -192,13 +192,16 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            "${selectedSymptomsWithDetails.length} ${AppLocalizations.of(context)!.selected}",
+                            "${selectedSymptomsWithDetails
+                                .length} ${AppLocalizations.of(context)!
+                                .selected}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -225,7 +228,8 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment
+                                    .spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
@@ -239,7 +243,8 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                                   IconButton(
                                     onPressed: () {
                                       setState(() {
-                                        selectedSymptomsWithDetails.remove(symptom);
+                                        selectedSymptomsWithDetails.remove(
+                                            symptom);
                                       });
                                     },
                                     icon: const Icon(Icons.close, size: 18),
@@ -250,12 +255,18 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                "${AppLocalizations.of(context)!.duration}: ${detail.days} ${AppLocalizations.of(context)!.days}",
-                                style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                "${AppLocalizations.of(context)!
+                                    .duration}: ${detail
+                                    .days} ${AppLocalizations.of(context)!
+                                    .days}",
+                                style: const TextStyle(
+                                    fontSize: 11, color: Colors.grey),
                               ),
                               Text(
-                                "${AppLocalizations.of(context)!.severity}: ${detail.severity}",
-                                style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                "${AppLocalizations.of(context)!
+                                    .severity}: ${detail.severity}",
+                                style: const TextStyle(
+                                    fontSize: 11, color: Colors.grey),
                               ),
                             ],
                           ),
@@ -272,20 +283,25 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: selectedSymptomsWithDetails.isEmpty ? null : _submitSymptoms,
+                onPressed: selectedSymptomsWithDetails.isEmpty
+                    ? null
+                    : _submitSymptoms,
                 icon: _isLoading
                     ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
                     : const Icon(Icons.check),
                 label: Text(
-                  _isLoading ? AppLocalizations.of(context)!.submitting : AppLocalizations.of(context)!.submit_symptoms,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  _isLoading
+                      ? AppLocalizations.of(context)!.submitting
+                      : AppLocalizations.of(context)!.submit_symptoms,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
@@ -358,7 +374,8 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
             padding: const EdgeInsets.all(12),
             child: Column(
               children: symptoms.map((symptom) {
-                bool isSelected = selectedSymptomsWithDetails.containsKey(symptom);
+                bool isSelected = selectedSymptomsWithDetails.containsKey(
+                    symptom);
                 return _buildSymptomOption(symptom, isSelected);
               }).toList(),
             ),
@@ -417,13 +434,16 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
                     symptom,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight
+                          .normal,
                       color: isSelected ? Colors.green[800] : Colors.black87,
                     ),
                   ),
                   if (isSelected)
                     Text(
-                      "${selectedSymptomsWithDetails[symptom]!.days} days • ${selectedSymptomsWithDetails[symptom]!.severity}",
+                      "${selectedSymptomsWithDetails[symptom]!
+                          .days} days • ${selectedSymptomsWithDetails[symptom]!
+                          .severity}",
                       style: const TextStyle(fontSize: 11, color: Colors.grey),
                     ),
                 ],
@@ -441,116 +461,126 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
 
     showDialog(
       context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(
-            symptom,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Days Input
-                Text(
-                  AppLocalizations.of(context)!.how_many_days,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(6),
+      builder: (_) =>
+          StatefulBuilder(
+            builder: (context, setState) =>
+                AlertDialog(
+                  title: Text(
+                    symptom,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.enter_number_of_days,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                      suffix: Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Text(AppLocalizations.of(context)!.days),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      if (value.isNotEmpty && int.tryParse(value) != null) {
-                        days = int.parse(value);
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Days Input
+                        Text(
+                          AppLocalizations.of(context)!.how_many_days,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey[300]!),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!
+                                  .enter_number_of_days,
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              suffix: Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: Text(AppLocalizations.of(context)!.days),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if (value.isNotEmpty && int.tryParse(value) !=
+                                  null) {
+                                days = int.parse(value);
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 20),
 
-                // Severity Radio Buttons
-                Text(
-                  AppLocalizations.of(context)!.severity_level,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                ),
-                const SizedBox(height: 12),
-                Column(
-                  children: [
-                    _buildRadioOption(
-                      label: "🟢 ${AppLocalizations.of(context)!.mild}",
-                      value: "mild",
-                      groupValue: severity,
-                      onChanged: (value) {
-                        setState(() {
-                          severity = value;
-                        });
-                      },
+                        // Severity Radio Buttons
+                        Text(
+                          AppLocalizations.of(context)!.severity_level,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        const SizedBox(height: 12),
+                        Column(
+                          children: [
+                            _buildRadioOption(
+                              label: "🟢 ${AppLocalizations.of(context)!.mild}",
+                              value: "mild",
+                              groupValue: severity,
+                              onChanged: (value) {
+                                setState(() {
+                                  severity = value;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            _buildRadioOption(
+                              label: "🟡 ${AppLocalizations.of(context)!
+                                  .moderate}",
+                              value: "moderate",
+                              groupValue: severity,
+                              onChanged: (value) {
+                                setState(() {
+                                  severity = value;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            _buildRadioOption(
+                              label: "🔴 ${AppLocalizations.of(context)!
+                                  .severe}",
+                              value: "severe",
+                              groupValue: severity,
+                              onChanged: (value) {
+                                setState(() {
+                                  severity = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    _buildRadioOption(
-                      label: "🟡 ${AppLocalizations.of(context)!.moderate}",
-                      value: "moderate",
-                      groupValue: severity,
-                      onChanged: (value) {
-                        setState(() {
-                          severity = value;
-                        });
-                      },
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(AppLocalizations.of(context)!.cancel),
                     ),
-                    const SizedBox(height: 8),
-                    _buildRadioOption(
-                      label: "🔴 ${AppLocalizations.of(context)!.severe}",
-                      value: "severe",
-                      groupValue: severity,
-                      onChanged: (value) {
+                    ElevatedButton(
+                      onPressed: () {
                         setState(() {
-                          severity = value;
+                          selectedSymptomsWithDetails[symptom] = SymptomDetail(
+                            days: days,
+                            severity: severity,
+                          );
                         });
+                        Navigator.pop(context);
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                      ),
+                      child: Text(AppLocalizations.of(context)!.add_symptom),
                     ),
                   ],
                 ),
-              ],
-            ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(AppLocalizations.of(context)!.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  selectedSymptomsWithDetails[symptom] = SymptomDetail(
-                    days: days,
-                    severity: severity,
-                  );
-                });
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-              ),
-              child: Text(AppLocalizations.of(context)!.add_symptom),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -567,7 +597,8 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
         decoration: BoxDecoration(
           color: groupValue == value ? Colors.orange[50] : Colors.white,
           border: Border.all(
-            color: groupValue == value ? Colors.orange[400]! : Colors.grey[300]!,
+            color: groupValue == value ? Colors.orange[400]! : Colors
+                .grey[300]!,
             width: 1.5,
           ),
           borderRadius: BorderRadius.circular(6),
@@ -584,8 +615,10 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
             Text(
               label,
               style: TextStyle(
-                fontWeight: groupValue == value ? FontWeight.bold : FontWeight.normal,
-                color: groupValue == value ? Colors.orange[800] : Colors.black87,
+                fontWeight: groupValue == value ? FontWeight.bold : FontWeight
+                    .normal,
+                color: groupValue == value ? Colors.orange[800] : Colors
+                    .black87,
               ),
             ),
           ],
@@ -602,28 +635,26 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
     });
 
     try {
-      // Get current location before submitting symptoms
-      print("[SubmitSymptoms] Requesting location...");
+      // ================= LOCATION UPDATE =================
       try {
         final position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
-        print("[SubmitSymptoms] Got location: ${position.latitude}, ${position.longitude}");
 
-        // Update citizen location in database
-        await ApiService.updateCitizenLocation(position.latitude, position.longitude);
-        print("[SubmitSymptoms] Location updated in database");
+        await ApiService.updateCitizenLocation(
+          position.latitude,
+          position.longitude,
+        );
       } catch (locErr) {
-        print("[SubmitSymptoms] Location error: $locErr");
+        debugPrint("[SubmitSymptoms] Location error: $locErr");
       }
 
-      // Format symptoms with details for backend
-      List<String> symptomsList = selectedSymptomsWithDetails.entries.map((e) {
-        return "${e.key} (${e.value.days} days, ${e.value.severity})";
-      }).toList();
+      // ================= FORMAT SYMPTOMS =================
+      final symptomsText = selectedSymptomsWithDetails.entries
+          .map((e) => "${e.key} (${e.value.days} days, ${e.value.severity})")
+          .join(" | ");
 
-      final symptomsText = symptomsList.join(" | ");
-
+      // ================= API CALL =================
       final result = await ApiService.submitSymptoms(symptomsText);
 
       setState(() {
@@ -633,21 +664,34 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
       if (result['success'] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context)!.symptoms_submitted_successfully),
+            content: Text(
+              AppLocalizations.of(context)!.symptoms_submitted_successfully,
+            ),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 2),
           ),
         );
 
-        // Extract severity_id from result
-        int? severityId = result['severity_id'] as int?;
+        final int severityId = result['severity_id'];
+        final int riskPercentage = result['risk_percentage'] ?? 0;
 
-        // Navigate to Hospitals List with severity_id
-        Future.delayed(const Duration(milliseconds: 500), () {
+        final Map<String, dynamic> healthReport =
+        result['health_report'] != null
+            ? Map<String, dynamic>.from(result['health_report'])
+            : {};
+
+        healthReport['risk_percentage'] = riskPercentage;
+
+        // ================= NAVIGATE =================
+        Future.delayed(const Duration(milliseconds: 400), () {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => HospitalsList(severityId: severityId),
+              builder: (_) =>
+                  HealthReportScreen(
+                    healthReport: healthReport,
+                    severityId: severityId,
+                  ),
             ),
           );
         });
@@ -659,12 +703,15 @@ class _SymptomsFormPageState extends State<SymptomsFormPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("${AppLocalizations.of(context)!.error_message}$e"),
+          content: Text(
+            "${AppLocalizations.of(context)!.error_message}$e",
+          ),
           backgroundColor: Colors.red,
         ),
       );
     }
   }
+
 }
 
 // Model class to store symptom details

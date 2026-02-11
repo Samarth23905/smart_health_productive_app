@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/api_services.dart';
 import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
+import 'ambulance_dashboard.dart';
 
 class CitizenTracking extends StatefulWidget {
   final int alertId;
@@ -313,11 +314,14 @@ class _CitizenTrackingState extends State<CitizenTracking> {
           );
         }
 
-        // Wait a moment then navigate back to dashboard
+        // Wait a moment then navigate to ambulance dashboard
         await Future.delayed(const Duration(seconds: 2));
 
         if (mounted) {
-          Navigator.pop(context);
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const AmbulanceDashboard()),
+            (Route<dynamic> route) => false,
+          );
         }
       } else {
         if (mounted) {

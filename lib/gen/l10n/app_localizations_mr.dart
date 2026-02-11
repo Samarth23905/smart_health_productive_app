@@ -480,333 +480,332 @@ class AppLocalizationsMr extends AppLocalizations {
   String get on_the_way => 'रस्त्यावर';
 
   @override
-  String get arrived => 'Arrived';
+  String get arrived => 'पोहोचले';
 
   @override
-  String get in_progress => 'In progress';
+  String get in_progress => 'प्रगतीत';
 
   @override
-  String get delivered => 'Delivered';
+  String get delivered => 'वितरित';
 
   @override
-  String get ambulance_dispatched => 'Ambulance Dispatched';
+  String get ambulance_dispatched => 'रुग्णवाहिका प्रेषित';
 
   @override
-  String get arrived_at_location => 'Arrived at Location';
+  String get arrived_at_location => 'स्थानावर पोहोचले';
 
   @override
-  String get confirm_arrival => 'Confirm Arrival';
+  String get confirm_arrival => 'आगमन पुष्टी करा';
 
   @override
   String get mark_ambulance_as_arrived =>
-      'Mark ambulance as arrived at hospital?';
+      'रुग्णवाहिकाला रुग्णालयात पोहोचल्याचे चिन्हांकित करा?';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'पुष्टी करा';
 
   @override
-  String get patient_delivered_successfully =>
-      'Patient delivered successfully!';
+  String get patient_delivered_successfully => 'रुग्ण यशस्वीरित्या वितरित!';
 
   @override
-  String get failed_complete_delivery => 'Failed to complete delivery';
+  String get failed_complete_delivery => 'वितरण पूर्ण करणे अयशस्वी';
 
   @override
-  String get could_not_open_maps => 'Could not open maps';
+  String get could_not_open_maps => 'नकाशे उघडू शकत नाही';
 
   @override
   String get error_unable_fetch_ambulance =>
-      'Error: Unable to fetch ambulance status';
+      'त्रुटी: रुग्णवाहिका स्थिती प्राप्त करू शकत नाही';
 
   @override
-  String get cardiovascular_system => '❤️ Heart (Cardiovascular System)';
+  String get cardiovascular_system => '❤️ हृदय (हृदय प्रणाली)';
 
   @override
-  String get nervous_system => '🧠 Brain & Nerves (Nervous System)';
+  String get nervous_system => '🧠 मस्तिष्क आणि नसें (तंत्रिका प्रणाली)';
 
   @override
-  String get respiratory_system => '🫁 Lungs (Respiratory System)';
+  String get respiratory_system => '🫁 फेफसे (श्वसन प्रणाली)';
 
   @override
-  String get digestive_system => '🍽️ Stomach & Digestion (Digestive System)';
+  String get digestive_system => '🍽️ पोट आणि पाचन (पाचन प्रणाली)';
 
   @override
-  String get urinary_system => '🚽 Urine & Private Parts (Urinary System)';
+  String get urinary_system => '🚽 मूत्र आणि खाजगी भाग (मूत्र प्रणाली)';
 
   @override
-  String get musculoskeletal_system => '🦴 Bones & Muscles';
+  String get musculoskeletal_system => '🦴 हाड आणि स्नायु';
 
   @override
-  String get blood_system => '🩸 Blood-Related Problems';
+  String get blood_system => '🩸 रक्त संबंधित समस्या';
 
   @override
-  String get general_hormone_system => '🌡️ General & Hormone-Related';
+  String get general_hormone_system => '🌡️ सामान्य आणि संबंध संबंधित';
 
   @override
-  String get chest_pain => 'Chest pain or pressure';
+  String get chest_pain => 'छातीत दाब किंवा दर्द';
 
   @override
   String get heart_beating_fast =>
-      'Feeling your heart beating fast or irregularly';
+      'आपले हृदय वेगाने किंवा अनियमितपणे धडकते हे महसूस करणे';
 
   @override
-  String get breathlessness => 'Getting breathless easily';
+  String get breathlessness => 'सहजपणे श्वास अडचणी मिळणे';
 
   @override
-  String get trouble_breathing_lying => 'Trouble breathing when lying flat';
+  String get trouble_breathing_lying => 'पडल्यावर श्वास घेण्यात अडचण';
 
   @override
-  String get waking_breathless => 'Waking up at night feeling breathless';
+  String get waking_breathless => 'रात्रीच श्वास अडचणीने जागे होणे';
 
   @override
-  String get fainting => 'Fainting or feeling like you may faint';
+  String get fainting => 'बेहोश होणे किंवा बेहोश होण्याचा भय';
 
   @override
-  String get swelling_extremities => 'Swelling of feet or ankles';
+  String get swelling_extremities => 'पाद किंवा घोड्याच्या गाठीत सूज';
 
   @override
-  String get bluish_lips => 'Bluish lips or fingers';
+  String get bluish_lips => 'होठांचा किंवा बोटांचा निळा पडणे';
 
   @override
-  String get very_tired => 'Feeling very tired';
+  String get very_tired => 'अत्यंत थकलेले महसूस करणे';
 
   @override
-  String get leg_pain_walking => 'Leg pain while walking';
+  String get leg_pain_walking => 'चालताना पायात दाब';
 
   @override
-  String get headache => 'Headache';
+  String get headache => 'डोकेदुखी';
 
   @override
-  String get dizziness => 'Feeling dizzy or spinning';
+  String get dizziness => 'चक्कर येणे किंवा फिरण्याचा अनुभव';
 
   @override
-  String get blacking_out => 'Blacking out';
+  String get blacking_out => 'बेहोश होणे';
 
   @override
-  String get seizures => 'Fits / seizures';
+  String get seizures => 'ॲक्शन / आक्षेप';
 
   @override
-  String get weakness_limbs => 'Weakness in arms or legs';
+  String get weakness_limbs => 'हाताला किंवा पायाला कमजोरी';
 
   @override
-  String get numbness => 'Numbness or \'pins and needles\' feeling';
+  String get numbness => 'सोपेपणा किंवा पिन आणि सुई जैसी अनुभूती';
 
   @override
-  String get trouble_speaking => 'Trouble speaking';
+  String get trouble_speaking => 'बोलण्यात अडचण';
 
   @override
-  String get blurred_vision => 'Blurred or double vision';
+  String get blurred_vision => 'धुंधली किंवा दुहेरी दृष्टी';
 
   @override
-  String get memory_problems => 'Memory problems or confusion';
+  String get memory_problems => 'स्मृती समस्या किंवा गोंधळ';
 
   @override
-  String get shaking_hands => 'Shaking of hands';
+  String get shaking_hands => 'हातांचे कंपन';
 
   @override
-  String get difficulty_walking => 'Difficulty walking or keeping balance';
+  String get difficulty_walking => 'चाल किंवा संतुलन राखणे कठीण';
 
   @override
-  String get cough => 'Cough';
+  String get cough => 'खोकला';
 
   @override
-  String get mucus_cough => 'Mucus/phlegm while coughing';
+  String get mucus_cough => 'खोकल्यावेळ कफ';
 
   @override
-  String get blood_cough => 'Blood in cough';
+  String get blood_cough => 'खोकल्यात रक्त';
 
   @override
-  String get whistling_breathing => 'Whistling sound while breathing';
+  String get whistling_breathing => 'श्वास घेताना सीटीची आवाज';
 
   @override
-  String get chest_pain_breathing => 'Chest pain while breathing deeply';
+  String get chest_pain_breathing => 'खोल श्वास घेताना छातीत दाब';
 
   @override
-  String get noisy_breathing => 'Noisy breathing';
+  String get noisy_breathing => 'जोरदार श्वास';
 
   @override
-  String get fever_cough => 'Fever with cough';
+  String get fever_cough => 'खोकल्यासह ताप';
 
   @override
-  String get night_sweating => 'Night sweating';
+  String get night_sweating => 'रात्रीच घाम येणे';
 
   @override
-  String get weight_loss => 'Weight loss';
+  String get weight_loss => 'वजन कमी होणे';
 
   @override
-  String get poor_appetite => 'Poor appetite';
+  String get poor_appetite => 'कमी भूक';
 
   @override
-  String get feeling_nausea => 'Feeling like vomiting';
+  String get feeling_nausea => 'उलट्यांचा अनुभव';
 
   @override
-  String get vomiting => 'Vomiting';
+  String get vomiting => 'उलट्या';
 
   @override
-  String get burning_chest => 'Burning in chest or throat (acidity)';
+  String get burning_chest => 'छातीत किंवा घशात जळजळणे (अम्लता)';
 
   @override
-  String get stomach_pain => 'Stomach pain';
+  String get stomach_pain => 'पोटदुखी';
 
   @override
-  String get bloated_stomach => 'Bloated stomach';
+  String get bloated_stomach => 'फुगीलेला पोट';
 
   @override
-  String get difficulty_swallowing => 'Difficulty swallowing food';
+  String get difficulty_swallowing => 'अन्न गिळण्यात अडचण';
 
   @override
-  String get loose_motions => 'Loose motions';
+  String get loose_motions => 'हलकेच गती';
 
   @override
-  String get constipation => 'Constipation';
+  String get constipation => 'कब्जियत';
 
   @override
-  String get blood_stools => 'Blood in stools or black stools';
+  String get blood_stools => 'विष्ठेत रक्त किंवा काळे विष्ठे';
 
   @override
-  String get jaundice => 'Yellowing of eyes/skin (jaundice)';
+  String get jaundice => 'डोळ्याल किंवा त्वचेचा पिवळा रंग (पिवळ्यायट्या)';
 
   @override
-  String get burning_urination => 'Burning while passing urine';
+  String get burning_urination => 'मूत्र विसर्जन करताना जळजळणे';
 
   @override
-  String get frequent_urination => 'Going to the toilet very often';
+  String get frequent_urination => 'अनेकदा शौचालयाला जाणे';
 
   @override
-  String get sudden_urge => 'Sudden urge to pass urine';
+  String get sudden_urge => 'मूत्र विसर्जनाची अचानक तीव्र इच्छा';
 
   @override
-  String get nocturia => 'Waking up at night to pass urine';
+  String get nocturia => 'रात्रीच मूत्र विसर्जनासाठी जागे होणे';
 
   @override
-  String get blood_urine => 'Blood in urine';
+  String get blood_urine => 'मूत्रात रक्त';
 
   @override
-  String get low_urine => 'Passing very little urine';
+  String get low_urine => 'खूप कमी मूत्र विसर्जन';
 
   @override
-  String get lower_back_pain => 'Pain in lower back or sides';
+  String get lower_back_pain => 'खालच्या पीठीत किंवा बाजूंमध्ये दाब';
 
   @override
-  String get urine_leakage => 'Leakage of urine';
+  String get urine_leakage => 'मूत्र गळणे';
 
   @override
-  String get sexual_problems => 'Sexual problems';
+  String get sexual_problems => 'लैंगिक समस्या';
 
   @override
-  String get joint_pain => 'Joint pain';
+  String get joint_pain => 'सयुक्ताच दाब';
 
   @override
-  String get joint_swelling => 'Swelling of joints';
+  String get joint_swelling => 'सयुक्तामध्ये सूज';
 
   @override
-  String get morning_stiffness => 'Stiffness in the morning';
+  String get morning_stiffness => 'सकाळी कडकपणा';
 
   @override
-  String get muscle_pain => 'Muscle pain';
+  String get muscle_pain => 'स्नायु दाब';
 
   @override
-  String get weak_muscles => 'Weak muscles';
+  String get weak_muscles => 'कमजोर स्नायु';
 
   @override
-  String get difficulty_joint_movement => 'Difficulty moving joints';
+  String get difficulty_joint_movement => 'सयुक्ता हलवण्यात अडचण';
 
   @override
-  String get bent_bones => 'Bent or changed shape of bones';
+  String get bent_bones => 'हाडांची वाकलेली किंवा बदलीय आकृती';
 
   @override
-  String get back_pain => 'Back pain';
+  String get back_pain => 'पीठदुखी';
 
   @override
-  String get feeling_weak_tired => 'Feeling weak or tired';
+  String get feeling_weak_tired => 'कमजोर किंवा थकलेले महसूस करणे';
 
   @override
-  String get pale_skin => 'Pale skin';
+  String get pale_skin => 'फिकट त्वचा';
 
   @override
-  String get easy_bruising => 'Getting bruises easily';
+  String get easy_bruising => 'सहजपणे जखमा पडणे';
 
   @override
-  String get gum_bleeding => 'Bleeding from gums';
+  String get gum_bleeding => 'हिरड्यांतून रक्त बाहेर येणे';
 
   @override
-  String get frequent_infections => 'Getting infections often';
+  String get frequent_infections => 'वारंवार संक्रमण होणे';
 
   @override
-  String get swollen_glands => 'Swollen glands in neck/armpit/groin';
+  String get swollen_glands => 'मान / काठी / खुबीमध्ये सूज असलेली ग्रंथी';
 
   @override
-  String get fever => 'Fever';
+  String get fever => 'ताप';
 
   @override
-  String get sudden_weight_change => 'Sudden weight gain or loss';
+  String get sudden_weight_change => 'अचानक वजन वाढणे किंवा घटणे';
 
   @override
-  String get temperature_sensitivity => 'Feeling too hot or too cold';
+  String get temperature_sensitivity => 'बहुत गरम किंवा साचणे अनुभवणे';
 
   @override
-  String get excessive_thirst => 'Feeling very thirsty';
+  String get excessive_thirst => 'अत्यधिक तहान';
 
   @override
-  String get excessive_urination => 'Passing urine very often';
+  String get excessive_urination => 'अत्यधिक मूत्र विसर्जन';
 
   @override
-  String get excessive_hunger => 'Feeling very hungry';
+  String get excessive_hunger => 'अत्यधिक भूक';
 
   @override
-  String get excess_sweating => 'Excess sweating';
+  String get excess_sweating => 'अत्यधिक घाम';
 
   @override
-  String get hair_fall => 'Hair fall';
+  String get hair_fall => 'केसांची झड';
 
   @override
-  String get irregular_periods => 'Irregular periods';
+  String get irregular_periods => 'अनियमित मासिक धर्म';
 
   @override
   String get symptoms_submitted_successfully =>
-      '✅ Symptoms submitted successfully!';
+      '✅ लक्षण यशस्वीरित्या सलग केले!';
 
   @override
-  String get error_message => '❌ Error: ';
+  String get error_message => '❌ त्रुटी: ';
 
   @override
-  String get nearby_hospitals => '🏥 Nearby Hospitals';
+  String get nearby_hospitals => '🏥 जवळचे रुग्णालय';
 
   @override
-  String get location_error => 'Location error: ';
+  String get location_error => 'स्थान त्रुटी: ';
 
   @override
-  String get error_loading => 'Error: ';
+  String get error_loading => 'त्रुटी: ';
 
   @override
-  String get no_hospitals_found_message => 'No hospitals found';
+  String get no_hospitals_found_message => 'कोणतेही रुग्णालय सापडले नाही';
 
   @override
-  String get beds_label => 'Beds: ';
+  String get beds_label => 'बेड: ';
 
   @override
-  String get oxygen_yes => 'Yes';
+  String get oxygen_yes => 'होय';
 
   @override
-  String get oxygen_no => 'No';
+  String get oxygen_no => 'नाही';
 
   @override
-  String get oxygen_label => 'Oxygen: ';
+  String get oxygen_label => 'ऑक्सिजन: ';
 
   @override
-  String get navigate_button => '📍 Navigate';
+  String get navigate_button => '📍 नेव्हिगेट करा';
 
   @override
-  String get ward_general => 'General Ward';
+  String get ward_general => 'सामान्य वार्ड';
 
   @override
-  String get ward_semi_private => 'Semi-private Ward';
+  String get ward_semi_private => 'अर्ध-खाजगी वार्ड';
 
   @override
-  String get ward_private => 'Private Ward';
+  String get ward_private => 'खाजगी वार्ड';
 
   @override
-  String get ward_isolation => 'Isolation Ward';
+  String get ward_isolation => 'अलगीकरण वार्ड';
 
   @override
   String get micu => 'MICU';
@@ -824,113 +823,192 @@ class AppLocalizationsMr extends AppLocalizations {
   String get picu => 'PICU';
 
   @override
-  String get ventilators => 'Ventilators';
+  String get ventilators => 'वेंटिलेटर';
 
   @override
-  String get monitors => 'Monitors';
+  String get monitors => 'मॉनिटर';
 
   @override
-  String get emergency_24x7_label => 'Emergency 24x7';
+  String get emergency_24x7_label => 'आपातकालीन 24x7';
 
   @override
-  String get defibrillator => 'Defibrillator';
+  String get defibrillator => 'डिफिब्रिलेटर';
 
   @override
-  String get central_oxygen_label => 'Central Oxygen';
+  String get central_oxygen_label => 'केंद्रीय ऑक्सिजन';
 
   @override
-  String get in_house_pharmacy => 'In-house Pharmacy';
+  String get in_house_pharmacy => 'इन-हाउस औषधालय';
 
   @override
-  String get pharmacy_24x7 => 'Pharmacy 24x7';
+  String get pharmacy_24x7 => 'औषधालय 24x7';
 
   @override
-  String get oxygen_cylinders => 'Oxygen Cylinders';
+  String get oxygen_cylinders => 'ऑक्सिजन सिलिंडर';
 
   @override
-  String get essential_drugs => 'Essential Drugs';
+  String get essential_drugs => 'आवश्यक औषधे';
 
   @override
-  String get doctors_count => 'Doctors Count';
+  String get doctors_count => 'डॉक्टरांची संख्या';
 
   @override
-  String get nurses_count => 'Nurses Count';
+  String get nurses_count => 'नर्सांची संख्या';
 
   @override
-  String get icu_trained_staff => 'ICU Trained Staff';
+  String get icu_trained_staff => 'ICU प्रशिक्षित कर्मचारी';
 
   @override
-  String get anesthetist_available => 'Anesthetist Available';
+  String get anesthetist_available => 'संज्ञाहरण विज्ञानी उपलब्ध';
 
   @override
-  String get blood_bank => 'Blood Bank';
+  String get blood_bank => 'रक्त बँक';
 
   @override
-  String get dialysis_unit => 'Dialysis Unit';
+  String get dialysis_unit => 'डायलिसिस युनिट';
 
   @override
   String get cssd => 'CSSD';
 
   @override
-  String get mortuary => 'Mortuary';
+  String get mortuary => 'मोर्चरी';
 
   @override
-  String get user_found => 'User found';
+  String get user_found => 'वापरकर्ता सापडला';
 
   @override
-  String get user_not_found => 'User not found';
+  String get user_not_found => 'वापरकर्ता सापडला नाही';
 
   @override
-  String get passwords_do_not_match => 'Passwords do not match';
+  String get passwords_do_not_match => 'पासवर्ड जुळत नाहीत';
 
   @override
-  String get password_reset_successful => 'Password reset successfully';
+  String get password_reset_successful => 'पासवर्ड यशस्वीरित्या रीसेट केला';
 
   @override
-  String get password_reset_failed => 'Failed to reset password';
+  String get password_reset_failed => 'पासवर्ड रीसेट अयशस्वी';
 
   @override
-  String get account_recovery => 'Account recovery';
+  String get account_recovery => 'खाते पुनर्प्राप्ति';
 
   @override
   String get enter_email_or_username =>
-      'Enter your email or username to recover your account';
+      'आपले खाते पुनर्प्राप्त करण्यासाठी आपली ईमेल किंवा वापरकर्ता नाव प्रविष्ट करा';
 
   @override
-  String get email_or_username => 'Email or Username';
+  String get email_or_username => 'ईमेल किंवा वापरकर्ता नाव';
 
   @override
-  String get verify_account => 'Verify Account';
+  String get verify_account => 'खाते सत्यापित करा';
 
   @override
-  String get back_to_login => 'Back to Login';
+  String get back_to_login => 'लॉगिनला परत';
 
   @override
-  String get set_new_password => 'Set New Password';
+  String get set_new_password => 'नवीन पासवर्ड सेट करा';
 
   @override
   String get enter_secure_password =>
-      'Enter a new secure password for your account';
+      'आपल्या खात्यासाठी नवीन सुरक्षित पासवर्ड प्रविष्ट करा';
 
   @override
-  String get new_password => 'New Password';
+  String get new_password => 'नवीन पासवर्ड';
 
   @override
-  String get confirm_password => 'Confirm Password';
+  String get confirm_password => 'पासवर्ड पुष्टी करा';
 
   @override
-  String get reset_password => 'Reset Password';
+  String get reset_password => 'पासवर्ड रीसेट करा';
 
   @override
-  String get success => 'Success';
+  String get success => 'यशस्वी';
 
   @override
   String get password_updated_successfully =>
-      'Your password has been updated successfully';
+      'आपला पासवर्ड यशस्वीरित्या अपडेट झाला आहे';
 
   @override
-  String get get_started => 'Get Started';
+  String get get_started => 'सुरू करा';
 
   @override
-  String get already_have_account => 'Already have an account?';
+  String get already_have_account => 'आधीच खाते आहे का?';
+
+  @override
+  String get health_risk_report => 'आरोग्य जोखीम अहवाल';
+
+  @override
+  String get download_health_report => 'आरोग्य अहवाल डाउनलोड करा (PDF)';
+
+  @override
+  String get view_recommended_hospitals => 'शिफारस केलेले रुग्णालय पहा';
+
+  @override
+  String get generating_report => 'आरोग्य अहवाल PDF तयार केला जात आहे...';
+
+  @override
+  String get report_downloaded_successfully =>
+      'आरोग्य अहवाल यशस्वीरित्या डाउनलोड झाला!';
+
+  @override
+  String get error_downloading_report => 'अहवाल डाउनलोड करताना त्रुटी: ';
+
+  @override
+  String get profile_updated_successfully =>
+      'प्रोफाइल यशस्वीरित्या अपडेट झाली!';
+
+  @override
+  String get directions => 'दिशानिर्देश';
+
+  @override
+  String get select_hospital => 'निवडा';
+
+  @override
+  String get selected_hospital => 'निवडले';
+
+  @override
+  String get by_relevance => 'प्रासंगिकतेनुसार';
+
+  @override
+  String get by_distance => 'अंतरानुसार';
+
+  @override
+  String get icu_resources => 'ICU संसाधनांपणे';
+
+  @override
+  String get emergency_life_saving => 'आपातकालीन आणि जीवन-रक्षण';
+
+  @override
+  String get diagnostics => 'निदान';
+
+  @override
+  String get pharmacy_supplies => 'फार्मेसी आणि पुरवठा';
+
+  @override
+  String get human_resources => 'मानव संसाधन';
+
+  @override
+  String get support_resources => 'समर्थन संसाधन';
+
+  @override
+  String get report_downloaded => 'अहवाल यशस्वीरित्या डाउनलोड झाला!';
+
+  @override
+  String get authentication_required =>
+      'प्रमाणीकरण आवश्यक आहे. कृपया पुनः लॉगिन करा.';
+
+  @override
+  String get unauthorized => 'अनुमती संपादनीय नाही: सरकारी प्रवेश आवश्यक आहे';
+
+  @override
+  String get download_failed => 'डाउनलोड अयशस्वी: ';
+
+  @override
+  String get password_validation_error =>
+      'पासवर्डमध्ये 6+ अक्षर, विशेष अक्षर आणि मोठे अक्षराने सुरू असणे आवश्यक आहे';
+
+  @override
+  String get email_validation_error => 'ईमेलमध्ये \'@\' चिन्ह असणे आवश्यक आहे';
+
+  @override
+  String get phone_validation_error => 'फोन नंबर अचूक 10 अंक असणे आवश्यक आहे';
 }

@@ -139,9 +139,16 @@ CREATE TABLE severities (
 	total_days_symptomatic INTEGER DEFAULT 0,
 	max_severity VARCHAR(20) DEFAULT 'low',
 	symptom_details JSONB DEFAULT NULL,
+    risk_percentage INTEGER,
+    report_generated BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE severities
+ADD COLUMN risk_percentage INTEGER,
+ADD COLUMN report_generated BOOLEAN DEFAULT FALSE;
+
 
 
 CREATE INDEX IF NOT EXISTS idx_severities_max_severity ON severities(max_severity);

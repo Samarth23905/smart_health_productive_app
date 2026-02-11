@@ -145,6 +145,8 @@ class Severity(db.Model):
     symptom_details = db.Column(db.JSON, default=None)  # JSON: {"Chest Pain": {"days": 3, "severity": "severe"}, ...}
     max_severity = db.Column(db.String(20), default='low')  # Most severe symptom: mild, moderate, severe
     total_days_symptomatic = db.Column(db.Integer, default=0)  # Duration of longest symptom
+    risk_percentage = db.Column(db.Integer, default=0)  # ML-predicted risk (0-100)
+    report_generated = db.Column(db.Boolean, default=False)  # Whether health report was generated
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

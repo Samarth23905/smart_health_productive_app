@@ -3,13 +3,17 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:math';
 import '../services/api_services.dart';
-import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
 
 class HospitalsList extends StatefulWidget {
-  final int? severityId;  // NEW: Accept severity_id for dynamic ranking
+  final int? severityId;
+  final Map<String, dynamic>? healthReport;
 
-  const HospitalsList({Key? key, this.severityId}) : super(key: key);
+  const HospitalsList({
+    Key? key,
+    this.severityId,
+    this.healthReport,
+  }) : super(key: key);
 
   @override
   State<HospitalsList> createState() => _HospitalsListState();
@@ -17,15 +21,19 @@ class HospitalsList extends StatefulWidget {
 
 class _HospitalsListState extends State<HospitalsList> {
   late Future<List<Map<String, dynamic>>> _hospitalsFuture;
-  String _sortBy = "relevance";  // relevance or distance
-  bool _isDynamic = false;  // Track if showing dynamic ranking
+  String _sortBy = "relevance";
+  bool _isDynamic = false;
+
+  List<String> requiredResources = [];
 
   @override
   void initState() {
     super.initState();
 
-    // If severity_id provided, fetch dynamic hospitals
-    // Otherwise, fall back to static hospitals
+    requiredResources = List<String>.from(
+      widget.healthReport?['required_hospital_resources'] ?? [],
+    );
+
     if (widget.severityId != null) {
       _isDynamic = true;
       _hospitalsFuture = _fetchDynamicHospitals();
@@ -35,104 +43,58 @@ class _HospitalsListState extends State<HospitalsList> {
     }
   }
 
-  // ===== NEW: Dynamic Hospital Fetching =====
+  // ================= FETCH DYNAMIC =================
   Future<List<Map<String, dynamic>>> _fetchDynamicHospitals() async {
-    try {
-      final response = await ApiService.getDynamicHospitals(widget.severityId!);
+    final response = await ApiService.getDynamicHospitals(widget.severityId!);
+    List<Map<String, dynamic>> hospitals =
+        List<Map<String, dynamic>>.from(response['hospitals'] ?? []);
 
-      if (response.containsKey('error')) {
-        throw Exception(response['error']);
-      }
-
-      List<Map<String, dynamic>> hospitals =
-          List<Map<String, dynamic>>.from(response['hospitals'] ?? []);
-
-      // Default: sort by relevance (already done by backend)
-      if (_sortBy == "distance") {
-        hospitals.sort((a, b) => (a['distance_km'] as num).compareTo(b['distance_km'] as num));
-      }
-
-      print("[HospitalsList] Dynamic hospitals loaded: ${hospitals.length} hospitals");
-      return hospitals;
-    } catch (e) {
-      print("[HospitalsList Error] $e");
-      throw Exception("Failed to load hospitals: $e");
+    if (_sortBy == "distance") {
+      hospitals.sort(
+        (a, b) => (a['distance_km'] as num).compareTo(b['distance_km'] as num),
+      );
     }
+    return hospitals;
   }
 
-  // ===== OLD: Static Hospital Fetching =====
+  // ================= STATIC =================
   Future<List<Map<String, dynamic>>> _loadUserLocationAndFetchHospitals() async {
     try {
-      final position = await Geolocator.getCurrentPosition(
+      await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("${AppLocalizations.of(context)!.location_error}$e")),
-        );
+    } catch (_) {}
+    final data = await ApiService.getHospitals();
+    if (data is List) {
+      try {
+        return data.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      } catch (_) {
+        return <Map<String, dynamic>>[];
       }
     }
-
-    return _fetchAndSortHospitals();
+    return <Map<String, dynamic>>[];
   }
 
-  Future<List<Map<String, dynamic>>> _fetchAndSortHospitals() async {
-    try {
-      final hospitals = await ApiService.getHospitals();
-
-      List<Map<String, dynamic>> hospitalsWithDistance = [];
-
-      for (var hospital in hospitals) {
-        hospitalsWithDistance.add({
-          'id': hospital['id'],
-          'name': hospital['name'],
-          'phone': hospital['phone'],
-          'latitude': (hospital['latitude'] as num).toDouble(),
-          'longitude': (hospital['longitude'] as num).toDouble(),
-          'beds_available': hospital['beds_available'],
-          'oxygen_available': hospital['oxygen_available'],
-          'distance_km': 0.0,  // Not used in dynamic mode
-        });
-      }
-
-      return hospitalsWithDistance;
-    } catch (e) {
-      throw Exception("Failed to load hospitals: $e");
-    }
+  // ================= UTIL =================
+  Future<void> _openMap(double lat, double lng) async {
+    final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    await launchUrl(Uri.parse(url));
   }
 
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-    const p = 0.017453292519943295;
-    final a = 0.5 -
-        cos((lat2 - lat1) * p) / 2 +
-        cos(lat1 * p) *
-            cos(lat2 * p) *
-            (1 - cos((lon2 - lon1) * p)) /
-            2;
-    return 12742 * asin(sqrt(a));
-  }
-
-  Future<void> _openMap(double latitude, double longitude) async {
-    final url = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    }
-  }
-
-  Color _getMatchColor(int percentage) {
-    if (percentage >= 80) return Colors.green;
-    if (percentage >= 60) return Colors.orange;
+  Color _matchColor(int p) {
+    if (p >= 80) return Colors.green;
+    if (p >= 60) return Colors.orange;
     return Colors.red;
   }
 
-  Color _getRankColor(int rank) {
-    if (rank == 0) return Colors.amber[600]!;      // Gold
-    if (rank == 1) return Colors.grey[500]!;       // Silver
-    if (rank == 2) return Colors.orange[600]!;     // Bronze
-    return Colors.blue[400]!;                      // Other
+  Color _rankColor(int r) {
+    if (r == 0) return Colors.amber;
+    if (r == 1) return Colors.grey;
+    if (r == 2) return Colors.orange;
+    return Colors.blue;
   }
 
+  // ================= UI =================
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -140,91 +102,42 @@ class _HospitalsListState extends State<HospitalsList> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_isDynamic ? "Recommended Hospitals" : loc.nearby_hospitals),
-        backgroundColor: _isDynamic ? Colors.blue[700] : Colors.green[700],
-        centerTitle: true,
-        elevation: 0,
+        backgroundColor: _isDynamic ? Colors.blue : Colors.green,
         actions: _isDynamic
             ? [
                 PopupMenuButton(
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.orange),
-                          SizedBox(width: 8),
-                          Text("By Relevance"),
-                        ],
-                      ),
-                      value: "relevance",
-                      onTap: () {
-                        setState(() => _sortBy = "relevance");
-                      },
-                    ),
-                    PopupMenuItem(
-                      child: Row(
-                        children: [
-                          Icon(Icons.location_on, color: Colors.blue),
-                          SizedBox(width: 8),
-                          Text("By Distance"),
-                        ],
-                      ),
-                      value: "distance",
-                      onTap: () {
-                        setState(() => _sortBy = "distance");
-                      },
-                    ),
+                  onSelected: (val) {
+                    setState(() {
+                      _sortBy = val;
+                      _hospitalsFuture = _fetchDynamicHospitals();
+                    });
+                  },
+                  itemBuilder: (_) => const [
+                    PopupMenuItem(value: "relevance", child: Text("By Relevance")),
+                    PopupMenuItem(value: "distance", child: Text("By Distance")),
                   ],
-                ),
+                )
               ]
             : null,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _hospitalsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (_, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 60, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text("${loc.error_loading}${snapshot.error}"),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (_isDynamic) {
-                          _hospitalsFuture = _fetchDynamicHospitals();
-                        } else {
-                          _hospitalsFuture = _loadUserLocationAndFetchHospitals();
-                        }
-                      });
-                    },
-                    child: Text(loc.retry),
-                  ),
-                ],
-              ),
-            );
+          if (!snap.hasData || snap.data!.isEmpty) {
+            return const Center(child: Text("No hospitals found"));
           }
-
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text(loc.no_hospitals_found_message));
-          }
-
-          final hospitals = snapshot.data!;
 
           return ListView.builder(
             padding: const EdgeInsets.all(12),
-            itemCount: hospitals.length,
-            itemBuilder: (context, index) {
-              final hospital = hospitals[index];
+            itemCount: snap.data!.length,
+            itemBuilder: (_, i) {
+              final h = snap.data![i];
               return _isDynamic
-                  ? _buildDynamicHospitalCard(hospital, index)
-                  : _buildHospitalCard(hospital);
+                  ? _dynamicCard(h, i)
+                  : _staticCard(h);
             },
           );
         },
@@ -232,220 +145,136 @@ class _HospitalsListState extends State<HospitalsList> {
     );
   }
 
-  // ===== NEW: Dynamic Hospital Card with Match %= =====
-  Widget _buildDynamicHospitalCard(Map<String, dynamic> hospital, int rank) {
-    int matchPercentage = hospital['match_percentage'] ?? 0;
-    double distance = (hospital['distance_km'] as num?)?.toDouble() ?? 0.0;
-    String hospitalName = hospital['name'] ?? 'Hospital';
-    String phone = hospital['phone'] ?? 'N/A';
-    String reason = hospital['recommendation'] ?? hospital['reason'] ?? 'Suitable for your condition';
+  // ================= DYNAMIC CARD =================
+  Widget _dynamicCard(Map<String, dynamic> h, int rank) {
+    int match = h['match_percentage'] ?? 0;
+    double dist = (h['distance_km'] ?? 0).toDouble();
 
-    Color matchColor = _getMatchColor(matchPercentage);
-    Color rankColor = _getRankColor(rank);
+    bool hasICU = h['has_icu'] ?? false;
+    bool hasOxygen = h['oxygen_available'] ?? false;
+    bool hasCT = h['has_ct'] ?? false;
+    bool hasMRI = h['has_mri'] ?? false;
+    bool emergency = h['emergency_24x7'] ?? false;
 
-    bool hasICU = hospital['icu_available'] ?? hospital['has_icu'] ?? false;
-    bool hasOxygen = hospital['oxygen_available'] ?? false;
-    bool hasCT = hospital['has_ct'] ?? false;
-    bool hasMRI = hospital['has_mri'] ?? false;
-    bool emergency24x7 = hospital['emergency_24x7'] ?? false;
-    int bedsAvailable = hospital['beds_available'] ?? 0;
+    final hospitalResources = <String>[
+      if (hasICU) 'icu',
+      if (hasOxygen) 'oxygen',
+      if (hasCT) 'ct_scan',
+      if (hasMRI) 'mri',
+      if (emergency) '24x7_emergency',
+    ];
+
+    final matched = hospitalResources
+        .where((r) => requiredResources.contains(r))
+        .toList();
 
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
-          // Header with rank, name, match %
+          // ===== HEADER =====
           Container(
-            decoration: BoxDecoration(
-              color: matchColor.withOpacity(0.1),
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-              border: Border(
-                bottom: BorderSide(color: matchColor, width: 3),
-              ),
-            ),
             padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _matchColor(match).withOpacity(.1),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            ),
             child: Row(
               children: [
-                // Rank badge (Gold, Silver, Bronze)
                 CircleAvatar(
-                  backgroundColor: rankColor,
-                  child: Text(
-                    "${rank + 1}",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  radius: 20,
+                  backgroundColor: _rankColor(rank),
+                  child: Text("${rank + 1}"),
                 ),
                 const SizedBox(width: 12),
-
-                // Hospital name & reason
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        hospitalName,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        reason,
-                        style: TextStyle(fontSize: 11, color: Colors.grey[700]),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                  child: Text(
+                    h['name'],
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-
-                // Match percentage circle
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: CircularProgressIndicator(
-                        value: matchPercentage / 100,
-                        strokeWidth: 4,
-                        valueColor: AlwaysStoppedAnimation<Color>(matchColor),
-                        backgroundColor: Colors.grey[300],
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          "$matchPercentage%",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: matchColor,
-                          ),
-                        ),
-                        Text(
-                          "MATCH",
-                          style: TextStyle(fontSize: 8, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ],
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: match / 100),
+                  duration: const Duration(seconds: 1),
+                  builder: (_, v, __) => CircularProgressIndicator(
+                    value: v,
+                    strokeWidth: 4,
+                    valueColor:
+                        AlwaysStoppedAnimation(_matchColor(match)),
+                  ),
                 ),
+                const SizedBox(width: 6),
+                Text("$match%"),
               ],
             ),
           ),
 
-          // Hospital details
+          // ===== DETAILS =====
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Distance & Phone
-                Row(
-                  children: [
-                    Icon(Icons.location_on, color: Colors.blue, size: 18),
-                    const SizedBox(width: 6),
-                    Text(
-                      distance < 999
-                          ? "${distance.toStringAsFixed(1)} km away"
-                          : "Distance unknown",
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                Text("📍 ${dist.toStringAsFixed(1)} km away"),
+                const SizedBox(height: 6),
+
+                if (matched.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green),
                     ),
-                    const Spacer(),
-                    Icon(Icons.phone, color: Colors.green, size: 18),
-                    const SizedBox(width: 6),
-                    Text(
-                      phone,
-                      style: const TextStyle(fontSize: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Why this hospital?",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        ...matched.map(
+                          (r) => Text(
+                            "✔ Supports ${r.replaceAll('_', ' ').toUpperCase()}",
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+
                 const SizedBox(height: 12),
 
-                // Facilities chips
-                Wrap(
-                  spacing: 6,
+                Row(
                   children: [
-                    if (hasICU)
-                      Chip(
-                        label: const Text("🏥 ICU"),
-                        backgroundColor: Colors.orange[100],
-                        labelStyle: const TextStyle(fontSize: 11),
-                      ),
-                    if (hasOxygen)
-                      Chip(
-                        label: const Text("💨 Oxygen"),
-                        backgroundColor: Colors.blue[100],
-                        labelStyle: const TextStyle(fontSize: 11),
-                      ),
-                    if (hasCT || hasMRI)
-                      Chip(
-                        label: const Text("🔬 Diagnostics"),
-                        backgroundColor: Colors.purple[100],
-                        labelStyle: const TextStyle(fontSize: 11),
-                      ),
-                    if (emergency24x7)
-                      Chip(
-                        label: const Text("24/7"),
-                        backgroundColor: Colors.red[100],
-                        labelStyle: const TextStyle(fontSize: 11),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // Action buttons
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: const Icon(Icons.navigation),
-                    label: const Text("DIRECTIONS"),
-                    onPressed: () => _openMap(
-                      (hospital['latitude'] as num).toDouble(),
-                      (hospital['longitude'] as num).toDouble(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.check_circle),
-                    label: const Text("SELECT"),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Selected: $hospitalName"),
-                          duration: const Duration(seconds: 2),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.navigation),
+                        label: const Text("Directions"),
+                        onPressed: () => _openMap(
+                          h['latitude'],
+                          h['longitude'],
                         ),
-                      );
-                      // TODO: Handle hospital selection (call ambulance, etc.)
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: matchColor,
+                      ),
                     ),
-                  ),
-                ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.check),
+                        label: const Text("Select"),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Selected ${h['name']}")),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -454,94 +283,16 @@ class _HospitalsListState extends State<HospitalsList> {
     );
   }
 
-  // ===== OLD: Static Hospital Card =====
-  Widget _buildHospitalCard(Map<String, dynamic> hospital) {
-    final loc = AppLocalizations.of(context)!;
-    final distanceText = "${hospital['distance_km']?.toStringAsFixed(1) ?? 'N/A'} km";
-
+  // ================= STATIC CARD =================
+  Widget _staticCard(Map<String, dynamic> h) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.local_hospital, color: Colors.green, size: 24),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    hospital['name'] as String? ?? 'Hospital',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
-                Text(
-                  distanceText,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.phone, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
-                Text(
-                  hospital['phone'] as String? ?? 'N/A',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.bed, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
-                Text(
-                  "${loc.beds_label}${hospital['beds_available'] ?? 0}",
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-                const SizedBox(width: 16),
-                Icon(Icons.opacity, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 8),
-                Text(
-                  "${loc.oxygen_label}${hospital['oxygen_available'] == true ? loc.oxygen_yes : loc.oxygen_no}",
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => _openMap(
-                  hospital['latitude'] as double,
-                  hospital['longitude'] as double,
-                ),
-                icon: const Icon(Icons.navigation),
-                label: Text(loc.navigate_button),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
-          ],
+      child: ListTile(
+        leading: const Icon(Icons.local_hospital),
+        title: Text(h['name']),
+        subtitle: Text(h['phone'] ?? ""),
+        trailing: IconButton(
+          icon: const Icon(Icons.navigation),
+          onPressed: () => _openMap(h['latitude'], h['longitude']),
         ),
       ),
     );

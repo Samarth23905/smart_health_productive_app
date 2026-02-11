@@ -5,14 +5,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../services/api_services.dart';
+import '../services/download_service.dart';
 import '../constants/app_colors.dart';
 import '../gen/l10n/app_localizations.dart';
 import 'login.dart';
 import 'citizen_profile_edit.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:open_file/open_file.dart';
 
 class GovernmentDashboard extends StatefulWidget {
   const GovernmentDashboard({Key? key}) : super(key: key);
@@ -97,10 +94,19 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
         print('[Download] CSV Data received: ${response.body.length} characters');
 
         if (mounted) {
-          // Save file to device
-          await _saveAndOpenFile(
-            'ETA_Analysis_Report.csv',
+          // Use unified DownloadService for cross-platform support
+          await DownloadService.downloadFile(
+            'ETA_Analysis_Report_${DateTime.now().millisecondsSinceEpoch}.csv',
             response.bodyBytes,
+            mimeType: 'text/csv',
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Report downloaded successfully!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
           );
         }
       } else if (response.statusCode == 403) {
@@ -181,10 +187,19 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
         print('[Download] CSV Data received: ${response.body.length} characters');
 
         if (mounted) {
-          // Save file to device
-          await _saveAndOpenFile(
-            'Hospital_Details_Report.csv',
+          // Use unified DownloadService for cross-platform support
+          await DownloadService.downloadFile(
+            'Hospital_Details_Report_${DateTime.now().millisecondsSinceEpoch}.csv',
             response.bodyBytes,
+            mimeType: 'text/csv',
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Report downloaded successfully!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
           );
         }
       } else if (response.statusCode == 403) {
@@ -423,81 +438,6 @@ class _GovernmentDashboardState extends State<GovernmentDashboard> {
         duration: Duration(seconds: 2),
       ),
     );
-  }
-
-  Future<void> _saveAndOpenFile(String filename, List<int> bytes) async {
-    try {
-        await _downloadFileOnMobile(filename, bytes);
-    } catch (e) {
-      print('[File] Error: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error saving file: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _downloadFileOnMobile(String filename, List<int> bytes) async {
-    try {
-      print('[Mobile Download] Requesting storage permissions...');
-
-      // Request storage permissions
-      final PermissionStatus status = await Permission.storage.request();
-
-      if (status.isDenied) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Storage permission denied'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return;
-      }
-
-      // Try to get downloads directory, fallback to documents directory
-      Directory? directory;
-
-      try {
-        directory = Directory('/storage/emulated/0/Download');
-        if (!await directory.exists()) {
-          directory = await getApplicationDocumentsDirectory();
-        }
-      } catch (e) {
-        print('[Mobile Download] Downloads directory error: $e, using documents directory');
-        directory = await getApplicationDocumentsDirectory();
-      }
-
-      print('[Mobile Download] Saving to: ${directory.path}');
-
-      // Create file
-      final file = File('${directory.path}/$filename');
-      await file.writeAsBytes(bytes);
-
-      print('[Mobile Download] File saved: ${file.path}');
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Downloaded: ${file.path}'),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-
-      // Open file
-      print('[Mobile Download] Opening file: ${file.path}');
-      await OpenFile.open(file.path);
-    } catch (e) {
-      print('[Mobile Download] Error: $e');
-      rethrow;
-    }
   }
 
   Widget _buildSection({

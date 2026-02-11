@@ -218,7 +218,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get active_alerts => 'सक्रिय अलर्ट';
 
   @override
-  String get my_profile => 'मेरा प्रोफाइल';
+  String get my_profile => 'मेरी प्रोफाइल';
 
   @override
   String get edit_hospital_profile => 'अस्पताल प्रोफाइल संपादित करें';
@@ -461,61 +461,60 @@ class AppLocalizationsHi extends AppLocalizations {
   String get add_symptom => 'लक्षण जोड़ें';
 
   @override
-  String get ambulance_tracking => 'एम्बुलेंस सारण';
+  String get ambulance_tracking => 'एम्बुलेंस ट्रैकिंग';
 
   @override
-  String get hospital_delivery => 'अस्पताल सलंबकु';
+  String get hospital_delivery => 'अस्पताल डिलीवरी';
 
   @override
-  String get patient_delivery_in_progress => 'रोगी की सलंबकु न्यून है';
+  String get patient_delivery_in_progress => 'रोगी की डिलीवरी में प्रगति';
 
   @override
-  String get tracking_timeline => 'सारण समयसरणी';
+  String get tracking_timeline => 'ट्रैकिंग टाइमलाइन';
 
   @override
-  String get dispatched => 'लेज दसल रूकनी';
+  String get dispatched => 'भेजा गया';
 
   @override
-  String get on_the_way => 'यात्रा पर';
+  String get on_the_way => 'रास्ते में';
 
   @override
-  String get arrived => 'पहुंच गया';
+  String get arrived => 'आ गया';
 
   @override
-  String get in_progress => 'अभी विकसी ह है';
+  String get in_progress => 'प्रगति में है';
 
   @override
-  String get delivered => 'पध हुआ अस्पताल';
+  String get delivered => 'डिलीवर किया गया';
 
   @override
-  String get ambulance_dispatched => 'एम्बुलेंस लेज दसल रूक शुथा';
+  String get ambulance_dispatched => 'एम्बुलेंस भेजा गया';
 
   @override
-  String get arrived_at_location => 'सन्धेप पे पहुंच गया';
+  String get arrived_at_location => 'स्थान पर पहुंच गया';
 
   @override
-  String get confirm_arrival => 'अस्पताल पहुंछ की पुष्टि';
+  String get confirm_arrival => 'आगमन की पुष्टि करें';
 
   @override
   String get mark_ambulance_as_arrived =>
-      'एम्बुलेंस को अस्पताल सलंबद्ध से पहुंच लाई गै कि तौर सी?';
+      'एम्बुलेंस को अस्पताल में पहुंचने के रूप में चिन्हित करें?';
 
   @override
-  String get confirm => 'सीसाची करें';
+  String get confirm => 'पुष्टि करें';
 
   @override
-  String get patient_delivered_successfully =>
-      'रोगी की सलंबकु सफलतापूर्वक हुई!';
+  String get patient_delivered_successfully => 'रोगी सफलतापूर्वक डिलीवर हुआ!';
 
   @override
-  String get failed_complete_delivery => 'सलंबक पूडी करने में असफल';
+  String get failed_complete_delivery => 'डिलीवरी पूरी करने में विफल';
 
   @override
-  String get could_not_open_maps => 'नक्शे खोल नहीं सकी';
+  String get could_not_open_maps => 'नक्शे नहीं खोल सके';
 
   @override
   String get error_unable_fetch_ambulance =>
-      'त्रुटि: एम्बुलेंस स्थिति प्राप्त नहीं सकी';
+      'त्रुटि: एम्बुलेंस स्थिति प्राप्त नहीं कर सकते';
 
   @override
   String get cardiovascular_system => '❤️ हृदय (हृदय प्रणाली)';
@@ -588,7 +587,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get weakness_limbs => 'बाहों या पैरों में कमजोरी';
 
   @override
-  String get numbness => 'सुन्नता या \'सुइयों और सुई\' जैसी अनुभूति';
+  String get numbness => 'सुन्नता या सुई जैसी अनुभूति';
 
   @override
   String get trouble_speaking => 'बोलने में परेशानी';
@@ -932,4 +931,83 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get already_have_account => 'क्या पहले से एक खाता है?';
+
+  @override
+  String get health_risk_report => 'स्वास्थ्य जोखिम रिपोर्ट';
+
+  @override
+  String get download_health_report => 'स्वास्थ्य रिपोर्ट डाउनलोड करें (PDF)';
+
+  @override
+  String get view_recommended_hospitals => 'अनुशंसित अस्पताल देखें';
+
+  @override
+  String get generating_report =>
+      'स्वास्थ्य रिपोर्ट PDF तैयार किया जा रहा है...';
+
+  @override
+  String get report_downloaded_successfully =>
+      'स्वास्थ्य रिपोर्ट सफलतापूर्वक डाउनलोड हुई!';
+
+  @override
+  String get error_downloading_report => 'रिपोर्ट डाउनलोड करने में त्रुटि: ';
+
+  @override
+  String get profile_updated_successfully => 'प्रोफाइल सफलतापूर्वक अपडेट हुई!';
+
+  @override
+  String get directions => 'दिशा-निर्देश';
+
+  @override
+  String get select_hospital => 'Select';
+
+  @override
+  String get selected_hospital => 'चयनित';
+
+  @override
+  String get by_relevance => 'प्रासंगिकता के अनुसार';
+
+  @override
+  String get by_distance => 'दूरी के अनुसार';
+
+  @override
+  String get icu_resources => 'ICU संसाधन';
+
+  @override
+  String get emergency_life_saving => 'आपातकालीन और जीवन-रक्षक';
+
+  @override
+  String get diagnostics => 'नैदानिकी';
+
+  @override
+  String get pharmacy_supplies => 'फ़ार्मेसी और आपूर्ति';
+
+  @override
+  String get human_resources => 'मानव संसाधन';
+
+  @override
+  String get support_resources => 'सहायक संसाधन';
+
+  @override
+  String get report_downloaded => 'रिपोर्ट सफलतापूर्वक डाउनलोड हुई!';
+
+  @override
+  String get authentication_required =>
+      'प्रमाणीकरण आवश्यक है। कृपया फिर से लॉगिन करें।';
+
+  @override
+  String get unauthorized => 'अनधिकृत: सरकारी पहुंच आवश्यक है';
+
+  @override
+  String get download_failed => 'डाउनलोड विफल: ';
+
+  @override
+  String get password_validation_error =>
+      'Password must have 6+ characters, a special character, and start with uppercase';
+
+  @override
+  String get email_validation_error => 'Email must contain \'@\' symbol';
+
+  @override
+  String get phone_validation_error => 'Phone number must be exactly 10 digits';
 }
